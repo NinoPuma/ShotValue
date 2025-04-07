@@ -1,0 +1,24 @@
+name: Verificar merge a develop
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar repo
+        uses: actions/checkout@v3
+
+      - name: Configurar Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Compilar y testear con Maven
+        working-directory: ./analizador-xgot
+        run: ./mvnw clean verify
