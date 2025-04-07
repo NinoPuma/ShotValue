@@ -1,1 +1,2 @@
 # ShotValue
+Santi, Nino, Hugo.
