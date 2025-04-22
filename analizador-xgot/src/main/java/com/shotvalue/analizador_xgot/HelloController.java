@@ -1,4 +1,4 @@
-package es.uem.tfcc;
+package com.shotvalue.analizador_xgot;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
