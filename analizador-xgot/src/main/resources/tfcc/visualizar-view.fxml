@@ -8,10 +8,9 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="es.uem.tfcc.VisualizarController"
+            fx:controller="com.shotvalue.front.VisualizarController"
             prefWidth="1200.0" prefHeight="750.0">
 
-    <!-- Menú lateral -->
     <left>
         <VBox spacing="20" alignment="TOP_CENTER" prefWidth="180.0"
               style="-fx-background-color: #2A3F3F;" BorderPane.alignment="CENTER">
@@ -32,11 +31,9 @@
         </VBox>
     </left>
 
-    <!-- Panel principal -->
     <center>
         <VBox spacing="20" style="-fx-background-color: #2E2E2E; -fx-padding: 20;">
 
-            <!-- 🔝 Filtros generales -->
             <GridPane hgap="15" vgap="10">
                 <columnConstraints>
                     <ColumnConstraints percentWidth="16.6"/>
@@ -68,7 +65,6 @@
                 </children>
             </GridPane>
 
-            <!-- 🔄 Tipo de visualización -->
             <HBox spacing="15">
                 <children>
                     <Label text="Tipo de evento" textFill="white"/>
@@ -79,10 +75,8 @@
                 </children>
             </HBox>
 
-            <!-- 🧠 Contenido central: filtros y gráfico -->
             <HBox spacing="20">
 
-                <!-- Filtros del evento -->
                 <VBox spacing="10" prefWidth="220" style="-fx-background-color: #1F1F1F; -fx-padding: 10;">
                     <children>
                         <Label text="Filtros del evento" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
@@ -106,7 +100,6 @@
                     </children>
                 </VBox>
 
-                <!-- Vista principal -->
                 <VBox spacing="10" alignment="CENTER" style="-fx-background-color: #1F1F1F; -fx-padding: 15; -fx-border-color: #444; -fx-border-width: 1;">
                     <children>
                         <Label text="Visualizaciones" style="-fx-text-fill: white; -fx-font-weight: bold;"/>

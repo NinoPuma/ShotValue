@@ -6,17 +6,16 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 
+
 <BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="es.uem.tfcc.EquiposController"
+            fx:controller="com.shotvalue.front.EquiposController"
             prefWidth="1000.0" prefHeight="700.0">
 
-    <!-- 🟩 MENÚ LATERAL -->
     <left>
         <VBox style="-fx-background-color: #2A3F3F;" spacing="20" alignment="TOP_CENTER" prefWidth="180.0"
               BorderPane.alignment="CENTER">
             <children>
 
-                <!-- ✅ Logo corregido -->
                 <ImageView fx:id="logoImage" fitWidth="150" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../../../img/logo.png" />
@@ -35,12 +34,10 @@
         </VBox>
     </left>
 
-    <!-- 🟦 CONTENIDO PRINCIPAL -->
     <center>
         <VBox spacing="20" style="-fx-background-color: #2E2E2E; -fx-padding: 20;">
             <children>
 
-                <!-- 🔹 Info del equipo -->
                 <HBox spacing="15">
                     <children>
                         <VBox spacing="10">
@@ -70,7 +67,6 @@
                     </children>
                 </HBox>
 
-                <!-- 🔹 Formulario añadir jugador -->
                 <HBox spacing="10">
                     <children>
                         <TextField fx:id="numberField" promptText="Número" prefWidth="80"/>
@@ -82,7 +78,6 @@
                     </children>
                 </HBox>
 
-                <!-- 🔹 Tabla jugadores -->
                 <TableView fx:id="playerTable" prefHeight="300">
                     <columns>
                         <TableColumn text="Número" prefWidth="80"/>
@@ -92,7 +87,6 @@
                     </columns>
                 </TableView>
 
-                <!-- 🔹 Botones acciones -->
                 <HBox spacing="15" alignment="CENTER">
                     <children>
                         <Button text="Cargar" style="-fx-background-color: #1ABC9C; -fx-text-fill: white;"/>

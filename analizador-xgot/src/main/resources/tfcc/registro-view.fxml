@@ -8,10 +8,9 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="es.uem.tfcc.RegistroController"
+            fx:controller="com.shotvalue.front.RegistroController"
             prefWidth="1200.0" prefHeight="750.0">
 
-    <!-- Menú lateral -->
     <left>
         <VBox spacing="20" alignment="TOP_CENTER" prefWidth="180.0"
               style="-fx-background-color: #2A3F3F;" BorderPane.alignment="CENTER">
@@ -32,7 +31,6 @@
         </VBox>
     </left>
 
-    <!-- Panel principal -->
     <center>
         <GridPane hgap="20" vgap="20" style="-fx-background-color: #2E2E2E; -fx-padding: 20;">
             <columnConstraints>
@@ -45,7 +43,6 @@
                 <RowConstraints percentHeight="50"/>
             </rowConstraints>
 
-            <!-- 🎥 Video -->
             <VBox spacing="10" GridPane.rowIndex="0" GridPane.columnIndex="0"
                   style="-fx-background-color: #1E1E1E; -fx-padding: 15; -fx-border-color: #444; -fx-border-width: 1;">
                 <children>
@@ -58,7 +55,6 @@
                 </children>
             </VBox>
 
-            <!-- ⚙️ Opciones del evento -->
             <VBox spacing="10" GridPane.rowIndex="0" GridPane.columnIndex="1"
                   style="-fx-background-color: #1E1E1E; -fx-padding: 15; -fx-border-color: #444; -fx-border-width: 1;">
                 <children>
@@ -91,7 +87,6 @@
                 </children>
             </VBox>
 
-            <!-- 📍 Coordenadas -->
             <VBox spacing="10" GridPane.rowIndex="1" GridPane.columnIndex="0"
                   style="-fx-background-color: #1E1E1E; -fx-padding: 15; -fx-border-color: #444; -fx-border-width: 1;">
                 <children>
@@ -104,7 +99,6 @@
                 </children>
             </VBox>
 
-            <!-- 👥 Jugadores implicados -->
             <VBox spacing="10" GridPane.rowIndex="1" GridPane.columnIndex="1"
                   style="-fx-background-color: #1E1E1E; -fx-padding: 15; -fx-border-color: #444; -fx-border-width: 1;">
                 <children>
@@ -126,7 +120,6 @@
         </GridPane>
     </center>
 
-    <!-- 📋 Tabla de eventos -->
     <right>
         <VBox spacing="10" style="-fx-background-color: #1F1F1F; -fx-padding: 10;" prefWidth="300.0">
             <children>
