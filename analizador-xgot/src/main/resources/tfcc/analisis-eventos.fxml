@@ -8,10 +8,9 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="es.uem.tfcc.AnalisisEventosController"
+            fx:controller="com.shotvalue.front.AnalisisEventosController"
             prefWidth="1200.0" prefHeight="800.0">
 
-    <!-- Menú lateral -->
     <left>
         <VBox spacing="20" alignment="TOP_CENTER" prefWidth="180.0"
               style="-fx-background-color: #2A3F3F;" BorderPane.alignment="CENTER">
@@ -32,14 +31,11 @@
         </VBox>
     </left>
 
-    <!-- Panel principal -->
     <center>
         <VBox spacing="20" style="-fx-background-color: #F4FAF4; -fx-padding: 20;">
 
-            <!-- 🧠 Filtros y jugadores implicados -->
             <HBox spacing="20" alignment="TOP_LEFT">
 
-                <!-- Filtros -->
                 <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 15; -fx-border-color: lightgray; -fx-border-width: 1;">
                     <children>
                         <Label text="General" style="-fx-font-weight: bold;"/>
@@ -65,7 +61,6 @@
                     </children>
                 </VBox>
 
-                <!-- Opciones del evento -->
                 <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-border-color: lightgray; -fx-border-width: 1;">
                     <children>
                         <Label text="Opciones del evento" style="-fx-font-weight: bold;"/>
@@ -111,7 +106,6 @@
                     </children>
                 </VBox>
 
-                <!-- Jugadores implicados -->
                 <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-border-color: lightgray; -fx-border-width: 1;">
                     <children>
                         <Label text="Jugadores implicados" style="-fx-font-weight: bold;"/>
@@ -130,7 +124,6 @@
                     </children>
                 </VBox>
 
-                <!-- Coordenadas -->
                 <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-border-color: lightgray; -fx-border-width: 1;">
                     <children>
                         <Label text="Coordenadas" style="-fx-font-weight: bold;"/>
@@ -143,7 +136,6 @@
                 </VBox>
             </HBox>
 
-            <!-- 📋 Tabla de eventos -->
             <VBox spacing="10">
                 <Label text="Listado de eventos" style="-fx-font-weight: bold; -fx-text-fill: green;"/>
                 <TableView fx:id="eventTable" prefHeight="300.0">
