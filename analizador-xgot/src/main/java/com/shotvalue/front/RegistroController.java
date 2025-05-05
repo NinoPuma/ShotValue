@@ -26,8 +26,7 @@ public class RegistroController {
         } else if (!password.equals(repeatPassword)) {
             messageLabel.setText("Las contraseñas no coinciden.");
         } else {
-            messageLabel.setText("¡Registro exitoso! ✅");
-            // Aquí puedes guardar el usuario en la base de datos (MongoDB más adelante)
+            messageLabel.setText("¡Registro exitoso!");
         }
     }
 
