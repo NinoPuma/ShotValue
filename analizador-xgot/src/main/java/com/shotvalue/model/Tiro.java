@@ -1,6 +1,12 @@
 package com.shotvalue.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "tiros")
 public class Tiro {
+    @Id
+    private String id;
     private double x;
     private double y;
     private String parteDelCuerpo;
@@ -21,8 +27,11 @@ public class Tiro {
     private boolean jugadaElaborada;
     private boolean tiroConBote;
     private boolean porteroTapado;
+    private String jugadorId;
+    private String partidoId;
 
-    public Tiro() {}
+    public Tiro() {
+    }
 
     public Tiro(double x, double y, String parteDelCuerpo, String tipoDeJugada, String resultado, double xgot) {
         this.x = x;
@@ -33,23 +42,62 @@ public class Tiro {
         this.xgot = xgot;
     }
 
-    public double getX() { return x; }
-    public void setX(double x) { this.x = x; }
+    // --- Getters y Setters completos ---
+    public String getId() {
+        return id;
+    }
 
-    public double getY() { return y; }
-    public void setY(double y) { this.y = y; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public String getParteDelCuerpo() { return parteDelCuerpo; }
-    public void setParteDelCuerpo(String parteDelCuerpo) { this.parteDelCuerpo = parteDelCuerpo; }
+    public double getX() {
+        return x;
+    }
 
-    public String getTipoDeJugada() { return tipoDeJugada; }
-    public void setTipoDeJugada(String tipoDeJugada) { this.tipoDeJugada = tipoDeJugada; }
+    public void setX(double x) {
+        this.x = x;
+    }
 
-    public String getResultado() { return resultado; }
-    public void setResultado(String resultado) { this.resultado = resultado; }
+    public double getY() {
+        return y;
+    }
 
-    public double getXgot() { return xgot; }
-    public void setXgot(double xgot) { this.xgot = xgot; }
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public String getParteDelCuerpo() {
+        return parteDelCuerpo;
+    }
+
+    public void setParteDelCuerpo(String parteDelCuerpo) {
+        this.parteDelCuerpo = parteDelCuerpo;
+    }
+
+    public String getTipoDeJugada() {
+        return tipoDeJugada;
+    }
+
+    public void setTipoDeJugada(String tipoDeJugada) {
+        this.tipoDeJugada = tipoDeJugada;
+    }
+
+    public String getResultado() {
+        return resultado;
+    }
+
+    public void setResultado(String resultado) {
+        this.resultado = resultado;
+    }
+
+    public double getXgot() {
+        return xgot;
+    }
+
+    public void setXgot(double xgot) {
+        this.xgot = xgot;
+    }
 
     public boolean isPorteroNoSeMueve() {
         return porteroNoSeMueve;
@@ -161,6 +209,22 @@ public class Tiro {
 
     public void setPorteroTapado(boolean porteroTapado) {
         this.porteroTapado = porteroTapado;
+    }
+
+    public String getJugadorId() {
+        return jugadorId;
+    }
+
+    public void setJugadorId(String jugadorId) {
+        this.jugadorId = jugadorId;
+    }
+
+    public String getPartidoId() {
+        return partidoId;
+    }
+
+    public void setPartidoId(String partidoId) {
+        this.partidoId = partidoId;
     }
 
     @Override

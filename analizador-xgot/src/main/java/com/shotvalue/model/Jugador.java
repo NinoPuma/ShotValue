@@ -1,19 +1,19 @@
 package com.shotvalue.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "jugadores")
 public class Jugador {
+    @Id
     private String id;
     private String nombre;
     private String apellido;
     private String equipoId;
     private String posicion;
     private int dorsal;
-    private List<Tiro> tiros;
 
     public Jugador() {
-        this.tiros = new ArrayList<>();
     }
 
     public Jugador(String id, String nombre, String apellido, String equipoId, String posicion, int dorsal) {
@@ -23,39 +23,55 @@ public class Jugador {
         this.equipoId = equipoId;
         this.posicion = posicion;
         this.dorsal = dorsal;
-        this.tiros = new ArrayList<>();
     }
 
-    public void agregarTiro(Tiro tiro) {
-        this.tiros.add(tiro);
+    public String getId() {
+        return id;
     }
 
-    public double calcularXGOTTotal() {
-        return tiros.stream()
-                .mapToDouble(Tiro::getXgot)
-                .sum();
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public String getNombre() {
+        return nombre;
+    }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
-    public String getApellido() { return apellido; }
-    public void setApellido(String apellido) { this.apellido = apellido; }
+    public String getApellido() {
+        return apellido;
+    }
 
-    public String getEquipoId() { return equipoId; }
-    public void setEquipoId(String equipoId) { this.equipoId = equipoId; }
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
 
-    public String getPosicion() { return posicion; }
-    public void setPosicion(String posicion) { this.posicion = posicion; }
+    public String getEquipoId() {
+        return equipoId;
+    }
 
-    public int getDorsal() { return dorsal; }
-    public void setDorsal(int dorsal) { this.dorsal = dorsal; }
+    public void setEquipoId(String equipoId) {
+        this.equipoId = equipoId;
+    }
 
-    public List<Tiro> getTiros() { return tiros; }
-    public void setTiros(List<Tiro> tiros) { this.tiros = tiros; }
+    public String getPosicion() {
+        return posicion;
+    }
+
+    public void setPosicion(String posicion) {
+        this.posicion = posicion;
+    }
+
+    public int getDorsal() {
+        return dorsal;
+    }
+
+    public void setDorsal(int dorsal) {
+        this.dorsal = dorsal;
+    }
 
     @Override
     public String toString() {

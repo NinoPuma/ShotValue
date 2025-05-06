@@ -1,18 +1,18 @@
 package com.shotvalue.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "partidos")
 public class Partido {
+    @Id
     private String id;
     private String fecha;
     private String equipoLocalId;
     private String equipoVisitanteId;
     private String nombreEstadio;
-    private List<Tiro> tiros;
 
     public Partido() {
-        this.tiros = new ArrayList<>();
     }
 
     public Partido(String id, String fecha, String equipoLocalId, String equipoVisitanteId, String nombreEstadio) {
@@ -21,35 +21,46 @@ public class Partido {
         this.equipoLocalId = equipoLocalId;
         this.equipoVisitanteId = equipoVisitanteId;
         this.nombreEstadio = nombreEstadio;
-        this.tiros = new ArrayList<>();
     }
 
-    public void agregarTiro(Tiro tiro) {
-        tiros.add(tiro);
+    public String getId() {
+        return id;
     }
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public String getFecha() { return fecha; }
-    public void setFecha(String fecha) { this.fecha = fecha; }
+    public String getFecha() {
+        return fecha;
+    }
 
-    public String getEquipoLocalId() { return equipoLocalId; }
-    public void setEquipoLocalId(String equipoLocalId) { this.equipoLocalId = equipoLocalId; }
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
 
-    public String getEquipoVisitanteId() { return equipoVisitanteId; }
-    public void setEquipoVisitanteId(String equipoVisitanteId) { this.equipoVisitanteId = equipoVisitanteId; }
+    public String getEquipoLocalId() {
+        return equipoLocalId;
+    }
 
-    public String getNombreEstadio() { return nombreEstadio; }
-    public void setNombreEstadio(String nombreEstadio) { this.nombreEstadio = nombreEstadio; }
+    public void setEquipoLocalId(String equipoLocalId) {
+        this.equipoLocalId = equipoLocalId;
+    }
 
-    public List<Tiro> getTiros() { return tiros; }
-    public void setTiros(List<Tiro> tiros) { this.tiros = tiros; }
+    public String getEquipoVisitanteId() {
+        return equipoVisitanteId;
+    }
 
-    public double calcularXGOTTotal() {
-        return tiros.stream()
-                .mapToDouble(Tiro::getXgot)
-                .sum();
+    public void setEquipoVisitanteId(String equipoVisitanteId) {
+        this.equipoVisitanteId = equipoVisitanteId;
+    }
+
+    public String getNombreEstadio() {
+        return nombreEstadio;
+    }
+
+    public void setNombreEstadio(String nombreEstadio) {
+        this.nombreEstadio = nombreEstadio;
     }
 
     @Override
