@@ -3,12 +3,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns="http://javafx.com/javafx"
+<VBox xmlns="http://javafx.com/javafx/21.0.7"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.shotvalue.front.EquiposController"
       spacing="20"
       style="-fx-background-color: #2E2E2E; -fx-padding: 20;">
     <children>
+
         <HBox spacing="15">
             <children>
                 <VBox spacing="10">
@@ -57,5 +57,15 @@
                 <TableColumn text="Posición específica" prefWidth="160"/>
             </columns>
         </TableView>
+
+        <HBox spacing="15" alignment="CENTER">
+            <children>
+                <Button text="Cargar" style="-fx-background-color: #1ABC9C; -fx-text-fill: white;" />
+                <Button text="Descargar" style="-fx-background-color: #27AE60; -fx-text-fill: white;" />
+                <Button text="Eliminar" style="-fx-background-color: #E74C3C; -fx-text-fill: white;" />
+                <Button text="Modificar" style="-fx-background-color: #F39C12; -fx-text-fill: white;" />
+            </children>
+        </HBox>
+
     </children>
 </VBox>

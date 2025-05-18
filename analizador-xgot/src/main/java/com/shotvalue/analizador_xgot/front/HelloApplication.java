@@ -8,12 +8,16 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class HelloApplication extends Application {
+
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/tfcc/registro.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Hello!");
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/tfcc/login.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 600, 500); // Tamaño inicial
+
         stage.setScene(scene);
+        stage.setTitle("ShotValue");
+        stage.centerOnScreen();     // Centrado
+        stage.setMaximized(true);   // Pantalla completa al iniciar
         stage.show();
     }
 
