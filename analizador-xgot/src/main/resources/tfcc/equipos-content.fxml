@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21.0.7"
+      xmlns:fx="http://javafx.com/fxml"
+      spacing="20"
+      style="-fx-background-color: #2E2E2E; -fx-padding: 20;">
+    <children>
+
+        <HBox spacing="15">
+            <children>
+                <VBox spacing="10">
+                    <children>
+                        <Label text="Nombre equipo" textFill="white"/>
+                        <TextField fx:id="teamNameField" promptText="Deportivo Alavés" />
+                    </children>
+                </VBox>
+                <VBox spacing="10">
+                    <children>
+                        <Label text="Entrenador" textFill="white"/>
+                        <TextField fx:id="coachField" promptText="Luis García" />
+                    </children>
+                </VBox>
+                <VBox spacing="10">
+                    <children>
+                        <Label text="Formación" textFill="white"/>
+                        <ComboBox fx:id="formationBox" prefWidth="120"/>
+                    </children>
+                </VBox>
+                <VBox spacing="10">
+                    <children>
+                        <Label text="Color" textFill="white"/>
+                        <ColorPicker fx:id="colorPicker" />
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
+
+        <HBox spacing="10">
+            <children>
+                <TextField fx:id="numberField" promptText="Número" prefWidth="80"/>
+                <TextField fx:id="playerNameField" promptText="Nombre jugador" />
+                <ComboBox fx:id="generalPositionBox" promptText="Posición general" prefWidth="140"/>
+                <ComboBox fx:id="specificPositionBox" promptText="Posición específica" prefWidth="140"/>
+                <Button text="Añadir jugador" onAction="#handleAddPlayer"
+                        style="-fx-background-color: #16A085; -fx-text-fill: white;" />
+            </children>
+        </HBox>
+
+        <TableView fx:id="playerTable" prefHeight="300">
+            <columns>
+                <TableColumn text="Número" prefWidth="80"/>
+                <TableColumn text="Nombre" prefWidth="160"/>
+                <TableColumn text="Posición general" prefWidth="160"/>
+                <TableColumn text="Posición específica" prefWidth="160"/>
+            </columns>
+        </TableView>
+
+        <HBox spacing="15" alignment="CENTER">
+            <children>
+                <Button text="Cargar" style="-fx-background-color: #1ABC9C; -fx-text-fill: white;" />
+                <Button text="Descargar" style="-fx-background-color: #27AE60; -fx-text-fill: white;" />
+                <Button text="Eliminar" style="-fx-background-color: #E74C3C; -fx-text-fill: white;" />
+                <Button text="Modificar" style="-fx-background-color: #F39C12; -fx-text-fill: white;" />
+            </children>
+        </HBox>
+
+    </children>
+</VBox>

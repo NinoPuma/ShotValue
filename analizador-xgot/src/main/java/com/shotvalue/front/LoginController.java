@@ -14,14 +14,9 @@ import java.io.IOException;
 
 public class LoginController {
 
-    @FXML
-    private TextField usernameField;
-
-    @FXML
-    private PasswordField passwordField;
-
-    @FXML
-    private Label messageLabel;
+    @FXML private TextField usernameField;
+    @FXML private PasswordField passwordField;
+    @FXML private Label messageLabel;
 
     @FXML
     private void handleLogin(ActionEvent event) {
@@ -34,11 +29,10 @@ public class LoginController {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/tfcc/equipos-view.fxml"));
                 Scene scene = new Scene(loader.load(), 1000, 700);
-
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 stage.setScene(scene);
                 stage.setTitle("Equipos");
-                stage.setMaximized(true); // Solo acá queremos pantalla completa
+                stage.setMaximized(true);
                 stage.show();
 
             } catch (IOException e) {
@@ -61,7 +55,6 @@ public class LoginController {
             stage.setTitle("Registro");
             stage.centerOnScreen();
             stage.show();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
