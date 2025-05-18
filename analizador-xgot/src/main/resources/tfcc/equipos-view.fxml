@@ -18,7 +18,7 @@
 
                 <ImageView fx:id="logoImage" fitWidth="150" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../../../img/logo.png" />
+                        <Image url="@../img/logo.png" />
                     </image>
                 </ImageView>
 

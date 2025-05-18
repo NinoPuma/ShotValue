@@ -49,7 +49,7 @@
                     <Label text="Vídeo" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
                     <ImageView fitWidth="400" fitHeight="220" preserveRatio="true">
                         <image>
-                            <Image url="@../../../img/video_placeholder.png" />
+                            <Image url="@../img/video_placeholder.png" />
                         </image>
                     </ImageView>
                 </children>
@@ -93,7 +93,7 @@
                     <Label text="Coordenadas" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
                     <ImageView fitWidth="400" fitHeight="200" preserveRatio="true">
                         <image>
-                            <Image url="@../../../img/field_placeholder.png" />
+                            <Image url="@../img/field_placeholder.png" />
                         </image>
                     </ImageView>
                 </children>
