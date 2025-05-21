@@ -1,32 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 
 <BorderPane xmlns="http://javafx.com/javafx/21.0.7"
-            xmlns:fx="http://javafx.com/fxml"
+            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.shotvalue.analizador_xgot.front.EquiposController"
             fx:id="mainBorderPane"
-            style="-fx-background-color: #2E2E2E;">
+            stylesheets="@../css/style.css">
 
+    <!-- PANEL LATERAL -->
     <left>
-        <VBox spacing="10"
-              prefWidth="200"
-              style="-fx-background-color: #1ABC9C; -fx-padding: 20;">
-            <children>
-                <Button fx:id="btnInicio" text="Inicio" maxWidth="Infinity"/>
-                <Button fx:id="btnEquipos" text="Equipos" maxWidth="Infinity"/>
-                <Button fx:id="btnRegistrar" text="Registrar" maxWidth="Infinity"/>
-                <Button fx:id="btnVisualizar" text="Visualizar" maxWidth="Infinity"/>
-                <Button fx:id="btnInformes" text="Informes" maxWidth="Infinity"/>
-                <Button fx:id="btnPerfil" text="Perfil" maxWidth="Infinity"/>
-                <Button fx:id="btnAyuda" text="Ayuda" maxWidth="Infinity"/>
-            </children>
+        <VBox fx:id="sideMenu"
+              BorderPane.alignment="TOP_LEFT"
+              spacing="30"
+              alignment="TOP_CENTER"
+              prefWidth="220"
+              styleClass="side-menu">
+            <!-- Logo -->
+            <ImageView fx:id="logoImage"
+                       fitWidth="120"
+                       preserveRatio="true"
+                       styleClass="app-logo">
+                <image>
+                    <Image url="@../img/logo.png"/>
+                </image>
+            </ImageView>
+            <!-- Botones del menú -->
+            <VBox spacing="20" alignment="CENTER" VBox.vgrow="ALWAYS">
+                <Button fx:id="btnInicio"     text="Inicio"     maxWidth="Infinity" styleClass="menu-button"/>
+                <Button fx:id="btnEquipos"    text="Equipos"    maxWidth="Infinity" styleClass="menu-button"/>
+                <Button fx:id="btnRegistrar"  text="Registrar"  maxWidth="Infinity" styleClass="menu-button"/>
+                <Button fx:id="btnVisualizar" text="Visualizar" maxWidth="Infinity" styleClass="menu-button"/>
+                <Button fx:id="btnInformes"   text="Informes"   maxWidth="Infinity" styleClass="menu-button"/>
+                <Button fx:id="btnPerfil"     text="Perfil"     maxWidth="Infinity" styleClass="menu-button"/>
+                <Button fx:id="btnAyuda"      text="Ayuda"      maxWidth="Infinity" styleClass="menu-button"/>
+            </VBox>
         </VBox>
     </left>
 
+    <!-- CONTENIDO CENTRAL -->
     <center>
-        <AnchorPane fx:id="contenidoCentro" />
+        <AnchorPane fx:id="contenidoCentro" styleClass="content-pane"/>
     </center>
-
 </BorderPane>
