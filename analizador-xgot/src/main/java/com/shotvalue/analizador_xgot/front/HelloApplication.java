@@ -12,12 +12,12 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/tfcc/login.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 600, 500); // Tamaño inicial
+        Scene scene = new Scene(fxmlLoader.load());
 
         stage.setScene(scene);
         stage.setTitle("ShotValue");
-        stage.centerOnScreen();     // Centrado
-        stage.setMaximized(true);   // Pantalla completa al iniciar
+        stage.centerOnScreen();
+        stage.setMaximized(true);
         stage.show();
     }
 

@@ -2,13 +2,15 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
 
 <VBox xmlns="http://javafx.com/javafx/21.0.7"
       xmlns:fx="http://javafx.com/fxml"
       spacing="20"
       style="-fx-background-color: #2E2E2E; -fx-padding: 20;">
-    <children>
 
+    <children>
+        <!-- Info del equipo -->
         <HBox spacing="15">
             <children>
                 <VBox spacing="10">
@@ -38,6 +40,7 @@
             </children>
         </HBox>
 
+        <!-- Añadir jugador -->
         <HBox spacing="10">
             <children>
                 <TextField fx:id="numberField" promptText="Número" prefWidth="80"/>
@@ -49,6 +52,7 @@
             </children>
         </HBox>
 
+        <!-- Tabla de jugadores -->
         <TableView fx:id="playerTable" prefHeight="300">
             <columns>
                 <TableColumn text="Número" prefWidth="80"/>
@@ -58,6 +62,7 @@
             </columns>
         </TableView>
 
+        <!-- Botones de acción -->
         <HBox spacing="15" alignment="CENTER">
             <children>
                 <Button text="Cargar" style="-fx-background-color: #1ABC9C; -fx-text-fill: white;" />
@@ -66,6 +71,5 @@
                 <Button text="Modificar" style="-fx-background-color: #F39C12; -fx-text-fill: white;" />
             </children>
         </HBox>
-
     </children>
 </VBox>

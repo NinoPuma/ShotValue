@@ -17,7 +17,7 @@
             <children>
                 <ImageView fx:id="logoImage" fitWidth="150" preserveRatio="true">
                     <image>
-                        <Image url="@../../../img/logo.png" />
+                        <Image url="@../img/logo.png" />
                     </image>
                 </ImageView>
                 <Button text="Inicio" prefWidth="160" style="-fx-background-color: transparent; -fx-text-fill: white;" />
@@ -105,12 +105,12 @@
                         <Label text="Visualizaciones" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
                         <ImageView fx:id="fieldMap" fitWidth="500" fitHeight="250" preserveRatio="true">
                             <image>
-                                <Image url="@../../../img/field_placeholder.png"/>
+                                <Image url="@../img/field_placeholder.png"/>
                             </image>
                         </ImageView>
                         <ImageView fx:id="goalView" fitWidth="500" fitHeight="150" preserveRatio="true">
                             <image>
-                                <Image url="@../../../img/goal_placeholder.png"/>
+                                <Image url="@../img/goal_placeholder.png"/>
                             </image>
                         </ImageView>
                         <Label fx:id="legendLabel" text="Leyenda: Goles - xG - Fallos" textFill="white"/>

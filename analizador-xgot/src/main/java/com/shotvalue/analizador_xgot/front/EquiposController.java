@@ -25,7 +25,7 @@ public class EquiposController {
     @FXML private Button btnPerfil;
     @FXML private Button btnAyuda;
 
-    // Controles del formulario de jugadores (solo necesarios en equipos-content.fxml)
+    // Controles del formulario de jugadores (solo están disponibles si se ha cargado equipos-content.fxml)
     @FXML private TextField numberField;
     @FXML private TextField playerNameField;
     @FXML private ComboBox<String> generalPositionBox;
@@ -38,6 +38,7 @@ public class EquiposController {
 
     @FXML
     public void initialize() {
+        // Configura los botones del panel lateral
         btnInicio.setOnAction(e -> cargarVista("/tfcc/inicio-view.fxml", btnInicio));
         btnEquipos.setOnAction(e -> cargarVista("/tfcc/equipos-content.fxml", btnEquipos));
         btnRegistrar.setOnAction(e -> cargarVista("/tfcc/registro-view.fxml", btnRegistrar));
@@ -46,6 +47,7 @@ public class EquiposController {
         btnPerfil.setOnAction(e -> cargarVista("/tfcc/perfil-view.fxml", btnPerfil));
         btnAyuda.setOnAction(e -> cargarVista("/tfcc/ayuda-view.fxml", btnAyuda));
 
+        // Vista por defecto al iniciar
         cargarVista("/tfcc/equipos-content.fxml", btnEquipos);
     }
 
@@ -53,14 +55,15 @@ public class EquiposController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
             Parent vista = loader.load();
+
             contenidoCentro.getChildren().setAll(vista);
             resetMenuStyles();
             botonActivo.setStyle(activeStyle);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 
     private void resetMenuStyles() {
         btnInicio.setStyle(defaultStyle);
@@ -72,10 +75,14 @@ public class EquiposController {
         btnAyuda.setStyle(defaultStyle);
     }
 
-    // Método usado solo si estás en equipos-content.fxml
     @FXML
     private void handleAddPlayer(ActionEvent event) {
-        if (numberField == null || playerNameField == null) return;
+        // Verifica si se cargó la vista que tiene los campos
+        if (numberField == null || playerNameField == null ||
+                generalPositionBox == null || specificPositionBox == null ||
+                playerTable == null) {
+            return;
+        }
 
         String number = numberField.getText();
         String name = playerNameField.getText();
