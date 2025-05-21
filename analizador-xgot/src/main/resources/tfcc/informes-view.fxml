@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21.0.7"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.shotvalue.analizador_xgot.front.InformesController"
+            styleClass="content-pane">
+
+    <!-- FILTROS -->
+    <top>
+        <HBox spacing="10" style="-fx-padding: 15; -fx-background-color: #1F1F1F;">
+            <children>
+                <Label text="Desde:" styleClass="label-white"/>
+                <DatePicker fx:id="fromDatePicker"/>
+                <Label text="Hasta:" styleClass="label-white"/>
+                <DatePicker fx:id="toDatePicker"/>
+                <Label text="Tipo de informe:" styleClass="label-white"/>
+                <ComboBox fx:id="reportTypeBox" prefWidth="180"/>
+                <Button text="Generar" onAction="#handleGenerate" styleClass="menu-button"/>
+            </children>
+        </HBox>
+    </top>
+
+    <!-- RESULTADOS -->
+    <center>
+        <TabPane fx:id="reportsTab" style="-fx-padding: 15;">
+            <tabs>
+                <Tab text="Tabla">
+                    <TableView fx:id="reportTable" prefHeight="400">
+                        <!-- define tus columnas aquí -->
+                    </TableView>
+                </Tab>
+                <Tab text="Gráfica">
+                    <VBox spacing="10">
+                        <LineChart fx:id="reportChart"
+                                   title="Evolución"
+                                   legendVisible="true">
+                            <xAxis>
+                                <CategoryAxis label="Fecha"/>
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis label="Valor"/>
+                            </yAxis>
+                        </LineChart>
+                    </VBox>
+                </Tab>
+                <Tab text="Exportar">
+                    <HBox spacing="20" alignment="CENTER" style="-fx-padding: 20;">
+                        <Button text="Exportar a PDF" onAction="#exportPDF" styleClass="menu-button"/>
+                        <Button text="Exportar a CSV" onAction="#exportCSV" styleClass="menu-button"/>
+                        <MenuButton text="Programar">
+                            <items>
+                                <MenuItem text="Diario" onAction="#scheduleDaily"/>
+                                <MenuItem text="Semanal" onAction="#scheduleWeekly"/>
+                            </items>
+                        </MenuButton>
+                    </HBox>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </center>
+</BorderPane>
