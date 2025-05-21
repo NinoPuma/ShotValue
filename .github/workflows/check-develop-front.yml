@@ -1,0 +1,25 @@
+name: Verificar merge a develop-front
+
+on:
+  pull_request:
+    branches:
+      - develop-front
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar repo
+        uses: actions/checkout@v3
+
+      - name: Configurar Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: maven
+
+      - name: Compilar y testear con Maven (frontend)
+        working-directory: ./analizador-frontend
+        run: ./mvnw --batch-mode clean verify
