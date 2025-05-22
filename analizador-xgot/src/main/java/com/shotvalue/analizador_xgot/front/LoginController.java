@@ -1,10 +1,8 @@
 package com.shotvalue.analizador_xgot.front;
 
 import com.shotvalue.analizador_xgot.config.SpringFXMLLoader;
-import com.shotvalue.analizador_xgot.util.EscenaUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
@@ -14,7 +12,6 @@ import javafx.stage.Stage;
 import javafx.scene.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 
@@ -34,30 +31,35 @@ public class LoginController {
         String password = passwordField.getText();
 
         if (username.equals("admin") && password.equals("admin")) {
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            EscenaUtil.cambiarEscena(stage, "/tfcc/equipos-view.fxml");
+            try {
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                Parent root = springFXMLLoader.load("/tfcc/app-layout.fxml");
+
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.setTitle("Inicio");
+                stage.centerOnScreen();
+                stage.setMaximized(false);
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else {
             showAlert("Usuario o contraseña incorrectos.");
         }
     }
 
     @FXML
-    private void goToRegister(ActionEvent event) {
+    private void goToRegister() {
         try {
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Parent root = springFXMLLoader.load("/tfcc/registro.fxml");
-
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Registro"); // Podés cambiarle el título si querés
-            stage.centerOnScreen();     // Centra la nueva escena
-            stage.setMaximized(false);  // Asegura que no se abra maximizado
-            stage.show();
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.centerOnScreen();
         } catch (IOException e) {
-            e.printStackTrace(); // Mostralo en consola por ahora
+            e.printStackTrace();
         }
     }
-
 
     @FXML
     private void showAlert(String mensaje) {
@@ -67,4 +69,5 @@ public class LoginController {
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
+
 }

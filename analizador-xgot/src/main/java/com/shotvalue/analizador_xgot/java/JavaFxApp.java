@@ -22,7 +22,7 @@ public class JavaFxApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         SpringFXMLLoader springLoader = context.getBean(SpringFXMLLoader.class);
-        Parent root = springLoader.load("/tfcc/equipos-view.fxml");  // o login-view.fxml, etc.
+        Parent root = springLoader.load("/tfcc/menu-navegacion.fxml");  // o login-view.fxml, etc.
 
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);

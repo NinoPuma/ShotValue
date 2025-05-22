@@ -38,7 +38,7 @@ public class RegistroController {
             messageLabel.setText("Las contraseñas no coinciden.");
         } else {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/tfcc/equipos-view.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/tfcc/menu-navegacion.fxml"));
                 Scene scene = new Scene(loader.load(), 1000, 700); // App principal
 
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

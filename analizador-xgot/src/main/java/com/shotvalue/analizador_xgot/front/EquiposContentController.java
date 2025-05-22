@@ -1,9 +1,11 @@
 package com.shotvalue.analizador_xgot.front;
 
+import com.shotvalue.analizador_xgot.config.SpringFXMLLoader;
 import com.shotvalue.analizador_xgot.model.Equipo;
 import com.shotvalue.analizador_xgot.model.Jugador;
 import com.shotvalue.analizador_xgot.services.EquipoService;
 import com.shotvalue.analizador_xgot.services.JugadorService;
+import jakarta.annotation.PostConstruct;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,6 +33,9 @@ public class EquiposContentController {
     @Autowired
     private JugadorService jugadorService;
 
+    @Autowired
+    private SpringFXMLLoader springFXMLLoader;
+
     private List<Equipo> equiposDisponibles;
 
     @FXML
@@ -54,15 +59,18 @@ public class EquiposContentController {
         playerTable.setItems(jugadoresFiltrados);
     }
 
-
     private void cargarEquipos() {
         equiposDisponibles = equipoService.getAll();
+
+
         equipoSelector.setItems(FXCollections.observableArrayList(
                 equiposDisponibles.stream().map(Equipo::getTeam_name).collect(Collectors.toList())
         ));
 
         equipoSelector.setOnAction(e -> {
             String nombreSeleccionado = equipoSelector.getValue();
+            System.out.println(">> Seleccionado: " + nombreSeleccionado);
+
             Equipo equipo = equiposDisponibles.stream()
                     .filter(eq -> eq.getTeam_name().equals(nombreSeleccionado))
                     .findFirst().orElse(null);
@@ -89,4 +97,5 @@ public class EquiposContentController {
             );
         });
     }
+
 }

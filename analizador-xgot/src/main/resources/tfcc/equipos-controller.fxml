@@ -3,8 +3,8 @@
 <?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx/21.0.7"
-      fx:controller="com.shotvalue.analizador_xgot.front.EquiposContentController"
       xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.shotvalue.analizador_xgot.front.EquiposContentController"
       spacing="20"
       style="-fx-background-color: #2E2E2E; -fx-padding: 20;">
 

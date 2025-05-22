@@ -1,13 +1,14 @@
 package com.shotvalue.analizador_xgot.front;
 
+import com.shotvalue.analizador_xgot.config.SpringFXMLLoader;
 import com.shotvalue.analizador_xgot.model.Usuario;
 import com.google.gson.Gson;
-import com.shotvalue.analizador_xgot.util.EscenaUtil;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -29,6 +30,10 @@ public class RegistroController {
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final Gson gson = new Gson();
+
+    @Autowired
+    private SpringFXMLLoader springFXMLLoader;
+
 
     @FXML
     private void handleRegister() {
@@ -80,10 +85,22 @@ public class RegistroController {
 
     private void showSuccess(String msg) {
         javafx.application.Platform.runLater(() -> {
-            Stage stage = (Stage) usernameField.getScene().getWindow();
-            com.shotvalue.analizador_xgot.util.EscenaUtil.cambiarEscena(stage, "/tfcc/equipos-view.fxml");
+            try {
+                Stage stage = (Stage) usernameField.getScene().getWindow();
+                Parent root = springFXMLLoader.load("/tfcc/app-layout.fxml");
+
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.setTitle("Inicio");
+                stage.centerOnScreen();
+                stage.setMaximized(false);
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
     }
+
 
     private void showError(String msg) {
         javafx.application.Platform.runLater(() -> {
@@ -94,8 +111,20 @@ public class RegistroController {
 
     @FXML
     private void goToLogin() {
-        Stage stage = (Stage) usernameField.getScene().getWindow();
-        EscenaUtil.cambiarEscena(stage, "/tfcc/login.fxml");
+        try {
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            Parent root = springFXMLLoader.load("/tfcc/login.fxml");
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Login");
+            stage.centerOnScreen();
+            stage.setMaximized(false);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
 
 }

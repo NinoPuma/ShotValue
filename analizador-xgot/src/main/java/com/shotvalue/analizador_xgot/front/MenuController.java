@@ -10,30 +10,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EquiposController {
-
-    @FXML private BorderPane mainBorderPane;
-    @FXML private AnchorPane contenidoCentro;
-    @FXML private Button btnInicio, btnEquipos, btnRegistrar, btnVisualizar, btnInformes, btnPerfil, btnAyuda;
-
-    private final String defaultStyle = "-fx-background-color: transparent; -fx-text-fill: white;";
-    private final String activeStyle  = "-fx-background-color: #0F7F7F; -fx-text-fill: white; -fx-font-weight: bold;";
+public class MenuController {
 
     @Autowired
     private SpringFXMLLoader springFXMLLoader;
 
     @FXML
+    private BorderPane mainBorderPane;
+    @FXML
+    private AnchorPane contenidoCentro;
+    @FXML
+    private Button btnInicio, btnEquipos, btnRegistrar, btnVisualizar, btnInformes, btnPerfil, btnAyuda, btnSalir;
+
+    private final String defaultStyle = "-fx-background-color: transparent; -fx-text-fill: white;";
+    private final String activeStyle = "-fx-background-color: #0F7F7F; -fx-text-fill: white; -fx-font-weight: bold;";
+
+    @FXML
     public void initialize() {
-        btnInicio.setOnAction(e     -> cargarVista("/tfcc/inicio-view.fxml",    btnInicio));
-        btnEquipos.setOnAction(e    -> cargarVista("/tfcc/equipos-content.fxml", btnEquipos));
-        btnRegistrar.setOnAction(e  -> cargarVista("/tfcc/registrar-view.fxml",  btnRegistrar));
+        btnInicio.setOnAction(e -> cargarVista("/tfcc/inicio-view.fxml", btnInicio));
+        btnEquipos.setOnAction(e -> cargarVista("/tfcc/equipos-controller.fxml", btnEquipos));
+        btnRegistrar.setOnAction(e -> cargarVista("/tfcc/registrar-view.fxml", btnRegistrar));
         btnVisualizar.setOnAction(e -> cargarVista("/tfcc/visualizar-view.fxml", btnVisualizar));
-        btnInformes.setOnAction(e   -> cargarVista("/tfcc/informes-view.fxml",   btnInformes));
-        btnPerfil.setOnAction(e     -> cargarVista("/tfcc/perfil-view.fxml",     btnPerfil));
-        btnAyuda.setOnAction(e      -> cargarVista("/tfcc/ayuda-view.fxml",      btnAyuda));
+        btnInformes.setOnAction(e -> cargarVista("/tfcc/informes-view.fxml", btnInformes));
+        btnPerfil.setOnAction(e -> cargarVista("/tfcc/perfil-view.fxml", btnPerfil));
+        btnAyuda.setOnAction(e -> cargarVista("/tfcc/ayuda-view.fxml", btnAyuda));
+        btnSalir.setOnAction(e -> cargarVista("/tfcc/login.fxml", btnSalir));
+
 
         // Carga por defecto
-        cargarVista("/tfcc/equipos-content.fxml", btnEquipos);
+        cargarVista("/tfcc/equipos-controller.fxml", btnEquipos);
     }
 
     private void cargarVista(String rutaFXML, Button activo) {
