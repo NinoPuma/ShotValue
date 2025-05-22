@@ -7,10 +7,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="analizador-xgot" />
+        <module name="analizador-frontend" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="analizador-frontend" target="17" />
+      <module name="src" target="21" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.shotvalue.analizador_xgot.front.AnalisisEventosController"
+            prefWidth="1200.0" prefHeight="800.0">
+
+    <left>
+        <VBox spacing="20" alignment="TOP_CENTER" prefWidth="180.0"
+              style="-fx-background-color: #2A3F3F;" BorderPane.alignment="CENTER">
+            <children>
+                <ImageView fitWidth="150" preserveRatio="true">
+                    <image>
+                        <Image url="@../../../img/logo.png" />
+                    </image>
+                </ImageView>
+                <Button text="Inicio" prefWidth="160" style="-fx-background-color: transparent; -fx-text-fill: white;" />
+                <Button text="Equipos y Competiciones" prefWidth="160" style="-fx-background-color: transparent; -fx-text-fill: white;" />
+                <Button text="Registrar" prefWidth="160" style="-fx-background-color: transparent; -fx-text-fill: white;" />
+                <Button text="Visualizar" prefWidth="160" style="-fx-background-color: transparent; -fx-text-fill: white;" />
+                <Button text="Informes" prefWidth="160" style="-fx-background-color: #0F7F7F; -fx-text-fill: white; -fx-font-weight: bold;" />
+                <Button text="Perfil" prefWidth="160" style="-fx-background-color: transparent; -fx-text-fill: white;" />
+                <Button text="Ayuda" prefWidth="160" style="-fx-background-color: transparent; -fx-text-fill: white;" />
+            </children>
+        </VBox>
+    </left>
+
+    <center>
+        <VBox spacing="20" style="-fx-background-color: #F4FAF4; -fx-padding: 20;">
+
+            <HBox spacing="20" alignment="TOP_LEFT">
+
+                <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 15; -fx-border-color: lightgray; -fx-border-width: 1;">
+                    <children>
+                        <Label text="General" style="-fx-font-weight: bold;"/>
+                        <HBox spacing="10">
+                            <children>
+                                <Button text="1st"/>
+                                <Button text="2nd"/>
+                            </children>
+                        </HBox>
+                        <Label text="Minuto"/>
+                        <TextField fx:id="minuteField" promptText="0"/>
+
+                        <Label text="Segundo"/>
+                        <TextField fx:id="secondField" promptText="0"/>
+
+                        <Label text="Local/Visitante"/>
+                        <HBox spacing="10">
+                            <children>
+                                <Button text="Home"/>
+                                <Button text="Away"/>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+
+                <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-border-color: lightgray; -fx-border-width: 1;">
+                    <children>
+                        <Label text="Opciones del evento" style="-fx-font-weight: bold;"/>
+                        <Label text="Tipo de evento"/>
+                        <FlowPane hgap="10" vgap="5">
+                            <children>
+                                <Button text="Shot"/>
+                                <Button text="Pass"/>
+                                <Button text="Carry"/>
+                                <Button text="Clearance"/>
+                                <Button text="Aerial"/>
+                                <Button text="Recovery"/>
+                                <Button text="Tackle"/>
+                                <Button text="Foul"/>
+                            </children>
+                        </FlowPane>
+                        <Label text="Situación"/>
+                        <FlowPane hgap="10" vgap="5">
+                            <children>
+                                <Button text="Start"/>
+                                <Button text="OpenPlay"/>
+                                <Button text="FromCorner"/>
+                                <Button text="ThrowIn"/>
+                                <Button text="SetPiece"/>
+                                <Button text="GoalKick"/>
+                            </children>
+                        </FlowPane>
+                        <Label text="Altura"/>
+                        <HBox spacing="10">
+                            <children>
+                                <Button text="Low"/>
+                                <Button text="Medium"/>
+                                <Button text="High"/>
+                            </children>
+                        </HBox>
+                        <Label text="Resultado"/>
+                        <HBox spacing="10">
+                            <children>
+                                <Button text="Successful"/>
+                                <Button text="Unsuccessful"/>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+
+                <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-border-color: lightgray; -fx-border-width: 1;">
+                    <children>
+                        <Label text="Jugadores implicados" style="-fx-font-weight: bold;"/>
+                        <Label text="Jugador"/>
+                        <FlowPane hgap="8" vgap="5">
+                            <children>
+                                <Label text="Unknown"/><Label text="Ocampos"/><Label text="Lamela"/><Label text="En-Nesyri"/>
+                            </children>
+                        </FlowPane>
+                        <Label text="Receptor"/>
+                        <FlowPane hgap="8" vgap="5">
+                            <children>
+                                <Label text="Pedrosa"/><Label text="J. Navas"/><Label text="Gudelj"/><Label text="Fernando"/>
+                            </children>
+                        </FlowPane>
+                    </children>
+                </VBox>
+
+                <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-border-color: lightgray; -fx-border-width: 1;">
+                    <children>
+                        <Label text="Coordenadas" style="-fx-font-weight: bold;"/>
+                        <ImageView fitWidth="200" preserveRatio="true">
+                            <image>
+                                <Image url="@../../../img/field_placeholder.png"/>
+                            </image>
+                        </ImageView>
+                    </children>
+                </VBox>
+            </HBox>
+
+            <VBox spacing="10">
+                <Label text="Listado de eventos" style="-fx-font-weight: bold; -fx-text-fill: green;"/>
+                <TableView fx:id="eventTable" prefHeight="300.0">
+                    <columns>
+                        <TableColumn text="season"/>
+                        <TableColumn text="competition"/>
+                        <TableColumn text="round"/>
+                        <TableColumn text="period"/>
+                        <TableColumn text="minute"/>
+                        <TableColumn text="second"/>
+                        <TableColumn text="home_team"/>
+                        <TableColumn text="away_team"/>
+                        <TableColumn text="team_name"/>
+                        <TableColumn text="event_type"/>
+                        <TableColumn text="x"/>
+                        <TableColumn text="y"/>
+                        <TableColumn text="player_name"/>
+                        <TableColumn text="shot_assistant"/>
+                        <TableColumn text="shot_situation"/>
+                        <TableColumn text="shot_type"/>
+                        <TableColumn text="shot_result"/>
+                        <TableColumn text="shot_previous_action"/>
+                        <TableColumn text="shot_gk_out_place"/>
+                    </columns>
+                </TableView>
+
+                <HBox spacing="10">
+                    <children>
+                        <Button text="Cargar" style="-fx-background-color: #1ABC9C; -fx-text-fill: white;"/>
+                        <Button text="Descargar" style="-fx-background-color: #27AE60; -fx-text-fill: white;"/>
+                        <Button text="Eliminar seleccionado" style="-fx-background-color: #E74C3C; -fx-text-fill: white;"/>
+                        <Button text="Modificar seleccionado" style="-fx-background-color: #F39C12; -fx-text-fill: white;"/>
+                    </children>
+                </HBox>
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>

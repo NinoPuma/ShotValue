@@ -1,15 +1,19 @@
 package com.shotvalue.analizador_xgot.front;
 
-import com.shotvalue.analizador_xgot.util.Util;
+import com.shotvalue.analizador_xgot.front.Util.Util;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.collections.*;
 
 public class AyudaController {
-    @FXML private TextField faqSearchField;
-    @FXML private ListView<String> faqList;
-    @FXML private TextField nameField, emailField;
-    @FXML private TextArea messageArea;
+    @FXML
+    private TextField faqSearchField;
+    @FXML
+    private ListView<String> faqList;
+    @FXML
+    private TextField nameField, emailField;
+    @FXML
+    private TextArea messageArea;
 
     private final ObservableList<String> allFaqs = FXCollections.observableArrayList(
             "¿Cómo añado un equipo?",
@@ -45,7 +49,18 @@ public class AyudaController {
         messageArea.clear();
     }
 
-    @FXML private void openDocs()   { Util.openWeb("https://tu-app/docs"); }
-    @FXML private void openVideos() { Util.openWeb("https://tu-app/videos"); }
-    @FXML private void openSlack()  { Util.openWeb("https://tu-app/support"); }
+    @FXML
+    private void openDocs() {
+        Util.openWeb("https://tu-app/docs");
+    }
+
+    @FXML
+    private void openVideos() {
+        Util.openWeb("https://tu-app/videos");
+    }
+
+    @FXML
+    private void openSlack() {
+        Util.openWeb("https://tu-app/support");
+    }
 }
