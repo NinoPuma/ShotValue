@@ -5,68 +5,70 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns="http://javafx.com/javafx/23.0.1"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.shotvalue.analizador_xgot.front.InicioController"
-      spacing="20" alignment="TOP_CENTER"
-      style="-fx-background-color: #2E2E2E; -fx-padding: 30;">
+<StackPane xmlns="http://javafx.com/javafx/23.0.1"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.shotvalue.analizador_xgot.front.InicioController"
+           style="-fx-background-color: #2E2E2E;">
 
-    <!-- Header -->
-    <HBox alignment="CENTER_LEFT" spacing="15">
-        <ImageView fitWidth="50" preserveRatio="true">
-            <image><Image url="@../img/logo.png"/></image>
-        </ImageView>
-        <VBox>
-            <Label text="¡Bienvenido, Usuario!" style="-fx-text-fill: white; -fx-font-size: 18px;"/>
-            <Label fx:id="fechaLabel" style="-fx-text-fill: #aaaaaa;"/>
+    <VBox spacing="30" alignment="TOP_CENTER" maxWidth="1200"
+          style="-fx-padding: 30;">
+
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT" spacing="15">
+            <ImageView fitWidth="50" preserveRatio="true">
+                <image><Image url="@../img/logo.png"/></image>
+            </ImageView>
+            <VBox>
+                <Label text="¡Bienvenido, Usuario!" style="-fx-text-fill: white; -fx-font-size: 18px;"/>
+                <Label fx:id="fechaLabel" style="-fx-text-fill: #aaaaaa;"/>
+            </VBox>
+        </HBox>
+
+        <!-- Estadísticas rápidas -->
+        <GridPane hgap="20" vgap="20" maxWidth="900">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="25"/>
+                <ColumnConstraints percentWidth="25"/>
+                <ColumnConstraints percentWidth="25"/>
+                <ColumnConstraints percentWidth="25"/>
+            </columnConstraints>
+
+            <children>
+                <VBox style="-fx-background-color: #1F1F1F; -fx-padding: 15; -fx-background-radius: 8;"
+                      alignment="CENTER">
+                    <Label text="Equipos" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+                    <Label fx:id="equiposCount" style="-fx-text-fill: #0F7F7F; -fx-font-size: 24px;"/>
+                </VBox>
+                <VBox GridPane.columnIndex="1" style="-fx-background-color: #1F1F1F; -fx-padding: 15; -fx-background-radius: 8;"
+                      alignment="CENTER">
+                    <Label text="Partidos" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+                    <Label fx:id="partidosCount" style="-fx-text-fill: #0F7F7F; -fx-font-size: 24px;"/>
+                </VBox>
+                <VBox GridPane.columnIndex="2" style="-fx-background-color: #1F1F1F; -fx-padding: 15; -fx-background-radius: 8;"
+                      alignment="CENTER">
+                    <Label text="Disparos" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+                    <Label fx:id="shotsCount" style="-fx-text-fill: #0F7F7F; -fx-font-size: 24px;"/>
+                </VBox>
+                <VBox GridPane.columnIndex="3" style="-fx-background-color: #1F1F1F; -fx-padding: 15; -fx-background-radius: 8;"
+                      alignment="CENTER">
+                    <Label text="xG total" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+                    <Label fx:id="xgTotal" style="-fx-text-fill: #0F7F7F; -fx-font-size: 24px;"/>
+                </VBox>
+            </children>
+        </GridPane>
+
+        <!-- Acciones rápidas -->
+        <HBox spacing="20" alignment="CENTER">
+            <Button text="Crear equipo" prefWidth="140" style="-fx-background-color: #16A085; -fx-text-fill: white;"/>
+            <Button text="Registrar evento" prefWidth="140" style="-fx-background-color: #2980B9; -fx-text-fill: white;"/>
+            <Button text="Visualizar datos" prefWidth="140" style="-fx-background-color: #8E44AD; -fx-text-fill: white;"/>
+            <Button text="Informes" prefWidth="140" style="-fx-background-color: #D35400; -fx-text-fill: white;"/>
+        </HBox>
+
+        <!-- Últimos vistos -->
+        <VBox spacing="10" alignment="TOP_LEFT" maxWidth="900">
+            <Label text="Recientes" style="-fx-text-fill: white; -fx-font-size: 16px;"/>
+            <ListView fx:id="recentsList" prefHeight="150"/>
         </VBox>
-    </HBox>
-
-    <!-- Estadísticas rápidas -->
-    <GridPane hgap="20" vgap="20">
-        <columnConstraints>
-            <ColumnConstraints percentWidth="25"/>
-            <ColumnConstraints percentWidth="25"/>
-            <ColumnConstraints percentWidth="25"/>
-            <ColumnConstraints percentWidth="25"/>
-        </columnConstraints>
-
-        <children>
-            <VBox style="-fx-background-color: #1F1F1F; -fx-padding: 15; -fx-background-radius: 8;"
-                  alignment="CENTER">
-                <Label text="Equipos" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
-                <Label fx:id="equiposCount" style="-fx-text-fill: #0F7F7F; -fx-font-size: 24px;"/>
-            </VBox>
-            <VBox GridPane.columnIndex="1" style="-fx-background-color: #1F1F1F; -fx-padding: 15; -fx-background-radius: 8;"
-                  alignment="CENTER">
-                <Label text="Partidos" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
-                <Label fx:id="partidosCount" style="-fx-text-fill: #0F7F7F; -fx-font-size: 24px;"/>
-            </VBox>
-            <VBox GridPane.columnIndex="2" style="-fx-background-color: #1F1F1F; -fx-padding: 15; -fx-background-radius: 8;"
-                  alignment="CENTER">
-                <Label text="Disparos" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
-                <Label fx:id="shotsCount" style="-fx-text-fill: #0F7F7F; -fx-font-size: 24px;"/>
-            </VBox>
-            <VBox GridPane.columnIndex="3" style="-fx-background-color: #1F1F1F; -fx-padding: 15; -fx-background-radius: 8;"
-                  alignment="CENTER">
-                <Label text="xG total" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
-                <Label fx:id="xgTotal" style="-fx-text-fill: #0F7F7F; -fx-font-size: 24px;"/>
-            </VBox>
-        </children>
-    </GridPane>
-
-    <!-- Quick Actions -->
-    <HBox spacing="20" alignment="CENTER">
-        <Button text="Crear equipo" prefWidth="140" style="-fx-background-color: #16A085; -fx-text-fill: white;"/>
-        <Button text="Registrar evento" prefWidth="140" style="-fx-background-color: #2980B9; -fx-text-fill: white;"/>
-        <Button text="Visualizar datos" prefWidth="140" style="-fx-background-color: #8E44AD; -fx-text-fill: white;"/>
-        <Button text="Informes" prefWidth="140" style="-fx-background-color: #D35400; -fx-text-fill: white;"/>
-    </HBox>
-
-    <!-- Últimos vistos -->
-    <VBox spacing="10" alignment="TOP_LEFT">
-        <Label text="Recientes" style="-fx-text-fill: white; -fx-font-size: 16px;"/>
-        <ListView fx:id="recentsList" prefHeight="150"/>
     </VBox>
-
-</VBox>
+</StackPane>

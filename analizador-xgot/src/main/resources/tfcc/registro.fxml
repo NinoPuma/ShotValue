@@ -4,50 +4,52 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.layout.StackPane?>
-<AnchorPane xmlns="http://javafx.com/javafx/23.0.1"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.shotvalue.front.RegistroController"
-            prefHeight="500.0" prefWidth="600.0"
-            style="-fx-background-color: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);">
+<StackPane xmlns="http://javafx.com/javafx/23.0.1"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.shotvalue.front.RegistroController"
+           style="-fx-background-color: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);">
 
-    <children>
-        <StackPane AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
-                   AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+    <VBox alignment="CENTER" spacing="12.0"
+          prefHeight="450.0" prefWidth="600.0"
+          maxWidth="700.0" maxHeight="600.0"
+          style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 30;
+                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0.5, 0, 0);">
 
-        <VBox alignment="CENTER" spacing="12.0" prefHeight="450.0" prefWidth="600.0"
-              style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 30;
-                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0.5, 0, 0);">
+        <children>
+            <ImageView fitWidth="150" pickOnBounds="true" preserveRatio="true">
+                <image>
+                    <Image url="@../img/logo.png" />
+                </image>
+            </ImageView>
 
-            <children>
-                <ImageView fitWidth="150" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../../../img/logo.png" />
-                    </image>
-                </ImageView>
+            <Separator prefWidth="200"/>
 
-                <Separator prefWidth="200"/>
+            <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Crear Cuenta" />
 
-                <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Crear Cuenta" />
-                <Label text="Usuario:" />
-                <TextField fx:id="usernameField" promptText="Introduce tu nombre de usuario" />
-                <Label text="Contraseña:" />
-                <PasswordField fx:id="passwordField" promptText="Introduce una contraseña" />
-                <Label text="Repite la contraseña:" />
-                <PasswordField fx:id="repeatPasswordField" promptText="Confirma la contraseña" />
-                <Button text="Registrarse" onAction="#handleRegister"
-                        style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6;" />
-                <Label fx:id="messageLabel" textFill="red" />
-                <Hyperlink text="¿Ya tienes cuenta? Inicia sesión" onAction="#goToLogin" />
-            </children>
+            <Label text="Usuario:" />
+            <TextField fx:id="usernameField" promptText="Introduce tu nombre de usuario" maxWidth="300"/>
 
-            <padding>
-                <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
-            </padding>
-        </VBox>
-        </StackPane>
-    </children>
-</AnchorPane>
+            <Label text="Contraseña:" />
+            <PasswordField fx:id="passwordField" promptText="Introduce una contraseña" maxWidth="300"/>
+
+            <Label text="Repite la contraseña:" />
+            <PasswordField fx:id="repeatPasswordField" promptText="Confirma la contraseña" maxWidth="300"/>
+
+            <Button text="Registrarse" onAction="#handleRegister"
+                    maxWidth="150"
+                    style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6;" />
+
+            <Label fx:id="messageLabel" textFill="red" />
+
+            <Hyperlink text="¿Ya tienes cuenta? Inicia sesión" onAction="#goToLogin"
+                       style="-fx-text-fill: #0078D7;" />
+        </children>
+
+        <padding>
+            <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
+        </padding>
+    </VBox>
+</StackPane>

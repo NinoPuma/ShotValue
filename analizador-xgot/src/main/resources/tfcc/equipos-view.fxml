@@ -8,16 +8,21 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.shotvalue.analizador_xgot.front.EquiposController"
             fx:id="mainBorderPane"
-            stylesheets="@../css/style.css">
+            stylesheets="@../css/style.css"
+            style="-fx-background-color: #f4f4f4;"> <!-- fondo claro por defecto -->
 
     <!-- PANEL LATERAL -->
     <left>
         <VBox fx:id="sideMenu"
-              BorderPane.alignment="TOP_LEFT"
               spacing="30"
               alignment="TOP_CENTER"
               prefWidth="220"
-              styleClass="side-menu">
+              maxWidth="250"
+              minWidth="200"
+              BorderPane.alignment="TOP_LEFT"
+              styleClass="side-menu"
+              style="-fx-padding: 20;">
+
             <!-- Logo -->
             <ImageView fx:id="logoImage"
                        fitWidth="120"
@@ -27,6 +32,7 @@
                     <Image url="@../img/logo.png"/>
                 </image>
             </ImageView>
+
             <!-- Botones del menú -->
             <VBox spacing="20" alignment="CENTER" VBox.vgrow="ALWAYS">
                 <Button fx:id="btnInicio"     text="Inicio"     maxWidth="Infinity" styleClass="menu-button"/>
@@ -42,6 +48,7 @@
 
     <!-- CONTENIDO CENTRAL -->
     <center>
-        <AnchorPane fx:id="contenidoCentro" styleClass="content-pane"/>
+        <AnchorPane fx:id="contenidoCentro" styleClass="content-pane"
+                    style="-fx-background-color: white; -fx-padding: 25;"/>
     </center>
 </BorderPane>

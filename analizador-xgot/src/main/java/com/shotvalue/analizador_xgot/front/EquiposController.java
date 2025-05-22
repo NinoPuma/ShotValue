@@ -19,7 +19,7 @@ public class EquiposController {
     public void initialize() {
         btnInicio    .setOnAction(e -> cargarVista("/tfcc/inicio-view.fxml",    btnInicio));
         btnEquipos   .setOnAction(e -> cargarVista("/tfcc/equipos-content.fxml", btnEquipos));
-        btnRegistrar .setOnAction(e -> cargarVista("/tfcc/registro-view.fxml",  btnRegistrar));
+        btnRegistrar .setOnAction(e -> cargarVista("/tfcc/registrar-view.fxml",  btnRegistrar));
         btnVisualizar.setOnAction(e -> cargarVista("/tfcc/visualizar-view.fxml", btnVisualizar));
         btnInformes  .setOnAction(e -> cargarVista("/tfcc/informes-view.fxml",  btnInformes));
         btnPerfil    .setOnAction(e -> cargarVista("/tfcc/perfil-view.fxml",    btnPerfil));

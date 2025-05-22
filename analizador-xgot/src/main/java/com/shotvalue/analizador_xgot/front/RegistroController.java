@@ -2,6 +2,7 @@ package com.shotvalue.analizador_xgot.front;
 
 import com.shotvalue.analizador_xgot.model.Usuario;
 import com.google.gson.Gson;
+import com.shotvalue.analizador_xgot.util.EscenaUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -77,8 +78,8 @@ public class RegistroController {
 
     private void showSuccess(String msg) {
         javafx.application.Platform.runLater(() -> {
-            messageLabel.setStyle("-fx-text-fill: green;");
-            messageLabel.setText(msg);
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            com.shotvalue.analizador_xgot.util.EscenaUtil.cambiarEscena(stage, "/tfcc/equipos-view.fxml");
         });
     }
 
@@ -91,13 +92,8 @@ public class RegistroController {
 
     @FXML
     private void goToLogin() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("tfcc/login.fxml"));
-            Scene scene = new Scene(loader.load());
-            Stage stage = (Stage) usernameField.getScene().getWindow();
-            stage.setScene(scene);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Stage stage = (Stage) usernameField.getScene().getWindow();
+        EscenaUtil.cambiarEscena(stage, "/tfcc/login.fxml");
     }
+
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -7,11 +7,11 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.shotvalue.analizador_xgot.front.VisualizarController"
-            prefWidth="1200.0" prefHeight="750.0">
+            fx:controller="com.shotvalue.analizador_xgot.front.VisualizarController">
 
     <center>
-        <VBox spacing="20" style="-fx-background-color: #2E2E2E; -fx-padding: 25;">
+        <VBox spacing="20" alignment="TOP_CENTER"
+              style="-fx-background-color: #2E2E2E; -fx-padding: 30;" maxWidth="1200">
 
             <!-- FILTROS PRINCIPALES -->
             <GridPane hgap="15" vgap="10">
@@ -36,7 +36,6 @@
                         </children>
                     </HBox>
 
-
                     <Label text="Local / Visitante" textFill="white" GridPane.columnIndex="2"/>
                     <ComboBox fx:id="teamSideBox" promptText="Any" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
 
@@ -53,63 +52,65 @@
 
             <!-- TIPO DE VISUALIZACIÓN -->
             <HBox spacing="20" alignment="CENTER_LEFT">
-                <children>
-                    <Label text="Evento" textFill="white"/>
-                    <ComboBox fx:id="eventTypeBox" promptText="Shots"/>
+                <Label text="Evento" textFill="white"/>
+                <ComboBox fx:id="eventTypeBox" promptText="Shots"/>
 
-                    <Label text="Visualización" textFill="white"/>
-                    <ComboBox fx:id="visualizationTypeBox" promptText="Shot Map + GoalCrunch" prefWidth="200"/>
+                <Label text="Visualización" textFill="white"/>
+                <ComboBox fx:id="visualizationTypeBox" promptText="Shot Map + GoalCrunch" prefWidth="200"/>
 
-                    <Button fx:id="applyFiltersBtn" text="Aplicar Filtros" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
-                </children>
+                <Button fx:id="applyFiltersBtn" text="Aplicar Filtros"
+                        style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
             </HBox>
 
             <!-- FILTROS Y GRÁFICOS -->
-            <HBox spacing="30">
+            <HBox spacing="30" alignment="TOP_CENTER">
 
                 <!-- FILTROS -->
-                <VBox spacing="15" prefWidth="240" style="-fx-background-color: #1F1F1F; -fx-padding: 15; -fx-border-color: #444; -fx-border-width: 1;">
-                    <children>
-                        <Label text="Filtros del evento" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;"/>
+                <VBox spacing="15" prefWidth="240"
+                      style="-fx-background-color: #1F1F1F; -fx-padding: 15;
+                             -fx-border-color: #444; -fx-border-width: 1;">
+                    <Label text="Filtros del evento"
+                           style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <Separator/>
 
-                        <Separator/>
+                    <Label text="Área" textFill="white"/>
+                    <ComboBox fx:id="areaBox" promptText="Any"/>
 
-                        <Label text="Área" textFill="white"/>
-                        <ComboBox fx:id="areaBox" promptText="Any"/>
+                    <Label text="Situación" textFill="white"/>
+                    <ComboBox fx:id="situationBox" promptText="Any"/>
 
-                        <Label text="Situación" textFill="white"/>
-                        <ComboBox fx:id="situationBox" promptText="Any"/>
+                    <Label text="Parte del cuerpo" textFill="white"/>
+                    <ComboBox fx:id="bodyPartBox" promptText="Any"/>
 
-                        <Label text="Parte del cuerpo" textFill="white"/>
-                        <ComboBox fx:id="bodyPartBox" promptText="Any"/>
+                    <Label text="Acción previa" textFill="white"/>
+                    <ComboBox fx:id="preActionBox" promptText="Any"/>
 
-                        <Label text="Acción previa" textFill="white"/>
-                        <ComboBox fx:id="preActionBox" promptText="Any"/>
+                    <Label text="Resultado" textFill="white"/>
+                    <ComboBox fx:id="resultBox" promptText="Any"/>
 
-                        <Label text="Resultado" textFill="white"/>
-                        <ComboBox fx:id="resultBox" promptText="Any"/>
-
-                        <Label text="NPxG" textFill="white"/>
-                        <TextField fx:id="xgField" promptText="0.00"/>
-                    </children>
+                    <Label text="NPxG" textFill="white"/>
+                    <TextField fx:id="xgField" promptText="0.00"/>
                 </VBox>
 
                 <!-- VISUALIZACIONES -->
-                <VBox spacing="10" alignment="CENTER" style="-fx-background-color: #1F1F1F; -fx-padding: 20; -fx-border-color: #444; -fx-border-width: 1;">
-                    <children>
-                        <Label text="Visualizaciones" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;"/>
-                        <ImageView fx:id="fieldMap" fitWidth="500" fitHeight="250" preserveRatio="true">
-                            <image>
-                                <Image url="@../img/field_placeholder.png"/>
-                            </image>
-                        </ImageView>
-                        <ImageView fx:id="goalView" fitWidth="500" fitHeight="150" preserveRatio="true">
-                            <image>
-                                <Image url="@../img/goal_placeholder.png"/>
-                            </image>
-                        </ImageView>
-                        <Label fx:id="legendLabel" text="Leyenda: ● Gol | ◯ xG | ✖ Fallo" textFill="white" style="-fx-font-size: 12px;"/>
-                    </children>
+                <VBox spacing="10" alignment="CENTER"
+                      style="-fx-background-color: #1F1F1F; -fx-padding: 20;
+                             -fx-border-color: #444; -fx-border-width: 1;">
+                    <Label text="Visualizaciones"
+                           style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <ImageView fx:id="fieldMap" fitWidth="500" fitHeight="250" preserveRatio="true">
+                        <image>
+                            <Image url="@../img/field_placeholder.png"/>
+                        </image>
+                    </ImageView>
+                    <ImageView fx:id="goalView" fitWidth="500" fitHeight="150" preserveRatio="true">
+                        <image>
+                            <Image url="@../img/goal_placeholder.png"/>
+                        </image>
+                    </ImageView>
+                    <Label fx:id="legendLabel"
+                           text="Leyenda: ● Gol | ◯ xG | ✖ Fallo"
+                           textFill="white" style="-fx-font-size: 12px;"/>
                 </VBox>
             </HBox>
         </VBox>
