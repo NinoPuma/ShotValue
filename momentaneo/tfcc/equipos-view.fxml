@@ -8,7 +8,7 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.shotvalue.analizador_xgot.front.EquiposController"
             fx:id="mainBorderPane"
-            stylesheets="@../css/style.css">
+            stylesheets="@../../analizador-xgot/src/main/resources/css/style.css">
 
     <!-- PANEL LATERAL -->
     <left>
@@ -24,7 +24,7 @@
                        preserveRatio="true"
                        styleClass="app-logo">
                 <image>
-                    <Image url="@../img/logo.png"/>
+                    <Image url="@../../analizador-xgot/src/main/resources/img/logo.png"/>
                 </image>
             </ImageView>
             <!-- Botones del menú -->

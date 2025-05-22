@@ -27,7 +27,7 @@ public class LoginController {
             messageLabel.setText("Rellena todos los campos.");
         } else if (user.equals("hugo") && pass.equals("elcrack")) {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/tfcc/equipos-view.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/momentaneo/tfcc/equipos-view.fxml"));
                 Scene scene = new Scene(loader.load(), 1000, 700);
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 stage.setScene(scene);
@@ -47,7 +47,7 @@ public class LoginController {
     @FXML
     private void goToRegister(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/tfcc/registro.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/momentaneo/tfcc/registro.fxml"));
             Scene scene = new Scene(loader.load(), 600, 500);
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

@@ -87,12 +87,12 @@
                         <Label text="Visualizaciones" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
                         <ImageView fx:id="fieldMap" fitWidth="500" fitHeight="250" preserveRatio="true">
                             <image>
-                                <Image url="@../img/field_placeholder.png"/>
+                                <Image url="@../../analizador-xgot/src/main/resources/img/field_placeholder.png"/>
                             </image>
                         </ImageView>
                         <ImageView fx:id="goalView" fitWidth="500" fitHeight="150" preserveRatio="true">
                             <image>
-                                <Image url="@../img/goal_placeholder.png"/>
+                                <Image url="@../../analizador-xgot/src/main/resources/img/goal_placeholder.png"/>
                             </image>
                         </ImageView>
                         <Label fx:id="legendLabel" text="Leyenda: Goles - xG - Fallos" textFill="white"/>

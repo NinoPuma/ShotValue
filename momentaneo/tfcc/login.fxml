@@ -18,7 +18,7 @@
       <children>
          <ImageView fx:id="logoImage" fitWidth="150" pickOnBounds="true" preserveRatio="true">
             <image>
-               <Image url="@../img/logo.png" />
+               <Image url="@../../analizador-xgot/src/main/resources/img/logo.png" />
             </image>
          </ImageView>
 

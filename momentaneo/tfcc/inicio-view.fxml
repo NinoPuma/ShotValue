@@ -14,7 +14,7 @@
     <!-- Header -->
     <HBox alignment="CENTER_LEFT" spacing="15">
         <ImageView fitWidth="50" preserveRatio="true">
-            <image><Image url="@../img/logo.png"/></image>
+            <image><Image url="@../../analizador-xgot/src/main/resources/img/logo.png"/></image>
         </ImageView>
         <VBox>
             <Label text="¡Bienvenido, Usuario!" style="-fx-text-fill: white; -fx-font-size: 18px;"/>
