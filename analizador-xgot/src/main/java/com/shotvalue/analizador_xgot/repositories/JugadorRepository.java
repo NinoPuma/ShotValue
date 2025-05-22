@@ -7,5 +7,5 @@ import java.util.List;
 
 
 public interface JugadorRepository extends MongoRepository<Jugador, String> {
-    List<Jugador> findByEquipoId(String equipoId);
+    List<Jugador> findByTeamId(int teamId);
 }

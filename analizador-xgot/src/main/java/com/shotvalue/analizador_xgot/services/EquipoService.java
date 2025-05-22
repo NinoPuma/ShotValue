@@ -2,10 +2,12 @@ package com.shotvalue.analizador_xgot.services;
 
 import com.shotvalue.analizador_xgot.model.Equipo;
 import com.shotvalue.analizador_xgot.repositories.EquipoRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class EquipoService {
 
     private final EquipoRepository repo;

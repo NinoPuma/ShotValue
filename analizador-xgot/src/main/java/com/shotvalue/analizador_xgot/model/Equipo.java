@@ -5,16 +5,29 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "equipos")
 public class Equipo {
+
     @Id
     private String id;
-    private String nombre;
 
-    public Equipo() {
+    private int team_id;
+    private String team_name;
+
+    public Equipo() {}
+
+    public int getTeam_id() {
+        return team_id;
     }
 
-    public Equipo(String id, String nombre) {
-        this.id = id;
-        this.nombre = nombre;
+    public void setTeam_id(int team_id) {
+        this.team_id = team_id;
+    }
+
+    public String getTeam_name() {
+        return team_name;
+    }
+
+    public void setTeam_name(String team_name) {
+        this.team_name = team_name;
     }
 
     public String getId() {
@@ -25,16 +38,9 @@ public class Equipo {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
     @Override
     public String toString() {
-        return nombre;
+        return team_name;
     }
 }
+

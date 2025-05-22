@@ -4,7 +4,9 @@ import com.shotvalue.analizador_xgot.util.Util;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.collections.*;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AyudaController {
     @FXML private TextField faqSearchField;
     @FXML private ListView<String> faqList;

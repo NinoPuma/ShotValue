@@ -3,10 +3,11 @@
 <?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx/21.0.7"
-      xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.shotvalue.analizador_xgot.front.EquiposContentController"
+      xmlns:fx="http://javafx.com/fxml/1"
       spacing="20"
       style="-fx-background-color: #2E2E2E; -fx-padding: 20;">
+
 
     <children>
         <!-- Selección de equipo -->
@@ -28,14 +29,7 @@
         </HBox>
 
         <!-- Tabla de jugadores -->
-        <TableView fx:id="playerTable" prefHeight="350">
-            <columns>
-                <TableColumn text="Dorsal" prefWidth="80"/>
-                <TableColumn text="Nombre" prefWidth="160"/>
-                <TableColumn text="Apellido" prefWidth="160"/>
-                <TableColumn text="Posición" prefWidth="180"/>
-            </columns>
-        </TableView>
+        <TableView fx:id="playerTable" prefHeight="350"/>
 
         <!-- Botones de acción -->
         <HBox spacing="15" alignment="CENTER">

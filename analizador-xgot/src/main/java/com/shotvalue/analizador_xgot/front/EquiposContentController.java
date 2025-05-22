@@ -9,10 +9,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class EquiposContentController {
 
     @FXML private ComboBox<String> equipoSelector;
@@ -22,63 +25,57 @@ public class EquiposContentController {
     private final ObservableList<Jugador> jugadoresOriginales = FXCollections.observableArrayList();
     private final ObservableList<Jugador> jugadoresFiltrados = FXCollections.observableArrayList();
 
+    @Autowired
     private EquipoService equipoService;
+
+    @Autowired
     private JugadorService jugadorService;
 
     private List<Equipo> equiposDisponibles;
-
-    // Métodos para inyección manual
-    public void setEquipoService(EquipoService equipoService) {
-        this.equipoService = equipoService;
-    }
-
-    public void setJugadorService(JugadorService jugadorService) {
-        this.jugadorService = jugadorService;
-    }
 
     @FXML
     public void initialize() {
         configurarTabla();
         configurarBuscador();
+        cargarEquipos();
     }
 
     private void configurarTabla() {
         TableColumn<Jugador, String> colNum = new TableColumn<>("Dorsal");
-        colNum.setCellValueFactory(j -> new ReadOnlyStringWrapper(String.valueOf(j.getValue().getDorsal())));
+        colNum.setCellValueFactory(j -> new ReadOnlyStringWrapper(j.getValue().getJersey_number()));
 
-        TableColumn<Jugador, String> colName = new TableColumn<>("Nombre");
-        colName.setCellValueFactory(j -> new ReadOnlyStringWrapper(j.getValue().getNombre()));
-
-        TableColumn<Jugador, String> colApellido = new TableColumn<>("Apellido");
-        colApellido.setCellValueFactory(j -> new ReadOnlyStringWrapper(j.getValue().getApellido()));
+        TableColumn<Jugador, String> colName = new TableColumn<>("Nombre completo");
+        colName.setCellValueFactory(j -> new ReadOnlyStringWrapper(j.getValue().getPlayer_name()));
 
         TableColumn<Jugador, String> colPos = new TableColumn<>("Posición");
-        colPos.setCellValueFactory(j -> new ReadOnlyStringWrapper(j.getValue().getPosicion()));
+        colPos.setCellValueFactory(j -> new ReadOnlyStringWrapper(j.getValue().getPosition()));
 
-        playerTable.getColumns().setAll(colNum, colName, colApellido, colPos);
+        playerTable.getColumns().setAll(colNum, colName, colPos);
         playerTable.setItems(jugadoresFiltrados);
     }
 
-    public void cargarEquipos() {
+
+    private void cargarEquipos() {
         equiposDisponibles = equipoService.getAll();
         equipoSelector.setItems(FXCollections.observableArrayList(
-                equiposDisponibles.stream().map(Equipo::getNombre).collect(Collectors.toList())
+                equiposDisponibles.stream().map(Equipo::getTeam_name).collect(Collectors.toList())
         ));
 
         equipoSelector.setOnAction(e -> {
             String nombreSeleccionado = equipoSelector.getValue();
             Equipo equipo = equiposDisponibles.stream()
-                    .filter(eq -> eq.getNombre().equals(nombreSeleccionado))
+                    .filter(eq -> eq.getTeam_name().equals(nombreSeleccionado))
                     .findFirst().orElse(null);
 
             if (equipo != null) {
-                cargarJugadores(equipo.getId());
+                cargarJugadores(String.valueOf(equipo.getTeam_id()));
             }
         });
     }
 
     private void cargarJugadores(String equipoId) {
-        List<Jugador> jugadores = jugadorService.getByEquipoId(equipoId);
+        int teamId = Integer.parseInt(equipoId);
+        List<Jugador> jugadores = jugadorService.getByTeamId(teamId);
         jugadoresOriginales.setAll(jugadores);
         jugadoresFiltrados.setAll(jugadores);
     }
@@ -87,9 +84,7 @@ public class EquiposContentController {
         jugadorSearchField.textProperty().addListener((obs, oldVal, newVal) -> {
             jugadoresFiltrados.setAll(
                     jugadoresOriginales.stream()
-                            .filter(j -> (j.getNombre() + " " + j.getApellido())
-                                    .toLowerCase()
-                                    .contains(newVal.toLowerCase()))
+                            .filter(j -> j.getPlayer_name().toLowerCase().contains(newVal.toLowerCase()))
                             .collect(Collectors.toList())
             );
         });
