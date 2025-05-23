@@ -1,21 +1,15 @@
 package com.shotvalue.analizador_xgot.importador;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.InsertOneModel;
-import com.mongodb.client.model.ReplaceOptions;
-import com.mongodb.client.model.Filters;
+import com.mongodb.client.*;
+import com.mongodb.client.model.*;
 import com.shotvalue.analizador_xgot.model.Evento;
 import com.shotvalue.analizador_xgot.model.Jugador;
 import com.shotvalue.analizador_xgot.model.PlayPattern;
 import com.shotvalue.analizador_xgot.util.HeightDeserializer;
-import com.shotvalue.analizador_xgot.util.PlayPatternDeserializer;
 import com.shotvalue.analizador_xgot.util.PartidosFiltradosUtil;
+import com.shotvalue.analizador_xgot.util.PlayPatternDeserializer;
 import org.bson.Document;
 
 import java.io.FileReader;
@@ -26,6 +20,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 public class ImportadorCompleto {
+
     private static final int NUM_THREADS = Runtime.getRuntime().availableProcessors();
     private static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(PlayPattern.class, new PlayPatternDeserializer())
@@ -33,11 +28,11 @@ public class ImportadorCompleto {
             .create();
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        // 1. Filtrar partidos válidos
         String carpetaMatches = "C:/Users/Santi/Downloads/open-data-master/open-data-master/data/matches";
+        String carpetaEventos = "C:/Users/Santi/Desktop/Partidos";
+        String carpetaLineups = "C:/Users/Santi/Downloads/open-data-master/open-data-master/data/lineups";
         Set<String> idsValidos = PartidosFiltradosUtil.obtenerMatchIdsValidos(carpetaMatches);
 
-        // 2. Cadena de conexión a MongoDB Atlas, apuntando a la base 'shotvalue'
         String connectionString =
                 "mongodb+srv://santioca97:santioca97"
                         + "@xgot-cluster.gtbwx6p.mongodb.net/shotvalue"
@@ -47,19 +42,52 @@ public class ImportadorCompleto {
 
         try (MongoClient mongoClient = MongoClients.create(connectionString)) {
             MongoDatabase db = mongoClient.getDatabase("shotvalue");
-            MongoCollection<Document> matchesCol = db.getCollection("matches");
-            MongoCollection<Document> playersCol = db.getCollection("players");
-            MongoCollection<Document> eventosCol = db.getCollection("eventos");
 
-            // 3. Upsert de IDs de partidos en 'matches'
+            MongoCollection<Document> partidosCol = db.getCollection("partidos");
+            MongoCollection<Document> jugadoresCol = db.getCollection("jugadores");
+            MongoCollection<Document> eventosCol = db.getCollection("eventos");
+            MongoCollection<Document> equiposCol = db.getCollection("equipos");
+
             ReplaceOptions upsert = new ReplaceOptions().upsert(true);
+
+            // Importar equipos solo de partidos válidos desde lineups
+            Set<Integer> equiposInsertados = new HashSet<>();
+
             for (String matchId : idsValidos) {
-                Document mDoc = new Document("_id", matchId);
-                matchesCol.replaceOne(Filters.eq("_id", matchId), mDoc, upsert);
+                Path lineupFile = Paths.get(carpetaLineups, matchId + ".json");
+                if (!Files.exists(lineupFile)) continue;
+
+                try (FileReader reader = new FileReader(lineupFile.toFile())) {
+                    Type listType = new TypeToken<List<Map<String, Object>>>() {}.getType();
+                    List<Map<String, Object>> alineaciones = gson.fromJson(reader, listType);
+
+                    for (Map<String, Object> equipoData : alineaciones) {
+                        Number teamIdNum = (Number) equipoData.get("team_id");
+                        String teamName = (String) equipoData.get("team_name");
+
+                        if (teamIdNum != null && teamName != null) {
+                            int teamId = teamIdNum.intValue();
+                            if (equiposInsertados.add(teamId)) {
+                                Document equipoDoc = new Document("_id", teamId)
+                                        .append("team_id", teamId)
+                                        .append("team_name", teamName);
+
+                                equiposCol.replaceOne(Filters.eq("_id", teamId), equipoDoc, upsert);
+                                System.out.println("🟦 Equipo insertado: " + teamName);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    System.err.println("❌ Error leyendo lineup " + lineupFile.getFileName() + ": " + e.getMessage());
+                }
             }
 
-            // 4. Importación concurrente de eventos y jugadores
-            String carpetaEventos = "C:/Users/Santi/Desktop/Partidos";
+            // Importar partidos válidos
+            for (String matchId : idsValidos) {
+                partidosCol.replaceOne(Filters.eq("_id", matchId), new Document("_id", matchId), upsert);
+            }
+
+            // Importar eventos y jugadores, solo eventos de tipo "Shot"
             ExecutorService pool = Executors.newFixedThreadPool(NUM_THREADS);
             Set<String> seenPlayers = ConcurrentHashMap.newKeySet();
 
@@ -78,18 +106,20 @@ public class ImportadorCompleto {
                             List<InsertOneModel<Document>> bulkEvents = new ArrayList<>();
 
                             for (Evento ev : eventos) {
-                                // Upsert de jugador
+                                // Solo guardar eventos tipo "Shot"
+                                if (ev.getType() == null || ev.getType().getName() == null) continue;
+                                if (!"Shot".equals(ev.getType().getName())) continue;
+
                                 Jugador jugador = ev.getPlayer();
                                 if (jugador != null) {
                                     String pid = String.valueOf(jugador.getPlayer_id());
                                     if (seenPlayers.add(pid)) {
                                         Document pDoc = Document.parse(gson.toJson(jugador));
                                         pDoc.put("_id", pid);
-                                        playersCol.replaceOne(Filters.eq("_id", pid), pDoc, upsert);
+                                        jugadoresCol.replaceOne(Filters.eq("_id", pid), pDoc, upsert);
                                     }
                                 }
 
-                                // Preparar evento y acumular para bulk write
                                 ev.setMatchId(matchId);
                                 Document eDoc = Document.parse(gson.toJson(ev));
                                 bulkEvents.add(new InsertOneModel<>(eDoc));
@@ -104,7 +134,7 @@ public class ImportadorCompleto {
                         }
                     }));
                 }
-                // Esperar finalización de todas las tareas y manejar posibles errores
+
                 for (Future<?> f : futures) {
                     try {
                         f.get();
@@ -114,8 +144,16 @@ public class ImportadorCompleto {
                     }
                 }
             }
+
             pool.shutdown();
-            System.out.println("🏁 Importación completa de partidos, jugadores y eventos");
+
+            // Resumen final
+            System.out.println("🎯 RESUMEN FINAL:");
+            System.out.println(" - Partidos en 'partidos':     " + partidosCol.countDocuments());
+            System.out.println(" - Jugadores en 'jugadores':   " + jugadoresCol.countDocuments());
+            System.out.println(" - Equipos en 'equipos':       " + equiposCol.countDocuments());
+            System.out.println(" - Eventos en 'eventos':       " + eventosCol.countDocuments());
+            System.out.println("🏁 Importación completa de partidos, jugadores, eventos y equipos");
         }
     }
 }
