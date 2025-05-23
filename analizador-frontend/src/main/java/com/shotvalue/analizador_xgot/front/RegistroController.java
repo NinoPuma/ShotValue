@@ -1,6 +1,6 @@
 package com.shotvalue.analizador_xgot.front;
 
-import com.shotvalue.analizador_xgot.model.Usuario;
+import com.shotvalue.analizador_xgot.model.model.Usuario;
 import com.google.gson.Gson;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

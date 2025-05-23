@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.shotvalue</groupId>
+    <artifactId>analizador-frontend</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <!-- ======== Propiedades globales ======== -->
+    <properties>
+        <!-- JDK 17 LTS -->
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- JavaFX -->
+        <javafx.version>21.0.2</javafx.version>
+    </properties>
+
+    <!-- ======== Dependencias ======== -->
+    <dependencies>
+
+        <!-- JavaFX (Controles + FXML) -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <!-- Apache HttpClient 5 -->
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <version>5.3</version>
+        </dependency>
+
+        <!-- Gson: JSON ↔︎ POJOs -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+
+        <!-- XChart: gráficas offline en JavaFX -->
+        <dependency>
+            <groupId>org.knowm.xchart</groupId>
+            <artifactId>xchart</artifactId>
+            <version>3.8.2</version>
+        </dependency>
+
+    </dependencies>
+
+    <!-- ======== Plugins ======== -->
+    <build>
+        <plugins>
+
+            <!-- Plugin Maven para JavaFX -->
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+
+                <configuration>
+                    <!-- Clase principal correcta -->
+                    <mainClass>com.shotvalue.analizador_xgot.front.HelloApplication</mainClass>
+                </configuration>
+
+                <!-- Permite: mvn javafx:run -->
+                <executions>
+                    <execution>
+                        <goals><goal>run</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>

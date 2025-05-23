@@ -1,6 +1,6 @@
 package com.shotvalue.analizador_xgot.front;
 
-import com.shotvalue.analizador_xgot.util.Util;
+import com.shotvalue.analizador_xgot.front.util.Util;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.collections.*;

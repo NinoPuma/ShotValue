@@ -1,0 +1,29 @@
+# .github/workflows/verificar-develop-front.yml
+name: Verificar merge a develop-front
+
+on:
+  pull_request:
+    branches:
+      - develop-front
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1) Checkout
+      - name: Clonar repo
+        uses: actions/checkout@v3
+
+      # 2) JDK 17 + caché Maven
+      - name: Configurar Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: maven
+
+      # 3) Compilar y testear el frontend
+      - name: Compilar y testear con Maven (frontend)
+        run: mvn -B -f analizador-frontend/pom.xml clean verify
+

@@ -1,5 +1,5 @@
-// src/main/java/com/shotvalue/analizador_xgot/util/Util.java
 package com.shotvalue.analizador_xgot.util;
+// src/main/java/com/shotvalue/analizador_xgot/util/Util.java
 
 import java.awt.Desktop;
 import java.io.IOException;
@@ -17,7 +17,6 @@ public class Util {
             Desktop.getDesktop().browse(new URI(url));
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
-            // Opcional: mostrar alerta en JavaFX
             Platform.runLater(() ->
                     new Alert(Alert.AlertType.ERROR,
                             "No se pudo abrir el navegador:\n" + e.getMessage()
