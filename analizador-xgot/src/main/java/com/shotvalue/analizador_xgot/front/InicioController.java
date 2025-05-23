@@ -2,10 +2,7 @@ package com.shotvalue.analizador_xgot.front;
 
 import com.shotvalue.analizador_xgot.model.Jugador;
 import com.shotvalue.analizador_xgot.model.Tiro;
-import com.shotvalue.analizador_xgot.services.EquipoService;
-import com.shotvalue.analizador_xgot.services.JugadorService;
-import com.shotvalue.analizador_xgot.services.PartidoService;
-import com.shotvalue.analizador_xgot.services.TiroService;
+import com.shotvalue.analizador_xgot.services.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -14,6 +11,9 @@ import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,4 +74,24 @@ public class InicioController {
     public InicioController() {
         System.out.println("InicioController: constructor invocado");
     }
+
+    @Autowired
+    private ImportadorPartidosService importador;
+
+    @PostConstruct
+    public void init() {
+        try {
+            if (partidoService.getAll().isEmpty()) {
+                System.out.println("Importando partidos...");
+                Path carpeta = Paths.get("C:/Users/Santi/Downloads/open-data-master/open-data-master/data/matches");
+                importador.importarPartidosDesdeCarpeta(carpeta);
+            } else {
+                System.out.println("Partidos ya importados, no se vuelve a cargar.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
