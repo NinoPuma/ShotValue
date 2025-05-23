@@ -75,23 +75,4 @@ public class InicioController {
         System.out.println("InicioController: constructor invocado");
     }
 
-    @Autowired
-    private ImportadorPartidosService importador;
-
-    @PostConstruct
-    public void init() {
-        try {
-            if (partidoService.getAll().isEmpty()) {
-                System.out.println("Importando partidos...");
-                Path carpeta = Paths.get("C:/Users/Santi/Downloads/open-data-master/open-data-master/data/matches");
-                importador.importarPartidosDesdeCarpeta(carpeta);
-            } else {
-                System.out.println("Partidos ya importados, no se vuelve a cargar.");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
 }
