@@ -1,4 +1,4 @@
-package com.shotvalue.analizador_xgot.model.model;
+package com.shotvalue.analizador_xgot.model;
 
 public class Usuario {
 
