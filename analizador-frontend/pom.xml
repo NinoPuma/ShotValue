@@ -54,6 +54,12 @@
             <artifactId>xchart</artifactId>
             <version>3.8.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>6.2.5</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 

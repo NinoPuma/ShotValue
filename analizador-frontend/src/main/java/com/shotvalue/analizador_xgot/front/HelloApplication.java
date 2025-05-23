@@ -1,4 +1,4 @@
-package com.shotvalue.analizador_xgot;
+package com.shotvalue.analizador_xgot.front;
 
 import com.shotvalue.analizador_xgot.config.SpringFXMLLoader;
 import jakarta.annotation.PostConstruct;
