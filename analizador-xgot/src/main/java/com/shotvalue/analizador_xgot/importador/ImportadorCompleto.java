@@ -33,12 +33,7 @@ public class ImportadorCompleto {
         String carpetaLineups = "C:/Users/Santi/Downloads/open-data-master/open-data-master/data/lineups";
         Set<String> idsValidos = PartidosFiltradosUtil.obtenerMatchIdsValidos(carpetaMatches);
 
-        String connectionString =
-                "mongodb+srv://santioca97:santioca97"
-                        + "@xgot-cluster.gtbwx6p.mongodb.net/shotvalue"
-                        + "?retryWrites=true"
-                        + "&w=majority"
-                        + "&appName=xGOT-cluster";
+        String connectionString = "mongodb+srv://santioca97:santioca97@xgot-cluster.gtbwx6p.mongodb.net/shotvalue?retryWrites=true&w=majority&appName=xGOT-cluster";
 
         try (MongoClient mongoClient = MongoClients.create(connectionString)) {
             MongoDatabase db = mongoClient.getDatabase("shotvalue");
@@ -50,31 +45,53 @@ public class ImportadorCompleto {
 
             ReplaceOptions upsert = new ReplaceOptions().upsert(true);
 
-            // Importar equipos solo de partidos válidos desde lineups
+            // IMPORTAR EQUIPOS Y JUGADORES DESDE LINEUPS
             Set<Integer> equiposInsertados = new HashSet<>();
+            Set<Integer> jugadoresInsertados = new HashSet<>();
 
             for (String matchId : idsValidos) {
                 Path lineupFile = Paths.get(carpetaLineups, matchId + ".json");
                 if (!Files.exists(lineupFile)) continue;
 
                 try (FileReader reader = new FileReader(lineupFile.toFile())) {
-                    Type listType = new TypeToken<List<Map<String, Object>>>() {}.getType();
-                    List<Map<String, Object>> alineaciones = gson.fromJson(reader, listType);
+                    JsonArray alineaciones = JsonParser.parseReader(reader).getAsJsonArray();
 
-                    for (Map<String, Object> equipoData : alineaciones) {
-                        Number teamIdNum = (Number) equipoData.get("team_id");
-                        String teamName = (String) equipoData.get("team_name");
+                    for (JsonElement equipoElem : alineaciones) {
+                        JsonObject equipoObj = equipoElem.getAsJsonObject();
 
-                        if (teamIdNum != null && teamName != null) {
-                            int teamId = teamIdNum.intValue();
-                            if (equiposInsertados.add(teamId)) {
-                                Document equipoDoc = new Document("_id", teamId)
-                                        .append("team_id", teamId)
-                                        .append("team_name", teamName);
+                        int teamId = equipoObj.get("team_id").getAsInt();
+                        String teamName = equipoObj.get("team_name").getAsString();
 
-                                equiposCol.replaceOne(Filters.eq("_id", teamId), equipoDoc, upsert);
-                                System.out.println("🟦 Equipo insertado: " + teamName);
-                            }
+                        // Guardar equipo
+                        if (equiposInsertados.add(teamId)) {
+                            Document equipoDoc = new Document("_id", teamId)
+                                    .append("team_id", teamId)
+                                    .append("team_name", teamName);
+                            equiposCol.replaceOne(Filters.eq("_id", teamId), equipoDoc, upsert);
+                            System.out.println("🟦 Equipo insertado: " + teamName);
+                        }
+
+                        // Guardar jugadores
+                        JsonArray jugadoresJson = equipoObj.getAsJsonArray("lineup");
+                        for (JsonElement jugadorElem : jugadoresJson) {
+                            JsonObject jugadorObj = jugadorElem.getAsJsonObject();
+
+                            int playerId = jugadorObj.get("player_id").getAsInt();
+                            if (!jugadoresInsertados.add(playerId)) continue;
+
+                            String playerName = jugadorObj.get("player_name").getAsString();
+                            String position = jugadorObj.has("position") ? jugadorObj.get("position").getAsString() : null;
+                            String jersey = jugadorObj.has("jersey_number") ? jugadorObj.get("jersey_number").getAsString() : null;
+
+                            Document jugadorDoc = new Document("_id", playerId)
+                                    .append("player_id", playerId)
+                                    .append("player_name", playerName)
+                                    .append("position", position)
+                                    .append("jersey_number", jersey)
+                                    .append("team_id", teamId)
+                                    .append("team_name", teamName);
+
+                            jugadoresCol.replaceOne(Filters.eq("_id", playerId), jugadorDoc, upsert);
                         }
                     }
                 } catch (Exception e) {
@@ -82,12 +99,12 @@ public class ImportadorCompleto {
                 }
             }
 
-            // Importar partidos válidos
+            // IMPORTAR PARTIDOS FILTRADOS
             for (String matchId : idsValidos) {
                 partidosCol.replaceOne(Filters.eq("_id", matchId), new Document("_id", matchId), upsert);
             }
 
-            // Importar eventos y jugadores, solo eventos de tipo "Shot"
+            // IMPORTAR EVENTOS (opcional, filtrando sólo "Shot")
             ExecutorService pool = Executors.newFixedThreadPool(NUM_THREADS);
             Set<String> seenPlayers = ConcurrentHashMap.newKeySet();
 
@@ -106,13 +123,13 @@ public class ImportadorCompleto {
                             List<InsertOneModel<Document>> bulkEvents = new ArrayList<>();
 
                             for (Evento ev : eventos) {
-                                // Solo guardar eventos tipo "Shot"
                                 if (ev.getType() == null || ev.getType().getName() == null) continue;
                                 if (!"Shot".equals(ev.getType().getName())) continue;
 
                                 Jugador jugador = ev.getPlayer();
                                 if (jugador != null) {
                                     String pid = String.valueOf(jugador.getPlayer_id());
+
                                     if (seenPlayers.add(pid)) {
                                         Document pDoc = Document.parse(gson.toJson(jugador));
                                         pDoc.put("_id", pid);
@@ -147,13 +164,12 @@ public class ImportadorCompleto {
 
             pool.shutdown();
 
-            // Resumen final
             System.out.println("🎯 RESUMEN FINAL:");
             System.out.println(" - Partidos en 'partidos':     " + partidosCol.countDocuments());
             System.out.println(" - Jugadores en 'jugadores':   " + jugadoresCol.countDocuments());
             System.out.println(" - Equipos en 'equipos':       " + equiposCol.countDocuments());
             System.out.println(" - Eventos en 'eventos':       " + eventosCol.countDocuments());
-            System.out.println("🏁 Importación completa de partidos, jugadores, eventos y equipos");
+            System.out.println("🏁 Importación completa");
         }
     }
 }

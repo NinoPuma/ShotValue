@@ -84,10 +84,16 @@ public class EquiposContentController {
 
 
     private void cargarJugadores(String equipoId) {
-        int teamId = Integer.parseInt(equipoId);
-        List<Jugador> jugadores = jugadorService.getByTeamId(teamId);
-        jugadoresOriginales.setAll(jugadores);
-        jugadoresFiltrados.setAll(jugadores);
+        try {
+            int teamId = Integer.parseInt(equipoId);
+            List<Jugador> jugadores = jugadorService.getByTeamId(teamId);
+            jugadoresOriginales.setAll(jugadores);
+            jugadoresFiltrados.setAll(jugadores);
+        } catch (NumberFormatException e) {
+            System.err.println("ID de equipo inválido: " + equipoId);
+            jugadoresOriginales.clear();
+            jugadoresFiltrados.clear();
+        }
     }
 
     private void configurarBuscador() {
