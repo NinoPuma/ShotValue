@@ -1,15 +1,13 @@
-package com.shotvalue.analizador_xgot.front;
+package com.shotvalue.analizador_xgot.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.XYChart;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
-@Component
 public class InformesController {
+
     @FXML private DatePicker fromDatePicker, toDatePicker;
     @FXML private ComboBox<String> reportTypeBox;
     @FXML private TableView<?> reportTable;
@@ -17,7 +15,6 @@ public class InformesController {
 
     @FXML
     public void initialize() {
-        // Inicializa tipos de informe
         reportTypeBox.getItems().addAll(
                 "Resumen de equipos",
                 "Comparativa de jugadores",
@@ -30,20 +27,31 @@ public class InformesController {
 
     @FXML
     private void handleGenerate() {
-        // Lógica: llama a tu servicio/DAO para obtener datos y poblar
-        // reportTable.getItems().setAll(...);
-        // reportChart.getData().setAll(...);
+        // Acá conectarías con una API para obtener los datos según el tipo de informe seleccionado
+        System.out.println("Generar informe: " + reportTypeBox.getValue());
     }
 
     @FXML
-    private void exportPDF() { /* tu implementación */ }
+    private void exportPDF() {
+        // Placeholder para exportación a PDF
+        System.out.println("Exportar PDF");
+    }
 
     @FXML
-    private void exportCSV() { /* tu implementación */ }
+    private void exportCSV() {
+        // Placeholder para exportación a CSV
+        System.out.println("Exportar CSV");
+    }
 
     @FXML
-    private void scheduleDaily() { /* agenda tarea diaria */ }
+    private void scheduleDaily() {
+        // Placeholder para programación diaria
+        System.out.println("Informe diario programado");
+    }
 
     @FXML
-    private void scheduleWeekly() { /* agenda tarea semanal */ }
+    private void scheduleWeekly() {
+        // Placeholder para programación semanal
+        System.out.println("Informe semanal programado");
+    }
 }

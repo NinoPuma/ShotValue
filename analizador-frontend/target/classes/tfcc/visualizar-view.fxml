@@ -7,7 +7,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.shotvalue.analizador_xgot.front.VisualizarController">
+            fx:controller="com.shotvalue.analizador_xgot.controller.VisualizarController">
 
     <center>
         <VBox spacing="20" alignment="TOP_CENTER"

@@ -1,13 +1,13 @@
-package com.shotvalue.analizador_xgot.front;
+package com.shotvalue.analizador_xgot.controller;
 
 import com.shotvalue.analizador_xgot.util.Util;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.collections.*;
-import org.springframework.stereotype.Component;
 
-@Component
 public class AyudaController {
+
     @FXML private TextField faqSearchField;
     @FXML private ListView<String> faqList;
     @FXML private TextField nameField, emailField;
@@ -40,8 +40,10 @@ public class AyudaController {
             new Alert(Alert.AlertType.WARNING, "Por favor completa todos los campos.").showAndWait();
             return;
         }
-        // Aquí llamarías a tu servicio para enviar el mensaje...
+
+        // Aquí llamarías a tu servicio para enviar el mensaje (futuro: POST a backend)
         new Alert(Alert.AlertType.INFORMATION, "Tu mensaje ha sido enviado. ¡Gracias!").showAndWait();
+
         nameField.clear();
         emailField.clear();
         messageArea.clear();

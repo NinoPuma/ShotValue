@@ -1,15 +1,14 @@
-package com.shotvalue.analizador_xgot.front;
+package com.shotvalue.analizador_xgot.controller;
 
-import com.shotvalue.analizador_xgot.config.SpringFXMLLoader;
-import com.shotvalue.analizador_xgot.model.Usuario;
 import com.google.gson.Gson;
+import com.shotvalue.analizador_xgot.model.Usuario;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URI;
@@ -18,7 +17,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 
-@Component
 public class RegistroController {
 
     @FXML private TextField usernameField;
@@ -30,10 +28,6 @@ public class RegistroController {
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final Gson gson = new Gson();
-
-    @Autowired
-    private SpringFXMLLoader springFXMLLoader;
-
 
     @FXML
     private void handleRegister() {
@@ -84,10 +78,24 @@ public class RegistroController {
     }
 
     private void showSuccess(String msg) {
-        javafx.application.Platform.runLater(() -> {
+        Platform.runLater(() -> {
+            System.out.println("✅ showSuccess() ejecutado: " + msg);
             try {
                 Stage stage = (Stage) usernameField.getScene().getWindow();
-                Parent root = springFXMLLoader.load("/tfcc/app-layout.fxml");
+
+                System.out.println("➡️ Cargando app-layout.fxml...");
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/tfcc/app-layout.fxml"));
+                Parent root = loader.load();
+                System.out.println("✅ app-layout.fxml cargado correctamente");
+
+                // Intentamos acceder al controlador
+                Object controller = loader.getController();
+                if (controller instanceof AppController appController) {
+                    System.out.println("✅ AppController instanciado");
+                    appController.initialize(); // opcional si no se llama automáticamente
+                } else {
+                    System.out.println("⚠️ El controlador no es instancia de AppController");
+                }
 
                 Scene scene = new Scene(root);
                 stage.setScene(scene);
@@ -95,15 +103,18 @@ public class RegistroController {
                 stage.centerOnScreen();
                 stage.setMaximized(false);
                 stage.show();
+
+                System.out.println("🎉 Vista app-layout mostrada correctamente");
+
             } catch (IOException e) {
+                System.out.println("❌ Error al cargar app-layout.fxml:");
                 e.printStackTrace();
             }
         });
     }
 
-
     private void showError(String msg) {
-        javafx.application.Platform.runLater(() -> {
+        Platform.runLater(() -> {
             messageLabel.setStyle("-fx-text-fill: red;");
             messageLabel.setText(msg);
         });
@@ -113,7 +124,8 @@ public class RegistroController {
     private void goToLogin() {
         try {
             Stage stage = (Stage) usernameField.getScene().getWindow();
-            Parent root = springFXMLLoader.load("/tfcc/login.fxml");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/tfcc/login.fxml"));
+            Parent root = loader.load();
 
             Scene scene = new Scene(root);
             stage.setScene(scene);
@@ -125,6 +137,4 @@ public class RegistroController {
             e.printStackTrace();
         }
     }
-
-
 }

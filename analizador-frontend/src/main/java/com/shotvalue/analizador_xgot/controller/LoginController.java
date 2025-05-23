@@ -1,8 +1,8 @@
-package com.shotvalue.analizador_xgot.front;
+package com.shotvalue.analizador_xgot.controller;
 
-import com.shotvalue.analizador_xgot.config.SpringFXMLLoader;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
@@ -10,20 +10,15 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import javafx.scene.Node;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-@Component
 public class LoginController {
 
     @FXML
     private TextField usernameField;
     @FXML
     private PasswordField passwordField;
-    @Autowired
-    private SpringFXMLLoader springFXMLLoader;
 
     @FXML
     private void handleLogin(ActionEvent event) {
@@ -33,7 +28,8 @@ public class LoginController {
         if (username.equals("admin") && password.equals("admin")) {
             try {
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                Parent root = springFXMLLoader.load("/tfcc/app-layout.fxml");
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/tfcc/app-layout.fxml"));
+                Parent root = loader.load();
 
                 Scene scene = new Scene(root);
                 stage.setScene(scene);
@@ -52,7 +48,8 @@ public class LoginController {
     @FXML
     private void goToRegister() {
         try {
-            Parent root = springFXMLLoader.load("/tfcc/registro.fxml");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/tfcc/registro.fxml"));
+            Parent root = loader.load();
             Stage stage = (Stage) usernameField.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.centerOnScreen();
@@ -61,7 +58,6 @@ public class LoginController {
         }
     }
 
-    @FXML
     private void showAlert(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Login Fallido");
@@ -69,5 +65,4 @@ public class LoginController {
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
-
 }

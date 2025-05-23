@@ -8,7 +8,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.shotvalue.analizador_xgot.front.AnalisisEventosController"
+            fx:controller="com.shotvalue.analizador_xgot.controller.AnalisisEventosController"
             prefWidth="1200.0" prefHeight="800.0">
 
     <left>
@@ -17,7 +17,7 @@
             <children>
                 <ImageView fitWidth="150" preserveRatio="true">
                     <image>
-                        <Image url="@../../../img/logo.png" />
+                        <Image url="@../img/logo.png" />
                     </image>
                 </ImageView>
                 <Button text="Inicio" prefWidth="160" style="-fx-background-color: transparent; -fx-text-fill: white;" />

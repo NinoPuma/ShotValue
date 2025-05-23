@@ -1,59 +1,41 @@
 package com.shotvalue.analizador_xgot.model;
 
 public class Tiro {
-    private String id;
-    private double x;
-    private double y;
-    private String parteDelCuerpo;
-    private String tipoDeJugada;
-    private String resultado;
-    private double xgot;
-    private boolean porteroNoSeMueve;
-    private boolean brazosExtendidos;
-    private int piesEnSuelo;
-    private double velocidadDisparo;
-    private double anguloDisparo;
-    private boolean presionDefensiva;
-    private boolean manoDominante;
-    private boolean rebote;
-    private boolean dentroDelArea;
-    private int cantidadDefensasCerca;
-    private String zonaDelDisparo;
-    private boolean jugadaElaborada;
-    private boolean tiroConBote;
-    private boolean porteroTapado;
-    private String jugadorId;
-    private String partidoId;
-    private int minuto;
 
-    public Tiro() {
-    }
+    private String id;              // ID interno de MongoDB (opcional)
+    private int jugadorId;          // ID del jugador
+    private String jugadorNombre;   // Nombre del jugador (opcional para mostrar)
+    private int equipoId;           // ID del equipo
+    private String equipoNombre;    // Nombre del equipo (opcional para mostrar)
 
-    public Tiro(String id, double x, double y, String parteDelCuerpo, String tipoDeJugada, String resultado, double xgot, boolean porteroNoSeMueve, boolean brazosExtendidos, int piesEnSuelo, double velocidadDisparo, double anguloDisparo, boolean presionDefensiva, boolean manoDominante, boolean rebote, boolean dentroDelArea, int cantidadDefensasCerca, String zonaDelDisparo, boolean jugadaElaborada, boolean tiroConBote, boolean porteroTapado, String jugadorId, String partidoId, int minuto) {
+    private int minuto;             // Minuto del tiro
+    private String bodyPart;        // Parte del cuerpo
+    private String preAction;       // Acción previa
+    private String result;          // Resultado del tiro
+    private String area;            // Zona del campo
+
+    private double xgot;            // Expected Goals On Target
+    private double x;               // Coordenada X
+    private double y;               // Coordenada Y
+
+    public Tiro() {}
+
+    public Tiro(String id, int jugadorId, String jugadorNombre, int equipoId, String equipoNombre,
+                int minuto, String bodyPart, String preAction, String result, String area,
+                double xgot, double x, double y) {
         this.id = id;
+        this.jugadorId = jugadorId;
+        this.jugadorNombre = jugadorNombre;
+        this.equipoId = equipoId;
+        this.equipoNombre = equipoNombre;
+        this.minuto = minuto;
+        this.bodyPart = bodyPart;
+        this.preAction = preAction;
+        this.result = result;
+        this.area = area;
+        this.xgot = xgot;
         this.x = x;
         this.y = y;
-        this.parteDelCuerpo = parteDelCuerpo;
-        this.tipoDeJugada = tipoDeJugada;
-        this.resultado = resultado;
-        this.xgot = xgot;
-        this.porteroNoSeMueve = porteroNoSeMueve;
-        this.brazosExtendidos = brazosExtendidos;
-        this.piesEnSuelo = piesEnSuelo;
-        this.velocidadDisparo = velocidadDisparo;
-        this.anguloDisparo = anguloDisparo;
-        this.presionDefensiva = presionDefensiva;
-        this.manoDominante = manoDominante;
-        this.rebote = rebote;
-        this.dentroDelArea = dentroDelArea;
-        this.cantidadDefensasCerca = cantidadDefensasCerca;
-        this.zonaDelDisparo = zonaDelDisparo;
-        this.jugadaElaborada = jugadaElaborada;
-        this.tiroConBote = tiroConBote;
-        this.porteroTapado = porteroTapado;
-        this.jugadorId = jugadorId;
-        this.partidoId = partidoId;
-        this.minuto = minuto;
     }
 
     public String getId() {
@@ -62,6 +44,86 @@ public class Tiro {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public int getJugadorId() {
+        return jugadorId;
+    }
+
+    public void setJugadorId(int jugadorId) {
+        this.jugadorId = jugadorId;
+    }
+
+    public String getJugadorNombre() {
+        return jugadorNombre;
+    }
+
+    public void setJugadorNombre(String jugadorNombre) {
+        this.jugadorNombre = jugadorNombre;
+    }
+
+    public int getEquipoId() {
+        return equipoId;
+    }
+
+    public void setEquipoId(int equipoId) {
+        this.equipoId = equipoId;
+    }
+
+    public String getEquipoNombre() {
+        return equipoNombre;
+    }
+
+    public void setEquipoNombre(String equipoNombre) {
+        this.equipoNombre = equipoNombre;
+    }
+
+    public int getMinuto() {
+        return minuto;
+    }
+
+    public void setMinuto(int minuto) {
+        this.minuto = minuto;
+    }
+
+    public String getBodyPart() {
+        return bodyPart;
+    }
+
+    public void setBodyPart(String bodyPart) {
+        this.bodyPart = bodyPart;
+    }
+
+    public String getPreAction() {
+        return preAction;
+    }
+
+    public void setPreAction(String preAction) {
+        this.preAction = preAction;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
+    public double getXgot() {
+        return xgot;
+    }
+
+    public void setXgot(double xgot) {
+        this.xgot = xgot;
     }
 
     public double getX() {
@@ -80,171 +142,8 @@ public class Tiro {
         this.y = y;
     }
 
-    public String getParteDelCuerpo() {
-        return parteDelCuerpo;
-    }
-
-    public void setParteDelCuerpo(String parteDelCuerpo) {
-        this.parteDelCuerpo = parteDelCuerpo;
-    }
-
-    public String getTipoDeJugada() {
-        return tipoDeJugada;
-    }
-
-    public void setTipoDeJugada(String tipoDeJugada) {
-        this.tipoDeJugada = tipoDeJugada;
-    }
-
-    public String getResultado() {
-        return resultado;
-    }
-
-    public void setResultado(String resultado) {
-        this.resultado = resultado;
-    }
-
-    public double getXgot() {
-        return xgot;
-    }
-
-    public void setXgot(double xgot) {
-        this.xgot = xgot;
-    }
-
-    public boolean isPorteroNoSeMueve() {
-        return porteroNoSeMueve;
-    }
-
-    public void setPorteroNoSeMueve(boolean porteroNoSeMueve) {
-        this.porteroNoSeMueve = porteroNoSeMueve;
-    }
-
-    public boolean isBrazosExtendidos() {
-        return brazosExtendidos;
-    }
-
-    public void setBrazosExtendidos(boolean brazosExtendidos) {
-        this.brazosExtendidos = brazosExtendidos;
-    }
-
-    public int getPiesEnSuelo() {
-        return piesEnSuelo;
-    }
-
-    public void setPiesEnSuelo(int piesEnSuelo) {
-        this.piesEnSuelo = piesEnSuelo;
-    }
-
-    public double getVelocidadDisparo() {
-        return velocidadDisparo;
-    }
-
-    public void setVelocidadDisparo(double velocidadDisparo) {
-        this.velocidadDisparo = velocidadDisparo;
-    }
-
-    public double getAnguloDisparo() {
-        return anguloDisparo;
-    }
-
-    public void setAnguloDisparo(double anguloDisparo) {
-        this.anguloDisparo = anguloDisparo;
-    }
-
-    public boolean isPresionDefensiva() {
-        return presionDefensiva;
-    }
-
-    public void setPresionDefensiva(boolean presionDefensiva) {
-        this.presionDefensiva = presionDefensiva;
-    }
-
-    public boolean isManoDominante() {
-        return manoDominante;
-    }
-
-    public void setManoDominante(boolean manoDominante) {
-        this.manoDominante = manoDominante;
-    }
-
-    public boolean isRebote() {
-        return rebote;
-    }
-
-    public void setRebote(boolean rebote) {
-        this.rebote = rebote;
-    }
-
-    public boolean isDentroDelArea() {
-        return dentroDelArea;
-    }
-
-    public void setDentroDelArea(boolean dentroDelArea) {
-        this.dentroDelArea = dentroDelArea;
-    }
-
-    public int getCantidadDefensasCerca() {
-        return cantidadDefensasCerca;
-    }
-
-    public void setCantidadDefensasCerca(int cantidadDefensasCerca) {
-        this.cantidadDefensasCerca = cantidadDefensasCerca;
-    }
-
-    public String getZonaDelDisparo() {
-        return zonaDelDisparo;
-    }
-
-    public void setZonaDelDisparo(String zonaDelDisparo) {
-        this.zonaDelDisparo = zonaDelDisparo;
-    }
-
-    public boolean isJugadaElaborada() {
-        return jugadaElaborada;
-    }
-
-    public void setJugadaElaborada(boolean jugadaElaborada) {
-        this.jugadaElaborada = jugadaElaborada;
-    }
-
-    public boolean isTiroConBote() {
-        return tiroConBote;
-    }
-
-    public void setTiroConBote(boolean tiroConBote) {
-        this.tiroConBote = tiroConBote;
-    }
-
-    public boolean isPorteroTapado() {
-        return porteroTapado;
-    }
-
-    public void setPorteroTapado(boolean porteroTapado) {
-        this.porteroTapado = porteroTapado;
-    }
-
-    public String getJugadorId() {
-        return jugadorId;
-    }
-
-    public void setJugadorId(String jugadorId) {
-        this.jugadorId = jugadorId;
-    }
-
-    public String getPartidoId() {
-        return partidoId;
-    }
-
-    public void setPartidoId(String partidoId) {
-        this.partidoId = partidoId;
-    }
-
-    public int getMinuto() {
-        return minuto;
-    }
-
-    public void setMinuto(int minuto) {
-        this.minuto = minuto;
+    @Override
+    public String toString() {
+        return jugadorNombre + " (" + equipoNombre + ") — min " + minuto + ", xGOT: " + String.format("%.2f", xgot);
     }
 }

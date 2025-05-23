@@ -2,16 +2,16 @@ package com.shotvalue.analizador_xgot.model;
 
 public class Equipo {
     private String id;
-    private int team_id;
-    private String team_name;
+    private int teamId;
+    private String teamName;
 
     public Equipo() {
     }
 
-    public Equipo(String id, int team_id, String team_name) {
+    public Equipo(String id, int teamId, String teamName) {
         this.id = id;
-        this.team_id = team_id;
-        this.team_name = team_name;
+        this.teamId = teamId;
+        this.teamName = teamName;
     }
 
     public String getId() {
@@ -22,19 +22,19 @@ public class Equipo {
         this.id = id;
     }
 
-    public int getTeam_id() {
-        return team_id;
+    public int getTeamId() {
+        return teamId;
     }
 
-    public void setTeam_id(int team_id) {
-        this.team_id = team_id;
+    public void setTeamId(int teamId) {
+        this.teamId = teamId;
     }
 
-    public String getTeam_name() {
-        return team_name;
+    public String getTeamName() {
+        return teamName;
     }
 
-    public void setTeam_name(String team_name) {
-        this.team_name = team_name;
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
     }
 }

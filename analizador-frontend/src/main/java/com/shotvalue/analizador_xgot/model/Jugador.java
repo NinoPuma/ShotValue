@@ -1,26 +1,22 @@
 package com.shotvalue.analizador_xgot.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Field;
-
 public class Jugador {
     private String id;
-    private int player_id;
-    private String player_name;
+    private int playerId;
+    private String playerName;
     private int teamId;
     private String position;
-    private String jersey_number;
+    private String jerseyNumber;
 
-    public Jugador() {
-    }
+    public Jugador() {}
 
-    public Jugador(String id, int player_id, String player_name, int teamId, String position, String jersey_number) {
+    public Jugador(String id, int playerId, String playerName, int teamId, String position, String jerseyNumber) {
         this.id = id;
-        this.player_id = player_id;
-        this.player_name = player_name;
+        this.playerId = playerId;
+        this.playerName = playerName;
         this.teamId = teamId;
         this.position = position;
-        this.jersey_number = jersey_number;
+        this.jerseyNumber = jerseyNumber;
     }
 
     public String getId() {
@@ -31,20 +27,20 @@ public class Jugador {
         this.id = id;
     }
 
-    public int getPlayer_id() {
-        return player_id;
+    public int getPlayerId() {
+        return playerId;
     }
 
-    public void setPlayer_id(int player_id) {
-        this.player_id = player_id;
+    public void setPlayerId(int playerId) {
+        this.playerId = playerId;
     }
 
-    public String getPlayer_name() {
-        return player_name;
+    public String getPlayerName() {
+        return playerName;
     }
 
-    public void setPlayer_name(String player_name) {
-        this.player_name = player_name;
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
     }
 
     public int getTeamId() {
@@ -63,11 +59,11 @@ public class Jugador {
         this.position = position;
     }
 
-    public String getJersey_number() {
-        return jersey_number;
+    public String getJerseyNumber() {
+        return jerseyNumber;
     }
 
-    public void setJersey_number(String jersey_number) {
-        this.jersey_number = jersey_number;
+    public void setJerseyNumber(String jerseyNumber) {
+        this.jerseyNumber = jerseyNumber;
     }
 }

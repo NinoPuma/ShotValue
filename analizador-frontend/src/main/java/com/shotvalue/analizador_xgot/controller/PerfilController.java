@@ -1,4 +1,4 @@
-package com.shotvalue.analizador_xgot.front;
+package com.shotvalue.analizador_xgot.controller;
 
 import org.springframework.stereotype.Component;
 

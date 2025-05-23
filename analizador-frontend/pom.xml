@@ -75,7 +75,7 @@
 
                 <configuration>
                     <!-- Clase principal correcta -->
-                    <mainClass>com.shotvalue.analizador_xgot.front.HelloApplication</mainClass>
+                    <mainClass>com.shotvalue.analizador_xgot.controller.Launcher</mainClass>
                 </configuration>
 
                 <!-- Permite: mvn javafx:run -->

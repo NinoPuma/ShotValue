@@ -1,17 +1,16 @@
-package com.shotvalue.analizador_xgot.front;
+package com.shotvalue.analizador_xgot.controller;
 
-import com.shotvalue.analizador_xgot.config.SpringFXMLLoader;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
+import java.io.IOException;
+
 public class AppController {
 
     @FXML
@@ -22,16 +21,11 @@ public class AppController {
     @FXML
     private Button btnInicio, btnEquipos, btnRegistrar, btnVisualizar, btnInformes, btnPerfil, btnAyuda, btnSalir;
 
-    @Autowired
-    private SpringFXMLLoader springFXMLLoader;
-
     private final String defaultStyle = "-fx-background-color: transparent; -fx-text-fill: white;";
     private final String activeStyle = "-fx-background-color: #0F7F7F; -fx-text-fill: white; -fx-font-weight: bold;";
 
     @FXML
     public void initialize() {
-        System.out.println("🔥 AppController.initialize() ejecutado");
-        System.out.println("springFXMLLoader: " + springFXMLLoader);
         btnInicio.setOnAction(e -> cargarVista("/tfcc/inicio-view.fxml", btnInicio));
         btnEquipos.setOnAction(e -> cargarVista("/tfcc/equipos-controller.fxml", btnEquipos));
         btnRegistrar.setOnAction(e -> cargarVista("/tfcc/registrar-view.fxml", btnRegistrar));
@@ -41,14 +35,13 @@ public class AppController {
         btnAyuda.setOnAction(e -> cargarVista("/tfcc/ayuda-view.fxml", btnAyuda));
         btnSalir.setOnAction(e -> cerrarSesion());
 
-        // Vista inicial
         cargarVista("/tfcc/inicio-view.fxml", btnInicio);
-
     }
 
     private void cargarVista(String rutaFXML, Button botonActivo) {
         try {
-            Parent vista = springFXMLLoader.load(rutaFXML);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
+            Parent vista = loader.load();
             contenidoCentro.getChildren().setAll(vista);
 
             AnchorPane.setTopAnchor(vista, 0.0);
@@ -60,7 +53,7 @@ public class AppController {
             if (botonActivo != null) {
                 botonActivo.setStyle(activeStyle);
             }
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
@@ -78,15 +71,15 @@ public class AppController {
     private void cerrarSesion() {
         try {
             Stage stage = (Stage) contenidoCentro.getScene().getWindow();
-            Parent login = springFXMLLoader.load("/tfcc/login.fxml");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/tfcc/login.fxml"));
+            Parent login = loader.load();
             stage.setScene(new Scene(login));
             stage.setTitle("Login");
             stage.setMaximized(false);
             stage.centerOnScreen();
             stage.show();
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
-
 }
