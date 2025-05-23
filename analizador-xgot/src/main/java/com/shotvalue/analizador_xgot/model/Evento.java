@@ -40,7 +40,9 @@ public class Evento {
 
     // Campos por tipo de evento
     private Pase pass;
-    private Tiro shot;
+    private Shot shot;
+
+
     private Falta foul_committed;
     private Duelo duel;
     private Conduccion carry;
@@ -209,11 +211,11 @@ public class Evento {
         this.pass = pass;
     }
 
-    public Tiro getShot() {
+    public Shot getShot() {
         return shot;
     }
 
-    public void setShot(Tiro shot) {
+    public void setShot(Shot shot) {
         this.shot = shot;
     }
 
