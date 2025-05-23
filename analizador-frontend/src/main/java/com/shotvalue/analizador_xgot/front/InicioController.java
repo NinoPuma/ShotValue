@@ -31,17 +31,6 @@ public class InicioController {
     @Autowired private PartidoService partidoService;
     @Autowired private TiroService tiroService;
 
-    @FXML
-    public void initialize() {
-        System.out.println("InicioController: initialize()");
-        cargarEstadisticas();
-        cargarRecientes();
-        System.out.println("Equipos: " + equipoService.getAll().size());
-        System.out.println("Partidos: " + partidoService.getAll().size());
-        System.out.println("Tiros: " + tiroService.getAll().size());
-
-    }
-
     private void cargarEstadisticas() {
         try {
             equiposCount.setText(String.valueOf(equipoService.getAll().size()));
@@ -76,7 +65,15 @@ public class InicioController {
     }
 
     public InicioController() {
-        System.out.println("InicioController: constructor invocado");
+        System.out.println("⚠ Constructor de InicioController ejecutado");
     }
+
+    @FXML
+    public void initialize() {
+        cargarEstadisticas();
+        cargarRecientes();
+        System.out.println("✅ initialize() de InicioController ejecutado");
+    }
+
 
 }

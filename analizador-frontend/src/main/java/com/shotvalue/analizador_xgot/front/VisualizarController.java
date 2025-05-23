@@ -1,9 +1,11 @@
 package com.shotvalue.analizador_xgot.front;
 
+import com.shotvalue.analizador_xgot.services.TiroService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
@@ -12,34 +14,56 @@ import java.util.ResourceBundle;
 @Component
 public class VisualizarController implements Initializable {
 
+
+    @Autowired
+    private TiroService tiroService;
+
     // FILTROS SUPERIORES
-    @FXML private ComboBox<String> periodBox;
-    @FXML private Spinner<Integer> minuteFromSpinner;
-    @FXML private Spinner<Integer> minuteToSpinner;
-    @FXML private ComboBox<String> teamSideBox;
-    @FXML private TextField playerSearchField;
-    @FXML private ComboBox<String> thirdBox;
-    @FXML private ComboBox<String> laneBox;
+    @FXML
+    private ComboBox<String> periodBox;
+    @FXML
+    private Spinner<Integer> minuteFromSpinner;
+    @FXML
+    private Spinner<Integer> minuteToSpinner;
+    @FXML
+    private ComboBox<String> teamSideBox;
+    @FXML
+    private TextField playerSearchField;
+    @FXML
+    private ComboBox<String> thirdBox;
+    @FXML
+    private ComboBox<String> laneBox;
 
     // OPCIONES DE EVENTO Y VISUALIZACIÓN
-    @FXML private ComboBox<String> eventTypeBox;
-    @FXML private ComboBox<String> visualizationTypeBox;
-    @FXML private Button applyFiltersBtn;
+    @FXML
+    private ComboBox<String> eventTypeBox;
+    @FXML
+    private ComboBox<String> visualizationTypeBox;
+    @FXML
+    private Button applyFiltersBtn;
 
     // FILTROS DEL EVENTO
-    @FXML private ComboBox<String> areaBox;
-    @FXML private ComboBox<String> situationBox;
-    @FXML private ComboBox<String> bodyPartBox;
-    @FXML private ComboBox<String> preActionBox;
-    @FXML private ComboBox<String> resultBox;
-    @FXML private TextField xgField;
-
+    @FXML
+    private ComboBox<String> areaBox;
+    @FXML
+    private ComboBox<String> situationBox;
+    @FXML
+    private ComboBox<String> bodyPartBox;
+    @FXML
+    private ComboBox<String> preActionBox;
+    @FXML
+    private ComboBox<String> resultBox;
+    @FXML
+    private TextField xgField;
 
 
     // IMÁGENES
-    @FXML private ImageView fieldMap;
-    @FXML private ImageView goalView;
-    @FXML private Label legendLabel;
+    @FXML
+    private ImageView fieldMap;
+    @FXML
+    private ImageView goalView;
+    @FXML
+    private Label legendLabel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -99,40 +123,25 @@ public class VisualizarController implements Initializable {
     }
 
     private void aplicarFiltros() {
-        String periodo = periodBox.getValue();
-        String localVisitante = teamSideBox.getValue();
-        String jugador = playerSearchField.getText().trim();
-        String tercio = thirdBox.getValue();
-        String carril = laneBox.getValue();
-
         int minutoDesde = minuteFromSpinner.getValue();
         int minutoHasta = minuteToSpinner.getValue();
 
-        String tipoEvento = eventTypeBox.getValue();
-        String tipoVisualizacion = visualizationTypeBox.getValue();
-
-        String area = areaBox.getValue();
-        String situacion = situationBox.getValue();
         String parteCuerpo = bodyPartBox.getValue();
-        String accionPrevia = preActionBox.getValue();
+        String tipoJugada = preActionBox.getValue();
         String resultado = resultBox.getValue();
-        String npxg = xgField.getText().trim();
+        String zona = areaBox.getValue();
+        String xgotStr = xgField.getText().trim();
 
+        var tiros = tiroService.filtrarTiros(
+                minutoDesde, minutoHasta,
+                parteCuerpo, tipoJugada,
+                resultado, zona, xgotStr
+        );
 
-        System.out.println("Filtros aplicados:");
-        System.out.println("- Período: " + periodo);
-        System.out.println("- Minutos: " + minutoDesde + " a " + minutoHasta);
-        System.out.println("- Local/Visitante: " + localVisitante);
-        System.out.println("- Jugador: " + jugador);
-        System.out.println("- Tercio: " + tercio);
-        System.out.println("- Carril: " + carril);
-        System.out.println("- Evento: " + tipoEvento);
-        System.out.println("- Visualización: " + tipoVisualizacion);
-        System.out.println("- Área: " + area);
-        System.out.println("- Situación: " + situacion);
-        System.out.println("- Parte del cuerpo: " + parteCuerpo);
-        System.out.println("- Acción previa: " + accionPrevia);
-        System.out.println("- Resultado: " + resultado);
-        System.out.println("- NPxG: " + npxg);
+        System.out.println("🔎 Tiros encontrados: " + tiros.size());
+        for (var t : tiros) {
+            System.out.println("- " + t);
+        }
     }
+
 }

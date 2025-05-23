@@ -30,6 +30,8 @@ public class AppController {
 
     @FXML
     public void initialize() {
+        System.out.println("🔥 AppController.initialize() ejecutado");
+        System.out.println("springFXMLLoader: " + springFXMLLoader);
         btnInicio.setOnAction(e -> cargarVista("/tfcc/inicio-view.fxml", btnInicio));
         btnEquipos.setOnAction(e -> cargarVista("/tfcc/equipos-controller.fxml", btnEquipos));
         btnRegistrar.setOnAction(e -> cargarVista("/tfcc/registrar-view.fxml", btnRegistrar));
@@ -41,6 +43,7 @@ public class AppController {
 
         // Vista inicial
         cargarVista("/tfcc/inicio-view.fxml", btnInicio);
+
     }
 
     private void cargarVista(String rutaFXML, Button botonActivo) {

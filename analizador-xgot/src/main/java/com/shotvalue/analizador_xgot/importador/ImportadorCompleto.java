@@ -7,6 +7,7 @@ import com.mongodb.client.model.*;
 import com.shotvalue.analizador_xgot.model.Evento;
 import com.shotvalue.analizador_xgot.model.Jugador;
 import com.shotvalue.analizador_xgot.model.PlayPattern;
+import com.shotvalue.analizador_xgot.model.Tiro;
 import com.shotvalue.analizador_xgot.util.HeightDeserializer;
 import com.shotvalue.analizador_xgot.util.PartidosFiltradosUtil;
 import com.shotvalue.analizador_xgot.util.PlayPatternDeserializer;
@@ -42,10 +43,10 @@ public class ImportadorCompleto {
             MongoCollection<Document> jugadoresCol = db.getCollection("jugadores");
             MongoCollection<Document> eventosCol = db.getCollection("eventos");
             MongoCollection<Document> equiposCol = db.getCollection("equipos");
+            MongoCollection<Document> tirosCol = db.getCollection("tiros");
 
             ReplaceOptions upsert = new ReplaceOptions().upsert(true);
 
-            // IMPORTAR EQUIPOS Y JUGADORES DESDE LINEUPS
             Set<Integer> equiposInsertados = new HashSet<>();
             Set<Integer> jugadoresInsertados = new HashSet<>();
 
@@ -62,7 +63,6 @@ public class ImportadorCompleto {
                         int teamId = equipoObj.get("team_id").getAsInt();
                         String teamName = equipoObj.get("team_name").getAsString();
 
-                        // Guardar equipo
                         if (equiposInsertados.add(teamId)) {
                             Document equipoDoc = new Document("_id", teamId)
                                     .append("team_id", teamId)
@@ -71,7 +71,6 @@ public class ImportadorCompleto {
                             System.out.println("🟦 Equipo insertado: " + teamName);
                         }
 
-                        // Guardar jugadores
                         JsonArray jugadoresJson = equipoObj.getAsJsonArray("lineup");
                         for (JsonElement jugadorElem : jugadoresJson) {
                             JsonObject jugadorObj = jugadorElem.getAsJsonObject();
@@ -99,12 +98,10 @@ public class ImportadorCompleto {
                 }
             }
 
-            // IMPORTAR PARTIDOS FILTRADOS
             for (String matchId : idsValidos) {
                 partidosCol.replaceOne(Filters.eq("_id", matchId), new Document("_id", matchId), upsert);
             }
 
-            // IMPORTAR EVENTOS (opcional, filtrando sólo "Shot")
             ExecutorService pool = Executors.newFixedThreadPool(NUM_THREADS);
             Set<String> seenPlayers = ConcurrentHashMap.newKeySet();
 
@@ -121,6 +118,7 @@ public class ImportadorCompleto {
                             Type listType = new TypeToken<List<Evento>>() {}.getType();
                             List<Evento> eventos = gson.fromJson(reader, listType);
                             List<InsertOneModel<Document>> bulkEvents = new ArrayList<>();
+                            List<InsertOneModel<Document>> tirosList = new ArrayList<>();
 
                             for (Evento ev : eventos) {
                                 if (ev.getType() == null || ev.getType().getName() == null) continue;
@@ -140,12 +138,37 @@ public class ImportadorCompleto {
                                 ev.setMatchId(matchId);
                                 Document eDoc = Document.parse(gson.toJson(ev));
                                 bulkEvents.add(new InsertOneModel<>(eDoc));
+
+                                if (ev.getShot() == null || ev.getLocation() == null || ev.getLocation().size() < 2) continue;
+
+                                Tiro tiro = new Tiro();
+                                tiro.setX(ev.getLocation().get(0));
+                                tiro.setY(ev.getLocation().get(1));
+
+                                String resultado = ev.getShot().getOutcome() != null ? ev.getShot().getOutcome().getName() : "Desconocido";
+                                String parte = ev.getShot().getBodyPart() != null ? ev.getShot().getBodyPart().getName() : "Desconocida";
+                                String tecnica = ev.getShot().getTechnique() != null ? ev.getShot().getTechnique().getName() : "Desconocida";
+                                String zona = ev.getShot().getZone() != null ? ev.getShot().getZone().getName() : "Sin zona";
+                                double xgot = ev.getShot().getStatsbombXg();
+
+                                tiro.setResultado(resultado);
+                                tiro.setParteDelCuerpo(parte);
+                                tiro.setTipoDeJugada(tecnica);
+                                tiro.setZonaDelDisparo(zona);
+                                tiro.setXgot(xgot);
+                                tiro.setMinuto(ev.getMinute());
+                                tiro.setJugadorId(String.valueOf(ev.getPlayer().getPlayer_id()));
+                                tiro.setPartidoId(matchId);
+
+                                Document tiroDoc = Document.parse(new Gson().toJson(tiro));
+                                tirosList.add(new InsertOneModel<>(tiroDoc));
                             }
 
-                            if (!bulkEvents.isEmpty()) {
-                                eventosCol.bulkWrite(bulkEvents);
-                                System.out.println("✅ " + bulkEvents.size() + " eventos importados de " + matchId);
-                            }
+                            if (!bulkEvents.isEmpty()) eventosCol.bulkWrite(bulkEvents);
+                            if (!tirosList.isEmpty()) tirosCol.bulkWrite(tirosList);
+
+                            System.out.println("✅ " + bulkEvents.size() + " eventos y " + tirosList.size() + " tiros importados de " + matchId);
+
                         } catch (Exception e) {
                             System.err.println("❌ Error procesando " + filename + ": " + e.getMessage());
                         }
@@ -169,6 +192,7 @@ public class ImportadorCompleto {
             System.out.println(" - Jugadores en 'jugadores':   " + jugadoresCol.countDocuments());
             System.out.println(" - Equipos en 'equipos':       " + equiposCol.countDocuments());
             System.out.println(" - Eventos en 'eventos':       " + eventosCol.countDocuments());
+            System.out.println(" - Tiros en 'tiros':           " + tirosCol.countDocuments());
             System.out.println("🏁 Importación completa");
         }
     }
