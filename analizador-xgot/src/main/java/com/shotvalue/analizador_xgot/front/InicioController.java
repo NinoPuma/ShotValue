@@ -1,47 +1,77 @@
 package com.shotvalue.analizador_xgot.front;
 
-import com.shotvalue.analizador_xgot.config.SpringFXMLLoader;
+import com.shotvalue.analizador_xgot.model.Jugador;
+import com.shotvalue.analizador_xgot.model.Tiro;
+import com.shotvalue.analizador_xgot.services.EquipoService;
+import com.shotvalue.analizador_xgot.services.JugadorService;
+import com.shotvalue.analizador_xgot.services.PartidoService;
+import com.shotvalue.analizador_xgot.services.TiroService;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import java.io.IOException;
+
+import jakarta.annotation.PostConstruct;
+
+import java.util.List;
+import java.util.Optional;
 
 @Component
 public class InicioController {
 
-    @FXML
-    private AnchorPane contenidoCentro;
+    @FXML private Label equiposCount;
+    @FXML private Label partidosCount;
+    @FXML private Label shotsCount;
+    @FXML private Label xgTotal;
+    @FXML private ListView<String> recentsList;
 
-    @Autowired
-    private SpringFXMLLoader springFXMLLoader;
+    @Autowired private JugadorService jugadorService;
+    @Autowired private EquipoService equipoService;
+    @Autowired private PartidoService partidoService;
+    @Autowired private TiroService tiroService;
 
     @FXML
     public void initialize() {
-        mostrarInicio(); // Carga por defecto
+        System.out.println("InicioController: initialize()");
+        cargarEstadisticas();
+        cargarRecientes();
     }
 
-    @FXML
-    public void mostrarInicio() {
-        cargarVista("/tfcc/inicio-view.fxml"); // creala si querés una vista inicial
-    }
-
-    @FXML
-    public void mostrarEquipos() {
-        cargarVista("/tfcc/equipos.fxml");
-    }
-
-    private void cargarVista(String ruta) {
+    private void cargarEstadisticas() {
         try {
-            Parent vista = springFXMLLoader.load(ruta);
-            contenidoCentro.getChildren().setAll(vista);
-            AnchorPane.setTopAnchor(vista, 0.0);
-            AnchorPane.setBottomAnchor(vista, 0.0);
-            AnchorPane.setLeftAnchor(vista, 0.0);
-            AnchorPane.setRightAnchor(vista, 0.0);
-        } catch (IOException e) {
+            equiposCount.setText(String.valueOf(equipoService.getAll().size()));
+            partidosCount.setText(String.valueOf(partidoService.getAll().size()));
+            shotsCount.setText(String.valueOf(tiroService.getAll().size()));
+            xgTotal.setText(String.format("%.2f", tiroService.getAll().stream()
+                    .mapToDouble(t -> t.getXgot()).sum()));
+        } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void cargarRecientes() {
+        List<Tiro> tiros = tiroService.getAll();
+        int limite = Math.min(5, tiros.size());
+
+        for (int i = 0; i < limite; i++) {
+            Tiro tiro = tiros.get(i);
+            String nombreJugador;
+
+            Optional<Jugador> jugadorOpt = jugadorService.getById(tiro.getJugadorId());
+            if (jugadorOpt.isPresent()) {
+                Jugador jugador = jugadorOpt.get();
+                nombreJugador = jugador.getPlayer_name();
+            } else {
+                nombreJugador = "Desconocido";
+            }
+
+            String descripcion = nombreJugador + " — min " + tiro.getMinuto();
+            recentsList.getItems().add(descripcion);
+        }
+    }
+
+    public InicioController() {
+        System.out.println("InicioController: constructor invocado");
     }
 }

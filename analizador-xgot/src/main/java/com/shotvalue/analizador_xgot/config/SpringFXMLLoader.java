@@ -30,4 +30,5 @@ public class SpringFXMLLoader {
         loader.setControllerFactory(context::getBean);
         return loader.load();
     }
+
 }

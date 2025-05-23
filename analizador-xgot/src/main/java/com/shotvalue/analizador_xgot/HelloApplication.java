@@ -20,7 +20,7 @@ public class HelloApplication extends Application {
     @Override
     public void init() {
         springContext = new SpringApplicationBuilder(HelloApplication.class).run();
-        fxmlLoader = springContext.getBean(SpringFXMLLoader.class); // 💡 OBTENERLO DESDE SPRING
+        fxmlLoader = springContext.getBean(SpringFXMLLoader.class); //
     }
 
     @Override
@@ -30,7 +30,7 @@ public class HelloApplication extends Application {
         stage.setScene(scene);
         stage.setTitle("ShotValue");
         stage.centerOnScreen();
-        stage.setMaximized(false); // o true si querés fullscreen
+        stage.setMaximized(false);
         stage.show();
     }
 
