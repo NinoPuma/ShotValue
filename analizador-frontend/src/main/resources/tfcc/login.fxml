@@ -7,13 +7,15 @@
 
 <StackPane xmlns="http://javafx.com/javafx/23.0.1"
            xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.shotvalue.front.LoginController"
+           fx:controller="com.shotvalue.analizador_xgot.front.LoginController"
            style="-fx-background-color: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);">
 
    <!-- Este VBox es el formulario blanco -->
-   <VBox alignment="CENTER" spacing="12.0" prefHeight="500.0" prefWidth="600.0"
+   <VBox alignment="CENTER" spacing="12.0"
+         prefHeight="500.0" prefWidth="600.0"
+         maxWidth="700.0" maxHeight="600.0"
          style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 30;
-                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0.5, 0, 0);">
+             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0.5, 0, 0);">
 
       <children>
          <ImageView fx:id="logoImage" fitWidth="150" pickOnBounds="true" preserveRatio="true">
@@ -26,14 +28,15 @@
 
          <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Iniciar Sesión" />
          <Label text="Usuario:" />
-         <TextField fx:id="usernameField" promptText="Introduce tu usuario..." />
+         <TextField fx:id="usernameField" promptText="Introduce tu usuario..." maxWidth="300"/>
 
          <Label text="Contraseña:" />
-         <PasswordField fx:id="passwordField" promptText="Introduce tu contraseña..." />
+         <PasswordField fx:id="passwordField" promptText="Introduce tu contraseña..." maxWidth="300"/>
 
          <Button mnemonicParsing="false" onAction="#handleLogin" text="Entrar"
+                 maxWidth="150"
                  style="-fx-background-color: #0078D7; -fx-text-fill: white;
-                           -fx-font-weight: bold; -fx-background-radius: 6;" />
+                     -fx-font-weight: bold; -fx-background-radius: 6;" />
 
          <Label fx:id="messageLabel" textFill="red" style="-fx-font-size: 12px;" />
 
@@ -45,4 +48,5 @@
          <Insets bottom="40.0" left="40.0" right="40.0" top="30.0" />
       </padding>
    </VBox>
+
 </StackPane>

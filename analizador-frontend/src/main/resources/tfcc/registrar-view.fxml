@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns="http://javafx.com/javafx/23.0.1"
+           xmlns:fx="http://javafx.com/fxml/1"
+           style="-fx-background-color: #2E2E2E; -fx-padding: 30;">
+
+    <GridPane fx:id="mainGrid"
+              hgap="20" vgap="20"
+              maxWidth="1200"
+              style="-fx-background-color: transparent;">
+
+        <columnConstraints>
+            <ColumnConstraints percentWidth="50"/>
+            <ColumnConstraints percentWidth="50"/>
+        </columnConstraints>
+
+        <rowConstraints>
+            <RowConstraints percentHeight="50"/>
+            <RowConstraints percentHeight="50"/>
+        </rowConstraints>
+
+        <!-- Video -->
+        <VBox spacing="10" GridPane.rowIndex="0" GridPane.columnIndex="0"
+              style="-fx-background-color: #1E1E1E; -fx-padding: 15; -fx-border-color: #444; -fx-border-width: 1;">
+            <children>
+                <Label text="Vídeo" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
+                <ImageView fitWidth="400" fitHeight="220" preserveRatio="true">
+                    <image>
+                        <Image url="@../img/video_placeholder.png" />
+                    </image>
+                </ImageView>
+            </children>
+        </VBox>
+
+        <!-- Opciones -->
+        <VBox spacing="10" GridPane.rowIndex="0" GridPane.columnIndex="1"
+              style="-fx-background-color: #1E1E1E; -fx-padding: 15; -fx-border-color: #444; -fx-border-width: 1;">
+            <children>
+                <Label text="Opciones del evento" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
+                <HBox spacing="10">
+                    <children>
+                        <Label text="Local/Visitante" textFill="white"/>
+                        <ToggleButton text="Home"/>
+                        <ToggleButton text="Away"/>
+                    </children>
+                </HBox>
+                <HBox spacing="10">
+                    <children>
+                        <Label text="Tipo de evento" textFill="white"/>
+                        <ToggleButton text="Shot"/>
+                        <ToggleButton text="Pass"/>
+                        <ToggleButton text="Cross"/>
+                    </children>
+                </HBox>
+                <HBox spacing="10">
+                    <children>
+                        <Label text="Resultado" textFill="white"/>
+                        <ToggleButton text="Goal"/>
+                        <ToggleButton text="Saved"/>
+                        <ToggleButton text="Blocked"/>
+                    </children>
+                </HBox>
+                <CheckBox text="Segundo disparo" textFill="white"/>
+                <CheckBox text="Bloqueo probable" textFill="white"/>
+            </children>
+        </VBox>
+
+        <!-- Coordenadas -->
+        <VBox spacing="10" GridPane.rowIndex="1" GridPane.columnIndex="0"
+              style="-fx-background-color: #1E1E1E; -fx-padding: 15; -fx-border-color: #444; -fx-border-width: 1;">
+            <children>
+                <Label text="Coordenadas" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
+                <ImageView fitWidth="400" fitHeight="200" preserveRatio="true">
+                    <image>
+                        <Image url="@../img/field_placeholder.png" />
+                    </image>
+                </ImageView>
+            </children>
+        </VBox>
+
+        <!-- Jugadores -->
+        <VBox spacing="10" GridPane.rowIndex="1" GridPane.columnIndex="1"
+              style="-fx-background-color: #1E1E1E; -fx-padding: 15; -fx-border-color: #444; -fx-border-width: 1;">
+            <children>
+                <Label text="Jugadores implicados" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
+                <HBox spacing="10">
+                    <children>
+                        <Label text="Jugador:" textFill="white"/>
+                        <ComboBox fx:id="playerBox"/>
+                    </children>
+                </HBox>
+                <HBox spacing="10">
+                    <children>
+                        <Label text="Asistencia:" textFill="white"/>
+                        <ComboBox fx:id="assistBox"/>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </GridPane>
+</StackPane>

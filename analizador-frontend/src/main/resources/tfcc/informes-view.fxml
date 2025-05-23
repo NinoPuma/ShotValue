@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
 <?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
 <BorderPane xmlns="http://javafx.com/javafx/21.0.7"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.shotvalue.analizador_xgot.front.InformesController"
-            styleClass="content-pane">
+            styleClass="content-pane"
+            style="-fx-background-color: #F4F4F4;">
 
     <!-- FILTROS -->
     <top>
-        <HBox spacing="10" style="-fx-padding: 15; -fx-background-color: #1F1F1F;">
+        <HBox spacing="10" alignment="CENTER_LEFT"
+              style="-fx-padding: 15; -fx-background-color: #1F1F1F;">
             <children>
                 <Label text="Desde:" styleClass="label-white"/>
                 <DatePicker fx:id="fromDatePicker"/>
@@ -25,40 +27,42 @@
 
     <!-- RESULTADOS -->
     <center>
-        <TabPane fx:id="reportsTab" style="-fx-padding: 15;">
-            <tabs>
-                <Tab text="Tabla">
-                    <TableView fx:id="reportTable" prefHeight="400">
-                        <!-- define tus columnas aquí -->
-                    </TableView>
-                </Tab>
-                <Tab text="Gráfica">
-                    <VBox spacing="10">
-                        <LineChart fx:id="reportChart"
-                                   title="Evolución"
-                                   legendVisible="true">
-                            <xAxis>
-                                <CategoryAxis label="Fecha"/>
-                            </xAxis>
-                            <yAxis>
-                                <NumberAxis label="Valor"/>
-                            </yAxis>
-                        </LineChart>
-                    </VBox>
-                </Tab>
-                <Tab text="Exportar">
-                    <HBox spacing="20" alignment="CENTER" style="-fx-padding: 20;">
-                        <Button text="Exportar a PDF" onAction="#exportPDF" styleClass="menu-button"/>
-                        <Button text="Exportar a CSV" onAction="#exportCSV" styleClass="menu-button"/>
-                        <MenuButton text="Programar">
-                            <items>
-                                <MenuItem text="Diario" onAction="#scheduleDaily"/>
-                                <MenuItem text="Semanal" onAction="#scheduleWeekly"/>
-                            </items>
-                        </MenuButton>
-                    </HBox>
-                </Tab>
-            </tabs>
-        </TabPane>
+        <VBox spacing="20" alignment="TOP_CENTER" style="-fx-padding: 20;">
+            <TabPane fx:id="reportsTab" maxWidth="1200">
+                <tabs>
+                    <Tab text="Tabla">
+                        <TableView fx:id="reportTable" prefHeight="400">
+                            <!-- Tus columnas van aquí -->
+                        </TableView>
+                    </Tab>
+                    <Tab text="Gráfica">
+                        <VBox spacing="10" style="-fx-padding: 15;">
+                            <LineChart fx:id="reportChart"
+                                       title="Evolución"
+                                       legendVisible="true">
+                                <xAxis>
+                                    <CategoryAxis label="Fecha"/>
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis label="Valor"/>
+                                </yAxis>
+                            </LineChart>
+                        </VBox>
+                    </Tab>
+                    <Tab text="Exportar">
+                        <HBox spacing="20" alignment="CENTER" style="-fx-padding: 30;">
+                            <Button text="Exportar a PDF" onAction="#exportPDF" styleClass="menu-button"/>
+                            <Button text="Exportar a CSV" onAction="#exportCSV" styleClass="menu-button"/>
+                            <MenuButton text="Programar">
+                                <items>
+                                    <MenuItem text="Diario" onAction="#scheduleDaily"/>
+                                    <MenuItem text="Semanal" onAction="#scheduleWeekly"/>
+                                </items>
+                            </MenuButton>
+                        </HBox>
+                    </Tab>
+                </tabs>
+            </TabPane>
+        </VBox>
     </center>
 </BorderPane>

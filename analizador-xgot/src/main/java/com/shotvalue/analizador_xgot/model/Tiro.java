@@ -29,6 +29,7 @@ public class Tiro {
     private boolean porteroTapado;
     private String jugadorId;
     private String partidoId;
+    private int minuto;
 
     public Tiro() {
     }
@@ -225,6 +226,13 @@ public class Tiro {
 
     public void setPartidoId(String partidoId) {
         this.partidoId = partidoId;
+    }
+
+    public int getMinuto() {
+        return minuto;
+    }
+    public void setMinuto(int minuto) {
+        this.minuto = minuto;
     }
 
     @Override

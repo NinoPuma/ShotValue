@@ -3,9 +3,12 @@ package com.shotvalue.analizador_xgot.front;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
+@Component
 public class InformesController {
     @FXML private DatePicker fromDatePicker, toDatePicker;
     @FXML private ComboBox<String> reportTypeBox;
