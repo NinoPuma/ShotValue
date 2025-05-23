@@ -61,7 +61,8 @@ public class EquiposContentController {
 
     private void cargarEquipos() {
         equiposDisponibles = equipoService.getAll();
-
+        System.out.println("🟢 Equipos cargados: " + equiposDisponibles.size());
+        equiposDisponibles.forEach(eq -> System.out.println(" - " + eq.getTeam_name()));
 
         equipoSelector.setItems(FXCollections.observableArrayList(
                 equiposDisponibles.stream().map(Equipo::getTeam_name).collect(Collectors.toList())
@@ -81,11 +82,18 @@ public class EquiposContentController {
         });
     }
 
+
     private void cargarJugadores(String equipoId) {
-        int teamId = Integer.parseInt(equipoId);
-        List<Jugador> jugadores = jugadorService.getByTeamId(teamId);
-        jugadoresOriginales.setAll(jugadores);
-        jugadoresFiltrados.setAll(jugadores);
+        try {
+            int teamId = Integer.parseInt(equipoId);
+            List<Jugador> jugadores = jugadorService.getByTeamId(teamId);
+            jugadoresOriginales.setAll(jugadores);
+            jugadoresFiltrados.setAll(jugadores);
+        } catch (NumberFormatException e) {
+            System.err.println("ID de equipo inválido: " + equipoId);
+            jugadoresOriginales.clear();
+            jugadoresFiltrados.clear();
+        }
     }
 
     private void configurarBuscador() {

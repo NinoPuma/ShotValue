@@ -36,6 +36,10 @@ public class InicioController {
         System.out.println("InicioController: initialize()");
         cargarEstadisticas();
         cargarRecientes();
+        System.out.println("Equipos: " + equipoService.getAll().size());
+        System.out.println("Partidos: " + partidoService.getAll().size());
+        System.out.println("Tiros: " + tiroService.getAll().size());
+
     }
 
     private void cargarEstadisticas() {
