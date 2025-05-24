@@ -29,6 +29,11 @@ public class PartidoController {
         return service.getById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/count")
+    public long contarPartidos() {
+        return service.count();
+    }
+
     @DeleteMapping("/{id}")
     public void delete(@PathVariable String id) {
         service.delete(id);

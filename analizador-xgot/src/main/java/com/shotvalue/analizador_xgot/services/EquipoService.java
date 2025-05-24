@@ -32,4 +32,9 @@ public class EquipoService {
     public void delete(String id) {
         repo.deleteById(id);
     }
+
+    public long count() {
+        return repo.count();
+    }
+
 }

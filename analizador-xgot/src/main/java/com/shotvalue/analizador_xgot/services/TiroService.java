@@ -37,7 +37,7 @@ public class TiroService {
             int minutoDesde, int minutoHasta,
             String parteDelCuerpo, String tipoDeJugada,
             String resultado, String zonaDelDisparo,
-            String xgotStr
+            String xgotStr, String nombreJugador
     ) {
         double xgotFiltro = -1.0;
 
@@ -46,11 +46,11 @@ public class TiroService {
                 xgotFiltro = Double.parseDouble(xgotStr);
             } catch (NumberFormatException e) {
                 System.err.println("⚠️ Error al convertir xGOT a double: " + xgotStr);
-                xgotFiltro = -1.0;
             }
         }
 
-        double finalXgotFiltro = xgotFiltro;  // ← esto es clave: lo usamos en lambda
+        double finalXgotFiltro = xgotFiltro;
+        String nombre = nombreJugador != null ? nombreJugador.toLowerCase() : "";
 
         return repo.findAll().stream()
                 .filter(t -> t.getMinuto() >= minutoDesde && t.getMinuto() <= minutoHasta)
@@ -59,6 +59,8 @@ public class TiroService {
                 .filter(t -> resultado.equals("Todos los resultados") || t.getResultado().equalsIgnoreCase(resultado))
                 .filter(t -> zonaDelDisparo.equals("Cualquier zona") || t.getZonaDelDisparo().equalsIgnoreCase(zonaDelDisparo))
                 .filter(t -> finalXgotFiltro < 0 || t.getXgot() >= finalXgotFiltro)
+                .filter(t -> nombre.isEmpty() || (t.getJugadorNombre() != null && t.getJugadorNombre().toLowerCase().contains(nombre)))
                 .collect(Collectors.toList());
     }
+
 }

@@ -1,20 +1,38 @@
 package com.shotvalue.analizador_xgot.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Jugador {
+
+    @SerializedName("mongoId")
     private String id;
+
+    @SerializedName("player_id")
     private int playerId;
+
+    @SerializedName("player_name")
     private String playerName;
+
+    @SerializedName("teamId")
     private int teamId;
+
+    @SerializedName("teamName")
+    private String teamName;
+
     private String position;
+
+    @SerializedName("jersey_number")
     private String jerseyNumber;
 
-    public Jugador() {}
+    public Jugador() {
+    }
 
-    public Jugador(String id, int playerId, String playerName, int teamId, String position, String jerseyNumber) {
+    public Jugador(String id, int playerId, String playerName, int teamId, String teamName, String position, String jerseyNumber) {
         this.id = id;
         this.playerId = playerId;
         this.playerName = playerName;
         this.teamId = teamId;
+        this.teamName = teamName;
         this.position = position;
         this.jerseyNumber = jerseyNumber;
     }
@@ -49,6 +67,14 @@ public class Jugador {
 
     public void setTeamId(int teamId) {
         this.teamId = teamId;
+    }
+
+    public String getTeamName() {
+        return teamName;
+    }
+
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
     }
 
     public String getPosition() {

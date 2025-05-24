@@ -1,8 +1,14 @@
 package com.shotvalue.analizador_xgot.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Equipo {
     private String id;
+
+    @SerializedName("team_id")
     private int teamId;
+
+    @SerializedName("team_name")
     private String teamName;
 
     public Equipo() {

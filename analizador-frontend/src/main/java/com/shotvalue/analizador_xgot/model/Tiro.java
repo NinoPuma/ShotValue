@@ -8,6 +8,9 @@ public class Tiro {
     private int equipoId;           // ID del equipo
     private String equipoNombre;    // Nombre del equipo (opcional para mostrar)
 
+    private double destinoX;        // Coordenada X del tiro
+    private double destinoY;        // Coordenada Y del tiro
+    private String resultado;       // Resultado del tiro (ej. "gol", "parada", etc.)
     private int minuto;             // Minuto del tiro
     private String bodyPart;        // Parte del cuerpo
     private String preAction;       // Acción previa
@@ -18,7 +21,8 @@ public class Tiro {
     private double x;               // Coordenada X
     private double y;               // Coordenada Y
 
-    public Tiro() {}
+    public Tiro() {
+    }
 
     public Tiro(String id, int jugadorId, String jugadorNombre, int equipoId, String equipoNombre,
                 int minuto, String bodyPart, String preAction, String result, String area,
@@ -58,6 +62,18 @@ public class Tiro {
         return jugadorNombre;
     }
 
+    public Double getDestinoX() {
+        return destinoX;
+    }
+
+    public Double getDestinoY() {
+        return destinoY;
+    }
+
+    public String getResultado() {
+        return resultado;
+    }
+
     public void setJugadorNombre(String jugadorNombre) {
         this.jugadorNombre = jugadorNombre;
     }
@@ -93,6 +109,7 @@ public class Tiro {
     public void setBodyPart(String bodyPart) {
         this.bodyPart = bodyPart;
     }
+
 
     public String getPreAction() {
         return preAction;
