@@ -1,7 +1,9 @@
 package com.shotvalue.analizador_xgot.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.shotvalue.analizador_xgot.model.Usuario;
+import com.shotvalue.analizador_xgot.util.LocalDateAdapter;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,45 +18,92 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 
 public class RegistroController {
 
-    @FXML private TextField usernameField;
-    @FXML private PasswordField passwordField;
-    @FXML private PasswordField repeatPasswordField;
-    @FXML private TextField emailField;
-    @FXML private CheckBox termsCheckBox;
-    @FXML private Label messageLabel;
+    @FXML
+    private TextField usernameField;
+    @FXML
+    private TextField nombreCompletoField;
+    @FXML
+    private TextField emailField;
+    @FXML
+    private ComboBox<String> rolComboBox;
+    @FXML
+    private TextField telefonoField;
+    @FXML
+    private DatePicker fechaNacimientoPicker;
+    @FXML
+    private PasswordField passwordField;
+    @FXML
+    private PasswordField repeatPasswordField;
+    @FXML
+    private CheckBox termsCheckBox;
+    @FXML
+    private Label messageLabel;
+    @FXML
+    private Button registrarBtn;
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
-    private final Gson gson = new Gson();
+    private final Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+            .create();
+
+
+    @FXML
+    public void initialize() {
+        registrarBtn.setOnAction(e -> handleRegister());
+    }
 
     @FXML
     private void handleRegister() {
-        String username = usernameField.getText();
-        String email = emailField.getText();
+        String username = usernameField.getText().trim();
+        String email = emailField.getText().trim();
         String password = passwordField.getText();
         String repeatPassword = repeatPasswordField.getText();
         boolean acceptedTerms = termsCheckBox.isSelected();
 
+        // Validación campos vacíos
         if (username.isEmpty() || email.isEmpty() || password.isEmpty() || repeatPassword.isEmpty()) {
-            messageLabel.setText("Por favor, rellena todos los campos.");
+            showError("Todos los campos son obligatorios.");
+            return;
+        }
+
+        // Validación usuario
+        if (username.length() < 3 || username.contains(" ")) {
+            showError("El nombre de usuario debe tener al menos 3 caracteres y sin espacios.");
+            return;
+        }
+
+        // Validación email simple
+        if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+            showError("El correo electrónico no es válido.");
+            return;
+        }
+
+        // Validación contraseña
+        if (password.length() < 6) {
+            showError("La contraseña debe tener al menos 6 caracteres.");
             return;
         }
 
         if (!password.equals(repeatPassword)) {
-            messageLabel.setText("Las contraseñas no coinciden.");
+            showError("Las contraseñas no coinciden.");
             return;
         }
 
+        // Validación términos
         if (!acceptedTerms) {
-            messageLabel.setText("Debes aceptar los términos y condiciones.");
+            showError("Debes aceptar los términos y condiciones.");
             return;
         }
 
-        Usuario nuevoUsuario = new Usuario(null, username, email, password);
+        // Si todo está bien, crear el usuario
+        Usuario nuevoUsuario = new Usuario(null, username, email, password, null, null, null, null);
         sendRegistration(nuevoUsuario);
     }
+
 
     private void sendRegistration(Usuario user) {
         String json = gson.toJson(user);
@@ -66,9 +115,6 @@ public class RegistroController {
 
         httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenAccept(response -> {
-                    System.out.println("Código de estado: " + response.statusCode());
-                    System.out.println("Respuesta del servidor: " + response.body());
-
                     if (response.statusCode() == 200 || response.statusCode() == 201) {
                         showSuccess("¡Registro exitoso!");
                     } else {
@@ -79,35 +125,16 @@ public class RegistroController {
 
     private void showSuccess(String msg) {
         Platform.runLater(() -> {
-            System.out.println("✅ showSuccess() ejecutado: " + msg);
             try {
                 Stage stage = (Stage) usernameField.getScene().getWindow();
-
-                System.out.println("➡️ Cargando app-layout.fxml...");
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/tfcc/app-layout.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/tfcc/login.fxml"));
                 Parent root = loader.load();
-                System.out.println("✅ app-layout.fxml cargado correctamente");
-
-                // Intentamos acceder al controlador
-                Object controller = loader.getController();
-                if (controller instanceof AppController appController) {
-                    System.out.println("✅ AppController instanciado");
-                    appController.initialize(); // opcional si no se llama automáticamente
-                } else {
-                    System.out.println("⚠️ El controlador no es instancia de AppController");
-                }
-
-                Scene scene = new Scene(root);
-                stage.setScene(scene);
-                stage.setTitle("Inicio");
+                stage.setScene(new Scene(root));
+                stage.setTitle("Login");
                 stage.centerOnScreen();
                 stage.setMaximized(false);
                 stage.show();
-
-                System.out.println("🎉 Vista app-layout mostrada correctamente");
-
             } catch (IOException e) {
-                System.out.println("❌ Error al cargar app-layout.fxml:");
                 e.printStackTrace();
             }
         });
@@ -126,9 +153,7 @@ public class RegistroController {
             Stage stage = (Stage) usernameField.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/tfcc/login.fxml"));
             Parent root = loader.load();
-
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
+            stage.setScene(new Scene(root));
             stage.setTitle("Login");
             stage.centerOnScreen();
             stage.setMaximized(false);

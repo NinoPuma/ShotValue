@@ -1,52 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
 
 <StackPane xmlns="http://javafx.com/javafx/23.0.1"
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="com.shotvalue.analizador_xgot.controller.LoginController"
            style="-fx-background-color: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);">
 
-   <!-- Este VBox es el formulario blanco -->
-   <VBox alignment="CENTER" spacing="12.0"
-         prefHeight="500.0" prefWidth="600.0"
-         maxWidth="700.0" maxHeight="600.0"
-         style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 30;
-             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0.5, 0, 0);">
+   <!-- Caja blanca centrada con sombra -->
+   <VBox alignment="CENTER" spacing="20"
+         maxWidth="500" maxHeight="550"
+         style="-fx-background-color: white; -fx-background-radius: 16;
+                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0.3, 0, 4);
+                 -fx-padding: 40;">
 
-      <children>
-         <ImageView fx:id="logoImage" fitWidth="150" pickOnBounds="true" preserveRatio="true">
-            <image>
-               <Image url="@../../analizador-xgot/src/main/resources/img/logo.png" />
-            </image>
-         </ImageView>
+      <ImageView fx:id="logoImage" fitWidth="130" preserveRatio="true">
+         <image>
+            <Image url="@../img/logo.png" />
+         </image>
+      </ImageView>
 
-         <Separator prefWidth="200" />
+      <Label text="Iniciar Sesión"
+             style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
 
-         <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Iniciar Sesión" />
-         <Label text="Usuario:" />
-         <TextField fx:id="usernameField" promptText="Introduce tu usuario..." maxWidth="300"/>
+      <TextField fx:id="usernameField" promptText="Correo electrónico"
+                 maxWidth="320"
+                 style="-fx-font-size: 14px; -fx-padding: 10; -fx-background-radius: 8;" />
 
-         <Label text="Contraseña:" />
-         <PasswordField fx:id="passwordField" promptText="Introduce tu contraseña..." maxWidth="300"/>
+      <PasswordField fx:id="passwordField" promptText="Contraseña"
+                     maxWidth="320"
+                     style="-fx-font-size: 14px; -fx-padding: 10; -fx-background-radius: 8;" />
 
-         <Button mnemonicParsing="false" onAction="#handleLogin" text="Entrar"
-                 maxWidth="150"
-                 style="-fx-background-color: #0078D7; -fx-text-fill: white;
-                     -fx-font-weight: bold; -fx-background-radius: 6;" />
+      <Button text="Entrar" onAction="#handleLogin" maxWidth="180"
+              style="-fx-background-color: #27ae60; -fx-text-fill: white;
+                       -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 8;" />
 
-         <Label fx:id="messageLabel" textFill="red" style="-fx-font-size: 12px;" />
+      <Label fx:id="messageLabel" textFill="red" style="-fx-font-size: 12px;" />
 
-         <Hyperlink onAction="#goToRegister" text="¿No tienes cuenta? Regístrate"
-                    style="-fx-text-fill: #0078D7;" />
-      </children>
+      <Hyperlink text="¿No tenés cuenta? Registrate"
+                 onAction="#goToRegister"
+                 style="-fx-font-size: 13px; -fx-text-fill: #2980b9;" />
 
-      <padding>
-         <Insets bottom="40.0" left="40.0" right="40.0" top="30.0" />
-      </padding>
    </VBox>
-
 </StackPane>
