@@ -2,6 +2,7 @@ package com.shotvalue.analizador_xgot.util;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
@@ -19,7 +20,14 @@ public class LocalDateAdapter extends TypeAdapter<LocalDate> {
 
     @Override
     public LocalDate read(JsonReader in) throws IOException {
+        /* ① Si el próximo token es NULL, lo consumes y devuelves null */
+        if (in.peek() == JsonToken.NULL) {
+            in.nextNull();
+            return null;
+        }
+
+        /* ② Si no es null, lees la cadena y la parseas */
         String text = in.nextString();
-        return (text == null || text.isEmpty()) ? null : LocalDate.parse(text);
+        return text.isEmpty() ? null : LocalDate.parse(text);
     }
 }
