@@ -1,80 +1,89 @@
 package com.shotvalue.analizador_xgot.model;
 
+import com.google.gson.annotations.SerializedName;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "jugadores")
 public class Jugador {
+
     @Id
-    private String id;
-    private String nombre;
-    private String apellido;
-    private String equipoId;
-    private String posicion;
-    private int dorsal;
+    private String mongoId;
 
-    public Jugador() {
+    @SerializedName("id")
+    @Field("player_id")
+    private int playerId;
+
+    @SerializedName("name")
+    @Field("player_name")
+    private String playerName;
+
+    @Field("team_id")
+    private int teamId;
+
+    @Field("team_name")
+    private String teamName;
+
+    @Field("jersey_number")
+    private String jerseyNumber;
+
+    private String position;
+
+    // Getters y setters
+    public String getMongoId() {
+        return mongoId;
     }
 
-    public Jugador(String id, String nombre, String apellido, String equipoId, String posicion, int dorsal) {
-        this.id = id;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.equipoId = equipoId;
-        this.posicion = posicion;
-        this.dorsal = dorsal;
+    public void setMongoId(String mongoId) {
+        this.mongoId = mongoId;
     }
 
-    public String getId() {
-        return id;
+    public int getPlayerId() {
+        return playerId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setPlayerId(int playerId) {
+        this.playerId = playerId;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getPlayerName() {
+        return playerName;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
     }
 
-    public String getApellido() {
-        return apellido;
+    public int getTeamId() {
+        return teamId;
     }
 
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
+    public void setTeamId(int teamId) {
+        this.teamId = teamId;
     }
 
-    public String getEquipoId() {
-        return equipoId;
+    public String getTeamName() {
+        return teamName;
     }
 
-    public void setEquipoId(String equipoId) {
-        this.equipoId = equipoId;
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
     }
 
-    public String getPosicion() {
-        return posicion;
+    public String getJerseyNumber() {
+        return jerseyNumber;
     }
 
-    public void setPosicion(String posicion) {
-        this.posicion = posicion;
+    public void setJerseyNumber(String jerseyNumber) {
+        this.jerseyNumber = jerseyNumber;
     }
 
-    public int getDorsal() {
-        return dorsal;
+    public String getPosition() {
+        return position;
     }
 
-    public void setDorsal(int dorsal) {
-        this.dorsal = dorsal;
-    }
-
-    @Override
-    public String toString() {
-        return nombre + " " + apellido + " (#" + dorsal + ")";
+    public void setPosition(String position) {
+        this.position = position;
     }
 }

@@ -7,46 +7,30 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.shotvalue.analizador_xgot.front.PerfilController"
-            prefWidth="1200.0" prefHeight="750.0">
-
-    <left>
-        <VBox spacing="20" alignment="TOP_CENTER" prefWidth="180.0"
-              style="-fx-background-color: #2A3F3F;" BorderPane.alignment="CENTER">
-            <children>
-                <ImageView fitWidth="150" preserveRatio="true">
-                    <image>
-                        <Image url="@../../../img/logo.png" />
-                    </image>
-                </ImageView>
-                <Button text="Inicio" prefWidth="160" style="-fx-background-color: transparent; -fx-text-fill: white;" />
-                <Button text="Equipos y Competiciones" prefWidth="160" style="-fx-background-color: transparent; -fx-text-fill: white;" />
-                <Button text="Registrar" prefWidth="160" style="-fx-background-color: transparent; -fx-text-fill: white;" />
-                <Button text="Visualizar" prefWidth="160" style="-fx-background-color: transparent; -fx-text-fill: white;" />
-                <Button text="Informes" prefWidth="160" style="-fx-background-color: transparent; -fx-text-fill: white;" />
-                <Button text="Perfil" prefWidth="160" style="-fx-background-color: #0F7F7F; -fx-text-fill: white; -fx-font-weight: bold;" />
-                <Button text="Ayuda" prefWidth="160" style="-fx-background-color: transparent; -fx-text-fill: white;" />
-            </children>
-        </VBox>
-    </left>
+            fx:controller="com.shotvalue.analizador_xgot.controller.PerfilController">
 
     <center>
-        <VBox spacing="30" alignment="TOP_CENTER" style="-fx-background-color: #F9FDFC; -fx-padding: 40;">
+        <VBox spacing="30" alignment="TOP_CENTER"
+              maxWidth="1000"
+              style="-fx-background-color: #F9FDFC; -fx-padding: 40;">
 
             <Label text="Mi Perfil" style="-fx-font-size: 26px; -fx-font-weight: bold;"/>
 
             <HBox spacing="60" alignment="CENTER">
+
+                <!-- Avatar -->
                 <VBox spacing="15" alignment="CENTER">
                     <ImageView fx:id="avatarImage" fitWidth="180" fitHeight="180" preserveRatio="true"
                                style="-fx-effect: dropshadow(gaussian, black, 5, 0, 0, 0);">
                         <image>
-                            <Image url="@../../../img/avatar_placeholder.png"/>
+                            <Image url="@../analizador-xgot/src/main/resources/img/avatar_placeholder.png"/>
                         </image>
                     </ImageView>
                     <Button text="Cambiar Imagen" fx:id="changeImageBtn"
                             style="-fx-background-color: #0F7F7F; -fx-text-fill: white;"/>
                 </VBox>
 
+                <!-- Datos -->
                 <GridPane hgap="30" vgap="20" alignment="CENTER">
                     <children>
                         <Label text="Nombre completo:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
@@ -58,7 +42,6 @@
                         <Label text="Rol:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
                         <ComboBox fx:id="roleBox" promptText="Selecciona tu rol" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
-                        <!-- Información adicional -->
                         <Label text="Teléfono:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
                         <TextField fx:id="phoneField" promptText="(XXX) XXX-XXXX" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
@@ -68,6 +51,7 @@
                 </GridPane>
             </HBox>
 
+            <!-- Cambio de contraseña -->
             <VBox spacing="12" maxWidth="600" alignment="CENTER">
                 <Label text="Cambiar contraseña" style="-fx-font-weight: bold;"/>
                 <PasswordField fx:id="currentPasswordField" promptText="Contraseña actual"/>
@@ -75,6 +59,7 @@
                 <PasswordField fx:id="confirmPasswordField" promptText="Confirmar nueva contraseña"/>
             </VBox>
 
+            <!-- Botones -->
             <HBox spacing="20" alignment="CENTER">
                 <Button text="Guardar Cambios" fx:id="saveBtn" style="-fx-background-color: #27AE60; -fx-text-fill: white;"/>
                 <Button text="Cerrar Sesión" fx:id="logoutBtn" style="-fx-background-color: #F39C12; -fx-text-fill: white;"/>

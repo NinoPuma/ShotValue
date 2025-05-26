@@ -1,40 +1,37 @@
 package com.shotvalue.analizador_xgot.model;
 
+import com.google.gson.annotations.SerializedName;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "equipos")
 public class Equipo {
-    @Id
-    private String id;
-    private String nombre;
 
-    public Equipo() {
+    @SerializedName("id")
+    private int teamId;
+
+    @SerializedName("name")
+    private String name;
+
+    public int getTeamId() {
+        return teamId;
     }
 
-    public Equipo(String id, String nombre) {
-        this.id = id;
-        this.nombre = nombre;
+    public String getName() {
+        return name;
     }
 
-    public String getId() {
-        return id;
+    public void setTeamId(int teamId) {
+        this.teamId = teamId;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
     public String toString() {
-        return nombre;
+        return name;
     }
+
 }

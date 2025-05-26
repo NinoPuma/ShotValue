@@ -8,7 +8,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.shotvalue.analizador_xgot.front.AnalisisEventosController"
+            fx:controller="com.shotvalue.analizador_xgot.controller.AnalisisEventosController"
             prefWidth="1200.0" prefHeight="800.0">
 
     <left>
@@ -17,7 +17,7 @@
             <children>
                 <ImageView fitWidth="150" preserveRatio="true">
                     <image>
-                        <Image url="@../../../img/logo.png" />
+                        <Image url="@../img/logo.png" />
                     </image>
                 </ImageView>
                 <Button text="Inicio" prefWidth="160" style="-fx-background-color: transparent; -fx-text-fill: white;" />
@@ -124,16 +124,14 @@
                     </children>
                 </VBox>
 
-                <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-border-color: lightgray; -fx-border-width: 1;">
+                <VBox spacing="10" GridPane.rowIndex="0" GridPane.columnIndex="0"
+                      style="-fx-background-color: #1E1E1E; -fx-padding: 15; -fx-border-color: #444; -fx-border-width: 1;">
                     <children>
-                        <Label text="Coordenadas" style="-fx-font-weight: bold;"/>
-                        <ImageView fitWidth="200" preserveRatio="true">
-                            <image>
-                                <Image url="@../../../img/field_placeholder.png"/>
-                            </image>
-                        </ImageView>
+                        <Label text="Vídeo" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
+                        <MediaView fx:id="mediaView" fitWidth="400" fitHeight="220" preserveRatio="true"/>
                     </children>
                 </VBox>
+
             </HBox>
 
             <VBox spacing="10">

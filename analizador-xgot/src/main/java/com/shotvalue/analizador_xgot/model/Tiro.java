@@ -9,9 +9,14 @@ public class Tiro {
     private String id;
     private double x;
     private double y;
+    private Double destinoX;
+    private Double destinoY;
     private String parteDelCuerpo;
     private String tipoDeJugada;
     private String resultado;
+    private String jugadorNombre;
+    private String equipoNombre;
+    private String equipoId;
     private double xgot;
     private boolean porteroNoSeMueve;
     private boolean brazosExtendidos;
@@ -29,6 +34,7 @@ public class Tiro {
     private boolean porteroTapado;
     private String jugadorId;
     private String partidoId;
+    private int minuto;
 
     public Tiro() {
     }
@@ -97,6 +103,22 @@ public class Tiro {
 
     public void setXgot(double xgot) {
         this.xgot = xgot;
+    }
+
+    public Double getDestinoX() {
+        return destinoX;
+    }
+
+    public void setDestinoX(Double destinoX) {
+        this.destinoX = destinoX;
+    }
+
+    public Double getDestinoY() {
+        return destinoY;
+    }
+
+    public void setDestinoY(Double destinoY) {
+        this.destinoY = destinoY;
     }
 
     public boolean isPorteroNoSeMueve() {
@@ -225,6 +247,38 @@ public class Tiro {
 
     public void setPartidoId(String partidoId) {
         this.partidoId = partidoId;
+    }
+
+    public int getMinuto() {
+        return minuto;
+    }
+
+    public void setMinuto(int minuto) {
+        this.minuto = minuto;
+    }
+
+    public String getJugadorNombre() {
+        return jugadorNombre;
+    }
+
+    public void setJugadorNombre(String jugadorNombre) {
+        this.jugadorNombre = jugadorNombre;
+    }
+
+    public String getEquipoNombre() {
+        return equipoNombre;
+    }
+
+    public void setEquipoNombre(String equipoNombre) {
+        this.equipoNombre = equipoNombre;
+    }
+
+    public String getEquipoId() {
+        return equipoId;
+    }
+
+    public void setEquipoId(String equipoId) {
+        this.equipoId = equipoId;
     }
 
     @Override

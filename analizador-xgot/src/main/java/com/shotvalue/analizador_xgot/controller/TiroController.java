@@ -10,6 +10,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/tiros")
 public class TiroController {
+
     @Autowired
     private TiroService service;
 
@@ -37,4 +38,29 @@ public class TiroController {
     public void delete(@PathVariable String id) {
         service.delete(id);
     }
+
+    // ✅ Nuevo endpoint para filtros desde el frontend
+    @GetMapping("/buscar")
+    public List<Tiro> filtrarTiros(
+            @RequestParam int minutoDesde,
+            @RequestParam int minutoHasta,
+            @RequestParam String bodyPart,
+            @RequestParam String preAction,
+            @RequestParam String result,
+            @RequestParam String area,
+            @RequestParam(required = false) String xg,
+            @RequestParam(required = false) String jugador
+    ) {
+        return service.filtrarTiros(
+                minutoDesde,
+                minutoHasta,
+                bodyPart,
+                preAction,
+                result,
+                area,
+                xg,
+                jugador
+        );
+    }
+
 }

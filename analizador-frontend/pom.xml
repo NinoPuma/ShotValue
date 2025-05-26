@@ -54,6 +54,18 @@
             <artifactId>xchart</artifactId>
             <version>3.8.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>6.2.5</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.controlsfx</groupId>
+            <artifactId>controlsfx</artifactId>
+            <version>11.1.1</version> <!-- O la versión compatible con tu JavaFX -->
+        </dependency>
 
     </dependencies>
 
@@ -69,7 +81,7 @@
 
                 <configuration>
                     <!-- Clase principal correcta -->
-                    <mainClass>com.shotvalue.analizador_xgot.front.HelloApplication</mainClass>
+                    <mainClass>com.shotvalue.analizador_xgot.controller.Launcher</mainClass>
                 </configuration>
 
                 <!-- Permite: mvn javafx:run -->
