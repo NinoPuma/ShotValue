@@ -46,7 +46,6 @@ public class ImportadorCompleto {
             MongoCollection<Document> tirosCol = db.getCollection("tiros");
 
             ReplaceOptions upsert = new ReplaceOptions().upsert(true);
-
             Set<Integer> equiposInsertados = new HashSet<>();
             Set<Integer> jugadoresInsertados = new HashSet<>();
 
@@ -59,22 +58,22 @@ public class ImportadorCompleto {
 
                     for (JsonElement equipoElem : alineaciones) {
                         JsonObject equipoObj = equipoElem.getAsJsonObject();
-
                         int teamId = equipoObj.get("team_id").getAsInt();
                         String teamName = equipoObj.get("team_name").getAsString();
 
-                        if (equiposInsertados.add(teamId)) {
-                            Document equipoDoc = new Document("_id", teamId)
-                                    .append("team_id", teamId)
-                                    .append("team_name", teamName);
-                            equiposCol.replaceOne(Filters.eq("_id", teamId), equipoDoc, upsert);
+                        Document nuevoEquipo = new Document("_id", teamId)
+                                .append("teamId", teamId)
+                                .append("name", teamName);
+
+                        Document existente = equiposCol.find(Filters.eq("_id", teamId)).first();
+                        if (existente == null || !existente.equals(nuevoEquipo)) {
+                            equiposCol.replaceOne(Filters.eq("_id", teamId), nuevoEquipo, upsert);
                             System.out.println("🟦 Equipo insertado: " + teamName);
                         }
 
                         JsonArray jugadoresJson = equipoObj.getAsJsonArray("lineup");
                         for (JsonElement jugadorElem : jugadoresJson) {
                             JsonObject jugadorObj = jugadorElem.getAsJsonObject();
-
                             int playerId = jugadorObj.get("player_id").getAsInt();
                             if (!jugadoresInsertados.add(playerId)) continue;
 
@@ -82,7 +81,7 @@ public class ImportadorCompleto {
                             String position = jugadorObj.has("position") ? jugadorObj.get("position").getAsString() : null;
                             String jersey = jugadorObj.has("jersey_number") ? jugadorObj.get("jersey_number").getAsString() : null;
 
-                            Document jugadorDoc = new Document("_id", playerId)
+                            Document nuevoJugador = new Document("_id", playerId)
                                     .append("player_id", playerId)
                                     .append("player_name", playerName)
                                     .append("position", position)
@@ -90,16 +89,21 @@ public class ImportadorCompleto {
                                     .append("team_id", teamId)
                                     .append("team_name", teamName);
 
-                            jugadoresCol.replaceOne(Filters.eq("_id", playerId), jugadorDoc, upsert);
+                            Document jugadorExistente = jugadoresCol.find(Filters.eq("_id", playerId)).first();
+                            if (jugadorExistente == null || !jugadorExistente.equals(nuevoJugador)) {
+                                jugadoresCol.replaceOne(Filters.eq("_id", playerId), nuevoJugador, upsert);
+                            }
                         }
                     }
                 } catch (Exception e) {
                     System.err.println("❌ Error leyendo lineup " + lineupFile.getFileName() + ": " + e.getMessage());
                 }
-            }
 
-            for (String matchId : idsValidos) {
-                partidosCol.replaceOne(Filters.eq("_id", matchId), new Document("_id", matchId), upsert);
+                // Insertar partido si no existe
+                Document partidoExistente = partidosCol.find(Filters.eq("_id", matchId)).first();
+                if (partidoExistente == null) {
+                    partidosCol.insertOne(new Document("_id", matchId));
+                }
             }
 
             ExecutorService pool = Executors.newFixedThreadPool(NUM_THREADS);
@@ -113,9 +117,15 @@ public class ImportadorCompleto {
                     String matchId = filename.substring(0, filename.lastIndexOf('.'));
                     if (!idsValidos.contains(matchId)) continue;
 
+                    if (eventosCol.countDocuments(Filters.eq("matchId", matchId)) > 0) {
+                        System.out.println("⏩ Eventos ya importados para " + matchId);
+                        continue;
+                    }
+
                     futures.add(pool.submit(() -> {
                         try (FileReader reader = new FileReader(eventoFile.toFile())) {
-                            Type listType = new TypeToken<List<Evento>>() {}.getType();
+                            Type listType = new TypeToken<List<Evento>>() {
+                            }.getType();
                             List<Evento> eventos = gson.fromJson(reader, listType);
                             List<InsertOneModel<Document>> bulkEvents = new ArrayList<>();
                             List<InsertOneModel<Document>> tirosList = new ArrayList<>();
@@ -123,23 +133,29 @@ public class ImportadorCompleto {
                             for (Evento ev : eventos) {
                                 if (ev.getType() == null || ev.getType().getName() == null) continue;
                                 if (!"Shot".equals(ev.getType().getName())) continue;
+                                if (ev.getShot() == null || ev.getLocation() == null || ev.getLocation().size() < 2)
+                                    continue;
 
                                 Jugador jugador = ev.getPlayer();
-                                if (jugador != null) {
-                                    String pid = String.valueOf(jugador.getPlayerId());
+                                if (jugador == null) {
+                                    System.out.println("⏭️  Tiro sin jugador: partido " + matchId + " minuto " + ev.getMinute());
+                                    continue;
+                                }
 
-                                    if (seenPlayers.add(pid)) {
-                                        Document pDoc = Document.parse(gson.toJson(jugador));
-                                        pDoc.put("_id", pid);
-                                        jugadoresCol.replaceOne(Filters.eq("_id", pid), pDoc, upsert);
-                                    }
+                                String pid = String.valueOf(jugador.getPlayerId());
+
+                                if (seenPlayers.add(pid)) {
+                                    Document pDoc = Document.parse(gson.toJson(jugador));
+                                    pDoc.put("_id", pid);
+                                    jugadoresCol.replaceOne(Filters.eq("_id", pid), pDoc, upsert);
                                 }
 
                                 ev.setMatchId(matchId);
                                 Document eDoc = Document.parse(gson.toJson(ev));
+                                if (ev.getIndex() != null) {
+                                    eDoc.put("_id", matchId + "_" + ev.getIndex());
+                                }
                                 bulkEvents.add(new InsertOneModel<>(eDoc));
-
-                                if (ev.getShot() == null || ev.getLocation() == null || ev.getLocation().size() < 2) continue;
 
                                 Tiro tiro = new Tiro();
                                 tiro.setX(ev.getLocation().get(0));
@@ -150,23 +166,31 @@ public class ImportadorCompleto {
                                     tiro.setDestinoY(ev.getShot().getEndLocation().get(1));
                                 }
 
-                                String resultado = ev.getShot().getOutcome() != null ? ev.getShot().getOutcome().getName() : "Desconocido";
-                                String parte = ev.getShot().getBodyPart() != null ? ev.getShot().getBodyPart().getName() : "Desconocida";
-                                String tecnica = ev.getShot().getTechnique() != null ? ev.getShot().getTechnique().getName() : "Desconocida";
-                                String zona = ev.getShot().getZone() != null ? ev.getShot().getZone().getName() : "Sin zona";
-                                double xgot = ev.getShot().getStatsbombXg();
-
-                                tiro.setResultado(resultado);
-                                tiro.setParteDelCuerpo(parte);
-                                tiro.setTipoDeJugada(tecnica);
-                                tiro.setZonaDelDisparo(zona);
-                                tiro.setXgot(xgot);
+                                tiro.setResultado(ev.getShot().getOutcome() != null ? ev.getShot().getOutcome().getName() : "Desconocido");
+                                tiro.setParteDelCuerpo(ev.getShot().getBodyPart() != null ? ev.getShot().getBodyPart().getName() : "Desconocida");
+                                tiro.setTipoDeJugada(ev.getShot().getTechnique() != null ? ev.getShot().getTechnique().getName() : "Desconocida");
+                                tiro.setZonaDelDisparo(ev.getShot().getZone() != null ? ev.getShot().getZone().getName() : "Sin zona");
+                                tiro.setXgot(ev.getShot().getStatsbombXg());
                                 tiro.setMinuto(ev.getMinute());
 
-                                tiro.setJugadorId(String.valueOf(ev.getPlayer().getPlayerId()));
-                                tiro.setJugadorNombre(ev.getPlayer().getPlayerName());
-                                tiro.setEquipoId(String.valueOf(ev.getTeam().getTeamId()));
-                                tiro.setEquipoNombre(ev.getTeam().getName());
+                                // Jugador y equipo
+                                String jugadorNombre = jugador.getPlayerName();
+
+                                if (jugadorNombre == null || jugadorNombre.isBlank()) {
+                                    Document encontrado = jugadoresCol.find(Filters.eq("player_id", jugador.getPlayerId())).first();
+                                    if (encontrado != null && encontrado.containsKey("player_name")) {
+                                        jugadorNombre = encontrado.getString("player_name");
+                                    }
+                                }
+
+                                tiro.setJugadorId(pid);
+                                tiro.setJugadorNombre(jugadorNombre);
+
+                                if (ev.getTeam() != null) {
+                                    tiro.setEquipoId(String.valueOf(ev.getTeam().getTeamId()));
+                                    tiro.setEquipoNombre(ev.getTeam().getName());
+                                }
+
                                 tiro.setPartidoId(matchId);
 
                                 System.out.println("🎯 Tiro importado:");
@@ -178,14 +202,17 @@ public class ImportadorCompleto {
                                 System.out.println("---------------------------------------------------");
 
                                 Document tiroDoc = Document.parse(new Gson().toJson(tiro));
+                                if (ev.getIndex() != null) {
+                                    tiroDoc.put("_id", matchId + "_" + ev.getIndex());
+                                }
                                 tirosList.add(new InsertOneModel<>(tiroDoc));
                             }
+
 
                             if (!bulkEvents.isEmpty()) eventosCol.bulkWrite(bulkEvents);
                             if (!tirosList.isEmpty()) tirosCol.bulkWrite(tirosList);
 
                             System.out.println("✅ " + bulkEvents.size() + " eventos y " + tirosList.size() + " tiros importados de " + matchId);
-
                         } catch (Exception e) {
                             System.err.println("❌ Error procesando " + filename + ": " + e.getMessage());
                         }
@@ -197,7 +224,6 @@ public class ImportadorCompleto {
                         f.get();
                     } catch (ExecutionException e) {
                         System.err.println("❌ Error en tarea concurrente: " + e.getCause());
-                        e.getCause().printStackTrace();
                     }
                 }
             }

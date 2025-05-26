@@ -12,16 +12,36 @@ import java.util.List;
 
 public class InicioController {
 
-    @FXML private Label equiposCount;
-    @FXML private Label partidosCount;
-    @FXML private Label shotsCount;
-    @FXML private Label xgTotal;
-    @FXML private ListView<String> recentsList;
+    @FXML
+    private Label equiposCount;
+    @FXML
+    private Label partidosCount;
+    @FXML
+    private Label shotsCount;
+    @FXML
+    private Label xgTotal;
+    @FXML
+    private ListView<String> recentsList;
+    @FXML
+    private Label fechaLabel;
+    @FXML
+    private Label bienvenidaLabel;
+
+
+    private String nombreUsuario;
+
+    public void setNombreUsuario(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
+        bienvenidaLabel.setText("¡Bienvenido, " + nombreUsuario + "!");
+        cargarDatos(); // 👈 ahora lo llamamos desde acá
+    }
+
 
     @FXML
     public void initialize() {
-        System.out.println("✅ initialize() de InicioController ejecutado");
+    }
 
+    private void cargarDatos() {
         new Thread(() -> {
             try {
                 List<Tiro> tiros = EstadisticasApiClient.getTiros();
@@ -53,4 +73,5 @@ public class InicioController {
             }
         }).start();
     }
+
 }

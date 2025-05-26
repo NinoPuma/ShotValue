@@ -19,7 +19,7 @@
                 <image><Image url="@../img/logo.png"/></image>
             </ImageView>
             <VBox>
-                <Label text="¡Bienvenido, Usuario!" style="-fx-text-fill: white; -fx-font-size: 18px;"/>
+                <Label fx:id="bienvenidaLabel" text="¡Bienvenido!" style="-fx-text-fill: white; -fx-font-size: 18px;"/>
                 <Label fx:id="fechaLabel" style="-fx-text-fill: #aaaaaa;"/>
             </VBox>
         </HBox>
