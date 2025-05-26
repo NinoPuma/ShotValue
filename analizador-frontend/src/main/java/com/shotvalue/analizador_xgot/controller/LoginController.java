@@ -1,6 +1,9 @@
 package com.shotvalue.analizador_xgot.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.shotvalue.analizador_xgot.model.Usuario;
+import com.shotvalue.analizador_xgot.util.LocalDateAdapter;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,11 +25,15 @@ import java.util.Map;
 
 public class LoginController {
 
-    @FXML private TextField usernameField; // usamos esto como emailField
-    @FXML private PasswordField passwordField;
+    @FXML
+    private TextField usernameField; // usamos esto como emailField
+    @FXML
+    private PasswordField passwordField;
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
-    private final Gson gson = new Gson();
+    private final Gson gson = new GsonBuilder()
+            .registerTypeAdapter(java.time.LocalDate.class, new LocalDateAdapter())
+            .create();
 
     @FXML
     private void handleLogin(ActionEvent event) {
@@ -53,16 +60,32 @@ public class LoginController {
         httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenAccept(response -> {
                     if (response.statusCode() == 200) {
+                        String responseBody = response.body();
+                        Usuario usuario = gson.fromJson(responseBody, Usuario.class);
+                        String nombre = usuario.getUsername(); // o usuario.getNombreCompleto() si lo preferís
+
                         Platform.runLater(() -> {
                             try {
+                                FXMLLoader layoutLoader = new FXMLLoader(getClass().getResource("/tfcc/app-layout.fxml"));
+                                Parent layoutRoot = layoutLoader.load();
+
+                                AppController appController = layoutLoader.getController();
+
+                                FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/tfcc/inicio-view.fxml"));
+                                Parent inicioView = contentLoader.load();
+
+                                InicioController inicioController = contentLoader.getController();
+                                inicioController.setNombreUsuario(nombre);
+
+                                appController.setContenido(inicioView); // ✅ Ahora funciona
+
                                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                                FXMLLoader loader = new FXMLLoader(getClass().getResource("/tfcc/app-layout.fxml"));
-                                Parent root = loader.load();
-                                stage.setScene(new Scene(root));
+                                stage.setScene(new Scene(layoutRoot));
                                 stage.setTitle("Inicio");
                                 stage.centerOnScreen();
                                 stage.setMaximized(false);
                                 stage.show();
+
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }

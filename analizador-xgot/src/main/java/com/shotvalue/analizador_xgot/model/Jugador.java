@@ -13,11 +13,10 @@ public class Jugador {
 
     @SerializedName("id")
     @Field("player_id")
-    private int playerId;
+    private int player_id;
 
-    @SerializedName("name")
     @Field("player_name")
-    private String playerName;
+    private String player_name;
 
     @Field("team_id")
     private int teamId;
@@ -26,64 +25,33 @@ public class Jugador {
     private String teamName;
 
     @Field("jersey_number")
-    private String jerseyNumber;
+    private String jersey_number;
 
     private String position;
 
-    // Getters y setters
-    public String getMongoId() {
-        return mongoId;
-    }
+    // Getters originales
+    public int getPlayer_id() { return player_id; }
+    public String getPlayer_name() { return player_name; }
 
-    public void setMongoId(String mongoId) {
-        this.mongoId = mongoId;
-    }
+    // Alias para compatibilidad
+    public int getPlayerId() { return player_id; }
+    public String getPlayerName() { return player_name; }
 
-    public int getPlayerId() {
-        return playerId;
-    }
+    public String getMongoId() { return mongoId; }
+    public void setMongoId(String mongoId) { this.mongoId = mongoId; }
 
-    public void setPlayerId(int playerId) {
-        this.playerId = playerId;
-    }
+    public void setPlayer_id(int player_id) { this.player_id = player_id; }
+    public void setPlayer_name(String player_name) { this.player_name = player_name; }
 
-    public String getPlayerName() {
-        return playerName;
-    }
+    public int getTeamId() { return teamId; }
+    public void setTeamId(int teamId) { this.teamId = teamId; }
 
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
-    }
+    public String getTeamName() { return teamName; }
+    public void setTeamName(String teamName) { this.teamName = teamName; }
 
-    public int getTeamId() {
-        return teamId;
-    }
+    public String getJersey_number() { return jersey_number; }
+    public void setJersey_number(String jersey_number) { this.jersey_number = jersey_number; }
 
-    public void setTeamId(int teamId) {
-        this.teamId = teamId;
-    }
-
-    public String getTeamName() {
-        return teamName;
-    }
-
-    public void setTeamName(String teamName) {
-        this.teamName = teamName;
-    }
-
-    public String getJerseyNumber() {
-        return jerseyNumber;
-    }
-
-    public void setJerseyNumber(String jerseyNumber) {
-        this.jerseyNumber = jerseyNumber;
-    }
-
-    public String getPosition() {
-        return position;
-    }
-
-    public void setPosition(String position) {
-        this.position = position;
-    }
+    public String getPosition() { return position; }
+    public void setPosition(String position) { this.position = position; }
 }

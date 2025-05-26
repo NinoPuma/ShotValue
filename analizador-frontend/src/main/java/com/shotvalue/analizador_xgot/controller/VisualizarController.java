@@ -100,12 +100,13 @@ public class VisualizarController implements Initializable {
 
         new Thread(() -> {
             try {
-                List<String> apellidos = jugadorApiClient.getApellidos();
-                Platform.runLater(() -> TextFields.bindAutoCompletion(playerSearchField, apellidos));
+                List<String> nombres = jugadorApiClient.getNombresCompletos();
+                Platform.runLater(() -> TextFields.bindAutoCompletion(playerSearchField, nombres));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }).start();
+
     }
 
     private void aplicarFiltros() {

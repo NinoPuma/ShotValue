@@ -20,14 +20,15 @@ public class JugadorController {
         return service.getAll();
     }
 
-    @GetMapping("/apellidos")
-    public List<String> getApellidos() {
-        return service.obtenerApellidosJugadores();
-    }
-
     // Devuelve los jugadores de un equipo por teamId
     @GetMapping("/porEquipo/{teamId}")
     public List<Jugador> getByTeamId(@PathVariable int teamId) {
-        return service.obtenerPorEquipo(teamId);
+        return service.getByTeamId(teamId);
     }
+
+    @GetMapping("/nombres")
+    public List<String> getNombresCompletos() {
+        return service.obtenerNombresCompletos();
+    }
+
 }

@@ -11,11 +11,12 @@ public class JugadorApiClient {
 
     private static final HttpClient client = HttpClient.newHttpClient();
     private static final Gson gson = new Gson();
-    private static final String BASE_URL = "http://localhost:8080/api/jugadores/apellidos";
 
-    public List<String> getApellidos() throws Exception {
+    private static final String BASE_URL = "http://localhost:8080/api/jugadores";
+
+    public List<String> getNombresCompletos() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL))
+                .uri(URI.create(BASE_URL + "/nombres"))
                 .GET()
                 .build();
 
@@ -24,7 +25,7 @@ public class JugadorApiClient {
         if (response.statusCode() == 200) {
             return gson.fromJson(response.body(), new TypeToken<List<String>>(){}.getType());
         } else {
-            throw new RuntimeException("Error al obtener apellidos: " + response.statusCode());
+            throw new RuntimeException("Error al obtener nombres completos: " + response.statusCode());
         }
     }
 }
