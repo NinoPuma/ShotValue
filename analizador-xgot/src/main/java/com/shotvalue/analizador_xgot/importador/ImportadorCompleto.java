@@ -122,6 +122,12 @@ public class ImportadorCompleto {
                         continue;
                     }
 
+                    if (tirosCol.countDocuments(Filters.eq("partidoId", matchId)) > 0) {
+                        System.out.println("⏩ Tiros ya importados para " + matchId);
+                        continue;
+                    }
+
+
                     futures.add(pool.submit(() -> {
                         try (FileReader reader = new FileReader(eventoFile.toFile())) {
                             Type listType = new TypeToken<List<Evento>>() {
@@ -164,6 +170,9 @@ public class ImportadorCompleto {
                                 if (ev.getShot().getEndLocation() != null && ev.getShot().getEndLocation().size() >= 2) {
                                     tiro.setDestinoX(ev.getShot().getEndLocation().get(0));
                                     tiro.setDestinoY(ev.getShot().getEndLocation().get(1));
+                                    if (ev.getShot().getEndLocation().size() >= 3) {
+                                        tiro.setDestinoZ(ev.getShot().getEndLocation().get(2));
+                                    }
                                 }
 
                                 tiro.setResultado(ev.getShot().getOutcome() != null ? ev.getShot().getOutcome().getName() : "Desconocido");

@@ -10,6 +10,7 @@ public class Tiro {
 
     private double destinoX;        // Coordenada X del tiro
     private double destinoY;        // Coordenada Y del tiro
+    private Double destinoZ;        // Coordenada Z del tiro (opcional, si se usa en el modelo)
     private String resultado;       // Resultado del tiro (ej. "gol", "parada", etc.)
     private int minuto;             // Minuto del tiro
     private String bodyPart;        // Parte del cuerpo
@@ -68,6 +69,14 @@ public class Tiro {
 
     public Double getDestinoY() {
         return destinoY;
+    }
+
+    public Double getDestinoZ() {
+        return destinoZ;
+    }
+
+    public void setDestinoZ() {
+        this.destinoZ = destinoZ;
     }
 
     public String getResultado() {
