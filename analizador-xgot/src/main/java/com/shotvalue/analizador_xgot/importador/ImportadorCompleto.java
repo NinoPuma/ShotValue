@@ -126,7 +126,7 @@ public class ImportadorCompleto {
 
                                 Jugador jugador = ev.getPlayer();
                                 if (jugador != null) {
-                                    String pid = String.valueOf(jugador.getPlayer_id());
+                                    String pid = String.valueOf(jugador.getPlayerId());
 
                                     if (seenPlayers.add(pid)) {
                                         Document pDoc = Document.parse(gson.toJson(jugador));
@@ -145,6 +145,11 @@ public class ImportadorCompleto {
                                 tiro.setX(ev.getLocation().get(0));
                                 tiro.setY(ev.getLocation().get(1));
 
+                                if (ev.getShot().getEndLocation() != null && ev.getShot().getEndLocation().size() >= 2) {
+                                    tiro.setDestinoX(ev.getShot().getEndLocation().get(0));
+                                    tiro.setDestinoY(ev.getShot().getEndLocation().get(1));
+                                }
+
                                 String resultado = ev.getShot().getOutcome() != null ? ev.getShot().getOutcome().getName() : "Desconocido";
                                 String parte = ev.getShot().getBodyPart() != null ? ev.getShot().getBodyPart().getName() : "Desconocida";
                                 String tecnica = ev.getShot().getTechnique() != null ? ev.getShot().getTechnique().getName() : "Desconocida";
@@ -157,8 +162,20 @@ public class ImportadorCompleto {
                                 tiro.setZonaDelDisparo(zona);
                                 tiro.setXgot(xgot);
                                 tiro.setMinuto(ev.getMinute());
-                                tiro.setJugadorId(String.valueOf(ev.getPlayer().getPlayer_id()));
+
+                                tiro.setJugadorId(String.valueOf(ev.getPlayer().getPlayerId()));
+                                tiro.setJugadorNombre(ev.getPlayer().getPlayerName());
+                                tiro.setEquipoId(String.valueOf(ev.getTeam().getTeamId()));
+                                tiro.setEquipoNombre(ev.getTeam().getName());
                                 tiro.setPartidoId(matchId);
+
+                                System.out.println("🎯 Tiro importado:");
+                                System.out.println(" - Jugador: " + tiro.getJugadorNombre());
+                                System.out.println(" - Equipo: " + tiro.getEquipoNombre());
+                                System.out.println(" - Minuto: " + tiro.getMinuto());
+                                System.out.println(" - xGOT: " + tiro.getXgot());
+                                System.out.println(" - De " + tiro.getX() + "," + tiro.getY() + " → " + tiro.getDestinoX() + "," + tiro.getDestinoY());
+                                System.out.println("---------------------------------------------------");
 
                                 Document tiroDoc = Document.parse(new Gson().toJson(tiro));
                                 tirosList.add(new InsertOneModel<>(tiroDoc));

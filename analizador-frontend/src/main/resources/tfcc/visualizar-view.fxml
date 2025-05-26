@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.geometry.*?>
+<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-
+<?import javafx.scene.shape.Circle?>
 <BorderPane xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.shotvalue.analizador_xgot.front.VisualizarController">
+            fx:controller="com.shotvalue.analizador_xgot.controller.VisualizarController">
 
     <center>
         <VBox spacing="20" alignment="TOP_CENTER"
@@ -98,19 +99,50 @@
                              -fx-border-color: #444; -fx-border-width: 1;">
                     <Label text="Visualizaciones"
                            style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;"/>
-                    <ImageView fx:id="fieldMap" fitWidth="500" fitHeight="250" preserveRatio="true">
-                        <image>
-                            <Image url="@../img/field_placeholder.png"/>
-                        </image>
-                    </ImageView>
-                    <ImageView fx:id="goalView" fitWidth="500" fitHeight="150" preserveRatio="true">
-                        <image>
-                            <Image url="@../img/goal_placeholder.png"/>
-                        </image>
-                    </ImageView>
+                    <HBox spacing="15" alignment="CENTER">
+                        <Label text="Leyenda:" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
+                        <HBox spacing="5" alignment="CENTER">
+                            <Circle radius="6" fill="LIMEGREEN"/>
+                            <Label text="Gol" style="-fx-text-fill: white;"/>
+                        </HBox>
+                        <HBox spacing="5" alignment="CENTER">
+                            <Circle radius="6" fill="GOLD"/>
+                            <Label text="Atajado" style="-fx-text-fill: white;"/>
+                        </HBox>
+                        <HBox spacing="5" alignment="CENTER">
+                            <Circle radius="6" fill="CRIMSON"/>
+                            <Label text="Fuera" style="-fx-text-fill: white;"/>
+                        </HBox>
+                        <HBox spacing="5" alignment="CENTER">
+                            <Circle radius="6" fill="ORANGE"/>
+                            <Label text="Bloqueado" style="-fx-text-fill: white;"/>
+                        </HBox>
+                        <HBox spacing="5" alignment="CENTER">
+                            <Circle radius="6" fill="WHITE" stroke="BLACK" strokeWidth="1"/>
+                            <Label text="Otro" style="-fx-text-fill: white;"/>
+                        </HBox>
+                    </HBox>
+
+                    <StackPane>
+                        <ImageView fx:id="fieldMap" fitWidth="500" fitHeight="250" preserveRatio="true">
+                            <image>
+                                <Image url="@/img/field_placeholder.png"/>
+                            </image>
+                        </ImageView>
+                        <Canvas fx:id="canvasTiros" width="500" height="250" />
+                    </StackPane>
+                    <StackPane>
+                        <ImageView fx:id="goalView" fitWidth="500" fitHeight="150" preserveRatio="true">
+                            <image>
+                                <Image url="@/img/goal_placeholder.png"/>
+                            </image>
+                        </ImageView>
+                        <Canvas fx:id="canvasArco" width="500" height="150" />
+                    </StackPane>
                     <Label fx:id="legendLabel"
                            text="Leyenda: ● Gol | ◯ xG | ✖ Fallo"
                            textFill="white" style="-fx-font-size: 12px;"/>
+
                 </VBox>
             </HBox>
         </VBox>

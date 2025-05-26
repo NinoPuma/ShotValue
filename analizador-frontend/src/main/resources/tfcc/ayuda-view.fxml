@@ -5,7 +5,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/21.0.7"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.shotvalue.analizador_xgot.front.AyudaController"
+            fx:controller="com.shotvalue.analizador_xgot.controller.AyudaController"
             styleClass="content-pane"
             style="-fx-background-color: #F4F4F4;">
 

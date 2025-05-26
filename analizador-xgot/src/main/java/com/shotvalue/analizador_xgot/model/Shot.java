@@ -2,11 +2,16 @@ package com.shotvalue.analizador_xgot.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class Shot {
     private NamedValue outcome;
 
     @SerializedName("body_part")
     private NamedValue bodyPart;
+
+    @SerializedName("end_location")
+    private List<Double> endLocation;
 
     private NamedValue technique;
     private NamedValue zone;
@@ -53,6 +58,14 @@ public class Shot {
 
     public void setStatsbombXg(double statsbombXg) {
         this.statsbombXg = statsbombXg;
+    }
+
+    public List<Double> getEndLocation() {
+        return endLocation;
+    }
+
+    public void setEndLocation(List<Double> endLocation) {
+        this.endLocation = endLocation;
     }
 
 }

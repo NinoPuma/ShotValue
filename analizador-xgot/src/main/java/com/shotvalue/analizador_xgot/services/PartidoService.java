@@ -32,6 +32,11 @@ public class PartidoService {
         repo.deleteById(id);
     }
 
+    public long count() {
+        return repo.count();
+    }
+
+
     // --- Método para obtener matchIds de partidos en 2024 ---
     public Set<String> obtenerMatchIds2024() {
         LocalDate inicio = LocalDate.of(2024, 1, 1);
