@@ -8,11 +8,10 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 public class LocalDateAdapter extends TypeAdapter<LocalDate> {
-
     @Override
     public void write(JsonWriter out, LocalDate value) throws IOException {
         if (value == null) {
-            out.nullValue(); // ✅ evitar NullPointerException
+            out.nullValue();
         } else {
             out.value(value.toString());
         }

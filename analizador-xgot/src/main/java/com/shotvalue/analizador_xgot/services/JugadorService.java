@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class JugadorService {
@@ -26,7 +25,7 @@ public class JugadorService {
         return repo.findById(id);
     }
 
-    public List<Jugador> obtenerPorEquipo(int teamId) {
+    public List<Jugador> getByTeamId(int teamId) {
         return repo.findByTeamId(teamId);
     }
 
@@ -34,13 +33,14 @@ public class JugadorService {
         repo.deleteById(id);
     }
 
-    public List<String> obtenerApellidosJugadores() {
-        return repo.findAll().stream()
-                .map(Jugador::getPlayerName)
+    public List<String> obtenerNombresCompletos() {
+        return repo.findAll()
+                .stream()
+                .map(Jugador::getPlayer_name) // o getPlayerName()
                 .filter(nombre -> nombre != null && !nombre.isBlank())
                 .distinct()
-                .sorted()
-                .collect(Collectors.toList());
+                .toList();
     }
+
 
 }
