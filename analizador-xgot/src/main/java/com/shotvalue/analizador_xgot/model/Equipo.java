@@ -1,16 +1,16 @@
 package com.shotvalue.analizador_xgot.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "equipos")
 public class Equipo {
-
-    @SerializedName("id")
+    @JsonProperty("teamId")
     private int teamId;
 
-    @SerializedName("name")
+    @JsonProperty("name")
     private String name;
 
     public int getTeamId() {

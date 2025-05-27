@@ -1,23 +1,19 @@
 package com.shotvalue.analizador_xgot.model;
 
-import com.google.gson.annotations.SerializedName;
-
 public class Equipo {
     private String id;
 
-    @SerializedName("team_id")
     private int teamId;
 
-    @SerializedName("team_name")
-    private String teamName;
+    private String name;
 
     public Equipo() {
     }
 
-    public Equipo(String id, int teamId, String teamName) {
+    public Equipo(String id, int teamId, String name) {
         this.id = id;
         this.teamId = teamId;
-        this.teamName = teamName;
+        this.name = name;
     }
 
     public String getId() {
@@ -36,11 +32,16 @@ public class Equipo {
         this.teamId = teamId;
     }
 
-    public String getTeamName() {
-        return teamName;
+    public String getName() {
+        return name;
     }
 
-    public void setTeamName(String teamName) {
-        this.teamName = teamName;
+    public void setName(String teamName) {
+        this.name = teamName;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }
