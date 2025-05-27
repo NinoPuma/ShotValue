@@ -1,106 +1,109 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 
-<StackPane xmlns="http://javafx.com/javafx/23.0.1"
-           xmlns:fx="http://javafx.com/fxml/1"
-           style="-fx-background-color: #2E2E2E; -fx-padding: 30;">
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.shotvalue.analizador_xgot.controller.RegistrarTiroController"
+            style="-fx-background-color: #2E2E2E;">
 
-    <GridPane fx:id="mainGrid"
-              hgap="20" vgap="20"
-              maxWidth="1200"
-              style="-fx-background-color: transparent;">
+    <!-- TÍTULO -->
+    <top>
+        <HBox alignment="CENTER" style="-fx-padding:20; -fx-background-color: #2E2E2E;">
+            <Label text="Registrar Tiro"
+                   style="-fx-font-size:26px; -fx-text-fill:white; -fx-font-weight:bold;"/>
+        </HBox>
+    </top>
 
-        <columnConstraints>
-            <ColumnConstraints percentWidth="50"/>
-            <ColumnConstraints percentWidth="50"/>
-        </columnConstraints>
+    <!-- CUERPO -->
+    <center>
+        <SplitPane dividerPositions="0.5"
+                   style="-fx-background-color: #2E2E2E;">
 
-        <rowConstraints>
-            <RowConstraints percentHeight="50"/>
-            <RowConstraints percentHeight="50"/>
-        </rowConstraints>
+            <items>
+                <!-- IZQUIERDA: FORMULARIO -->
+                <ScrollPane fitToWidth="true" fitToHeight="true"
+                            style="-fx-background-color: #2E2E2E; -fx-padding:0; -fx-border-width:0;">
+                    <VBox spacing="20" style="-fx-padding:20; -fx-background-color: #2E2E2E;">
+                        <GridPane hgap="15" vgap="12" style="-fx-background-color: transparent;">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="35"/>
+                                <ColumnConstraints percentWidth="65"/>
+                            </columnConstraints>
+                            <Label text="Jugador:"           style="-fx-text-fill:white;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                            <ComboBox fx:id="jugadorBox"                             GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                            <Label text="Equipo:"            style="-fx-text-fill:white;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                            <ComboBox fx:id="equipoBox"                              GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                            <Label text="Parte del cuerpo:"  style="-fx-text-fill:white;" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                            <ComboBox fx:id="parteCuerpoBox"                          GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                            <Label text="Tipo de jugada:"    style="-fx-text-fill:white;" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                            <ComboBox fx:id="tipoJugadaBox"                           GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                            <Label text="Resultado:"         style="-fx-text-fill:white;" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                            <ComboBox fx:id="resultadoBox"                            GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                            <Label text="Minuto:"            style="-fx-text-fill:white;" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                            <TextField fx:id="minutoField" maxWidth="80"              GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                        </GridPane>
 
-        <!-- Video -->
-        <VBox spacing="10" GridPane.rowIndex="0" GridPane.columnIndex="0"
-              style="-fx-background-color: #1E1E1E; -fx-padding: 15; -fx-border-color: #444; -fx-border-width: 1;">
-            <children>
-                <Label text="Vídeo" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
-                <ImageView fitWidth="400" fitHeight="220" preserveRatio="true">
-                    <image>
-                        <Image url="@../img/video_placeholder.png" />
-                    </image>
-                </ImageView>
-            </children>
-        </VBox>
+                        <TitledPane text="Condiciones del disparo" expanded="true"
+                                    style="-fx-text-fill:white; -fx-background-color: #333;">
+                            <content>
+                                <VBox spacing="6" style="-fx-padding:10; -fx-background-color: #2E2E2E;">
+                                    <CheckBox fx:id="porteroNoSeMueveCheck" text="Portero no se mueve"    style="-fx-text-fill:white;"/>
+                                    <CheckBox fx:id="brazosExtendidosCheck" text="Brazos extendidos"      style="-fx-text-fill:white;"/>
+                                    <CheckBox fx:id="presionDefensivaCheck" text="Presión defensiva"      style="-fx-text-fill:white;"/>
+                                    <CheckBox fx:id="reboteCheck"           text="Rebote"                  style="-fx-text-fill:white;"/>
+                                    <CheckBox fx:id="manoDominanteCheck"    text="Mano dominante"         style="-fx-text-fill:white;"/>
+                                    <CheckBox fx:id="dentroDelAreaCheck"    text="Dentro del área"        style="-fx-text-fill:white;"/>
+                                    <CheckBox fx:id="jugadaElaboradaCheck"  text="Jugada elaborada"       style="-fx-text-fill:white;"/>
+                                    <CheckBox fx:id="tiroConBoteCheck"      text="Tiro con bote"          style="-fx-text-fill:white;"/>
+                                    <CheckBox fx:id="porteroTapadoCheck"    text="Portero tapado"         style="-fx-text-fill:white;"/>
+                                </VBox>
+                            </content>
+                        </TitledPane>
 
-        <!-- Opciones -->
-        <VBox spacing="10" GridPane.rowIndex="0" GridPane.columnIndex="1"
-              style="-fx-background-color: #1E1E1E; -fx-padding: 15; -fx-border-color: #444; -fx-border-width: 1;">
-            <children>
-                <Label text="Opciones del evento" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
-                <HBox spacing="10">
-                    <children>
-                        <Label text="Local/Visitante" textFill="white"/>
-                        <ToggleButton text="Home"/>
-                        <ToggleButton text="Away"/>
-                    </children>
-                </HBox>
-                <HBox spacing="10">
-                    <children>
-                        <Label text="Tipo de evento" textFill="white"/>
-                        <ToggleButton text="Shot"/>
-                        <ToggleButton text="Pass"/>
-                        <ToggleButton text="Cross"/>
-                    </children>
-                </HBox>
-                <HBox spacing="10">
-                    <children>
-                        <Label text="Resultado" textFill="white"/>
-                        <ToggleButton text="Goal"/>
-                        <ToggleButton text="Saved"/>
-                        <ToggleButton text="Blocked"/>
-                    </children>
-                </HBox>
-                <CheckBox text="Segundo disparo" textFill="white"/>
-                <CheckBox text="Bloqueo probable" textFill="white"/>
-            </children>
-        </VBox>
+                        <GridPane hgap="12" vgap="10" style="-fx-background-color: transparent;">
+                            <TextField fx:id="anguloField"        promptText="Ángulo"       maxWidth="100" GridPane.columnIndex="0"/>
+                            <TextField fx:id="velocidadField"     promptText="Velocidad"    maxWidth="100" GridPane.columnIndex="1"/>
+                            <TextField fx:id="piesSueloField"     promptText="Pies suelo"   maxWidth="100" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                            <TextField fx:id="defensasCercaField" promptText="Defensas"     maxWidth="100" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                            <TextField fx:id="zonaDisparoField"   promptText="Zona"         maxWidth="210" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2"/>
+                        </GridPane>
 
-        <!-- Coordenadas -->
-        <VBox spacing="10" GridPane.rowIndex="1" GridPane.columnIndex="0"
-              style="-fx-background-color: #1E1E1E; -fx-padding: 15; -fx-border-color: #444; -fx-border-width: 1;">
-            <children>
-                <Label text="Coordenadas" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
-                <ImageView fitWidth="400" fitHeight="200" preserveRatio="true">
-                    <image>
-                        <Image url="@../img/field_placeholder.png" />
-                    </image>
-                </ImageView>
-            </children>
-        </VBox>
+                        <Button fx:id="guardarBtn" text="Guardar tiro"
+                                style="-fx-background-color:#1ABC9C; -fx-text-fill:white; -fx-font-size:16px; -fx-padding:8 20;"/>
+                    </VBox>
+                </ScrollPane>
 
-        <!-- Jugadores -->
-        <VBox spacing="10" GridPane.rowIndex="1" GridPane.columnIndex="1"
-              style="-fx-background-color: #1E1E1E; -fx-padding: 15; -fx-border-color: #444; -fx-border-width: 1;">
-            <children>
-                <Label text="Jugadores implicados" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
-                <HBox spacing="10">
-                    <children>
-                        <Label text="Jugador:" textFill="white"/>
-                        <ComboBox fx:id="playerBox"/>
-                    </children>
-                </HBox>
-                <HBox spacing="10">
-                    <children>
-                        <Label text="Asistencia:" textFill="white"/>
-                        <ComboBox fx:id="assistBox"/>
-                    </children>
-                </HBox>
-            </children>
-        </VBox>
-    </GridPane>
-</StackPane>
+                <!-- DERECHA: CAMPO + COORDENADAS -->
+                <VBox spacing="15" alignment="TOP_CENTER"
+                      style="-fx-padding:40 20 20 20; -fx-background-color: #2E2E2E;">
+                    <Label text="Selecciona el punto de disparo" style="-fx-text-fill:white;"/>
+
+                    <!-- Bajamos la imagen un poco con padding -->
+                    <VBox alignment="CENTER" style="-fx-padding:20 0 0 0; -fx-background-color:transparent;">
+                        <ImageView fx:id="fieldImage"
+                                   fitWidth="650" fitHeight="400"
+                                   preserveRatio="true"
+                                   smooth="true"
+                                   style="-fx-cursor:crosshair;">
+                            <image>
+                                <Image url="@../img/field_placeholder.png"/>
+                            </image>
+                        </ImageView>
+                    </VBox>
+
+                    <HBox spacing="10" alignment="CENTER">
+                        <TextField fx:id="xField"        promptText="X"        maxWidth="80"/>
+                        <TextField fx:id="yField"        promptText="Y"        maxWidth="80"/>
+                        <TextField fx:id="destinoXField" promptText="DestX"   maxWidth="80"/>
+                        <TextField fx:id="destinoYField" promptText="DestY"   maxWidth="80"/>
+                    </HBox>
+                </VBox>
+            </items>
+        </SplitPane>
+    </center>
+</BorderPane>
