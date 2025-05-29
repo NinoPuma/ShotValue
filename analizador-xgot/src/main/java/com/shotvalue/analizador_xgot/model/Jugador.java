@@ -1,80 +1,57 @@
 package com.shotvalue.analizador_xgot.model;
 
+import com.google.gson.annotations.SerializedName;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "jugadores")
 public class Jugador {
+
     @Id
-    private String id;
-    private String nombre;
-    private String apellido;
-    private String equipoId;
-    private String posicion;
-    private int dorsal;
+    private String mongoId;
 
-    public Jugador() {
-    }
+    @SerializedName("id")
+    @Field("player_id")
+    private int player_id;
 
-    public Jugador(String id, String nombre, String apellido, String equipoId, String posicion, int dorsal) {
-        this.id = id;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.equipoId = equipoId;
-        this.posicion = posicion;
-        this.dorsal = dorsal;
-    }
+    @Field("player_name")
+    private String player_name;
 
-    public String getId() {
-        return id;
-    }
+    @Field("team_id")
+    private int teamId;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    @Field("team_name")
+    private String teamName;
 
-    public String getNombre() {
-        return nombre;
-    }
+    @Field("jersey_number")
+    private String jersey_number;
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+    private String position;
 
-    public String getApellido() {
-        return apellido;
-    }
+    // Getters originales
+    public int getPlayer_id() { return player_id; }
+    public String getPlayer_name() { return player_name; }
 
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
+    // Alias para compatibilidad
+    public int getPlayerId() { return player_id; }
+    public String getPlayerName() { return player_name; }
 
-    public String getEquipoId() {
-        return equipoId;
-    }
+    public String getMongoId() { return mongoId; }
+    public void setMongoId(String mongoId) { this.mongoId = mongoId; }
 
-    public void setEquipoId(String equipoId) {
-        this.equipoId = equipoId;
-    }
+    public void setPlayer_id(int player_id) { this.player_id = player_id; }
+    public void setPlayer_name(String player_name) { this.player_name = player_name; }
 
-    public String getPosicion() {
-        return posicion;
-    }
+    public int getTeamId() { return teamId; }
+    public void setTeamId(int teamId) { this.teamId = teamId; }
 
-    public void setPosicion(String posicion) {
-        this.posicion = posicion;
-    }
+    public String getTeamName() { return teamName; }
+    public void setTeamName(String teamName) { this.teamName = teamName; }
 
-    public int getDorsal() {
-        return dorsal;
-    }
+    public String getJersey_number() { return jersey_number; }
+    public void setJersey_number(String jersey_number) { this.jersey_number = jersey_number; }
 
-    public void setDorsal(int dorsal) {
-        this.dorsal = dorsal;
-    }
-
-    @Override
-    public String toString() {
-        return nombre + " " + apellido + " (#" + dorsal + ")";
-    }
+    public String getPosition() { return position; }
+    public void setPosition(String position) { this.position = position; }
 }

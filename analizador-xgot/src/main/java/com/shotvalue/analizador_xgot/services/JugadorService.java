@@ -25,11 +25,22 @@ public class JugadorService {
         return repo.findById(id);
     }
 
-    public List<Jugador> getByEquipoId(String equipoId) {
-        return repo.findByEquipoId(equipoId);
+    public List<Jugador> getByTeamId(int teamId) {
+        return repo.findByTeamId(teamId);
     }
 
     public void delete(String id) {
         repo.deleteById(id);
     }
+
+    public List<String> obtenerNombresCompletos() {
+        return repo.findAll()
+                .stream()
+                .map(Jugador::getPlayer_name) // o getPlayerName()
+                .filter(nombre -> nombre != null && !nombre.isBlank())
+                .distinct()
+                .toList();
+    }
+
+
 }

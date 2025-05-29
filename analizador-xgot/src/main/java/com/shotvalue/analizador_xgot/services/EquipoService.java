@@ -10,10 +10,31 @@ import java.util.Optional;
 
 @Service
 public class EquipoService {
-    @Autowired
-    private EquipoRepository repo;
-    public List<Equipo> getAll() { return repo.findAll(); }
-    public Equipo save(Equipo e) { return repo.save(e); }
-    public Optional<Equipo> getById(String id) { return repo.findById(id); }
-    public void delete(String id) { repo.deleteById(id); }
+
+    private final EquipoRepository repo;
+
+    public EquipoService(EquipoRepository repo) {
+        this.repo = repo;
+    }
+
+    public List<Equipo> getAll() {
+        return repo.findAll();
+    }
+
+    public Equipo save(Equipo e) {
+        return repo.save(e);
+    }
+
+    public Optional<Equipo> getById(String id) {
+        return repo.findById(id);
+    }
+
+    public void delete(String id) {
+        repo.deleteById(id);
+    }
+
+    public long count() {
+        return repo.count();
+    }
+
 }

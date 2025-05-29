@@ -5,19 +5,27 @@ import com.shotvalue.analizador_xgot.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
 public class UsuarioService {
 
     @Autowired
-    private UsuarioRepository repository;
+    private UsuarioRepository usuarioRepository;
 
-    public Usuario save(Usuario usuario) {
-        return repository.save(usuario);
+    public boolean emailExiste(String email) {
+        return usuarioRepository.findByEmail(email.toLowerCase()).isPresent();
     }
 
-    public Optional<Usuario> findByUsername(String username) {
-        return repository.findByUsername(username);
+    public Usuario registrarUsuario(String username, String email, String password,
+                                    String nombreCompleto, String rol, String telefono, LocalDate fechaNacimiento) {
+        if (emailExiste(email)) {
+            throw new IllegalArgumentException("El email ya está registrado.");
+        }
+        Usuario usuario = new Usuario(null, username, email.toLowerCase(), password,
+                nombreCompleto, rol, telefono, fechaNacimiento);
+        return usuarioRepository.save(usuario);
     }
+
 }
