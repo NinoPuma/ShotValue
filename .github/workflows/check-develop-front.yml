@@ -1,29 +1,80 @@
-# .github/workflows/verificar-develop-front.yml
-name: Verificar merge a develop-front
+name: Verificar JavaFX (frontend) al hacer PR → frontend
 
 on:
   pull_request:
-    branches:
-      - develop-front
+    branches: [ frontend ]
 
 jobs:
-  build:
+  build-and-ui-smoketest:
     runs-on: ubuntu-latest
 
     steps:
+      # ───────────────────────────────────────
       # 1) Checkout
-      - name: Clonar repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2) JDK 17 + caché Maven
-      - name: Configurar Java
+      # ───────────────────────────────────────
+      # 2) Java & Maven cache
+      - name: Setup Temurin 21 + Maven cache
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 17
+          java-version: 21
           cache: maven
 
-      # 3) Compilar y testear el frontend
-      - name: Compilar y testear con Maven (frontend)
+      # ───────────────────────────────────────
+      # 3) Build & unit tests
+      - name: Build frontend (+tests)
         run: mvn -B -f analizador-frontend/pom.xml clean verify
 
+      # ───────────────────────────────────────
+      # 4) Package “fat jar”  (ajusta el goal si usas javafx-maven-plugin)
+      - name: Package runnable jar
+        run: mvn -B -f analizador-frontend/pom.xml package -DskipTests
+
+      # ───────────────────────────────────────
+      # 5) Instalar & arrancar Xvfb
+      - name: Install Xvfb
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y xvfb
+
+      # ───────────────────────────────────────
+      # 6) Smoke-test de la GUI
+      #
+      #   Damos 15 s; si la app crashea → código ≠0 ⇒ job falla
+      #   Si la app sigue viva pasados los 15 s, la matamos y
+      #     consideramos que la inicialización fue correcta.
+      - name: Launch JavaFX
+        env:
+          DISPLAY: ":99"
+        run: |
+          set -e  # aborta si algún comando devuelve ≠0
+          # 6.1 Arrancar servidor X virtual
+          Xvfb :99 -screen 0 1280x720x24 &
+          XVFB_PID=$!
+          # 6.2 Lanzar aplicación (elige una de las dos formas)
+          # — Opción A — jar “fat” generado en target:
+          java -jar analizador-frontend/target/analizador-frontend.jar &
+          APP_PID=$!
+          
+#          # — Opción B — con el plugin JavaFX:
+#          # mvn -q -f analizador-frontend/pom.xml javafx:run &
+#          # APP_PID=$!
+#
+#          # 6.3 Esperamos 15 s…
+#          sleep 15
+#
+#          # 6.4 ¿Sigue viva la JVM?
+#          if ps -p $APP_PID > /dev/null ; then
+#            echo "🎉 La GUI se inició correctamente (PID $APP_PID)."
+#            kill $APP_PID
+#          else
+#            echo "❌ La aplicación JavaFX terminó prematuramente."
+#            kill $XVFB_PID      # limpiamos
+#            exit 1
+#          fi
+#
+#           6.5 Todo OK; cerramos Xvfb
+#          kill $XVFB_PID
