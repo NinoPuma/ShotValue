@@ -76,6 +76,7 @@ public class LoginController {
 
                                 InicioController inicioController = contentLoader.getController();
                                 inicioController.setNombreUsuario(nombre);
+                                inicioController.setAppController(appController);
 
                                 appController.setContenido(inicioView); // ✅ Ahora funciona
 

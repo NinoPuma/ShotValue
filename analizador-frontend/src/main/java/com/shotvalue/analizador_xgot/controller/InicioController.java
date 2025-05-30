@@ -5,6 +5,7 @@ import com.shotvalue.analizador_xgot.model.Jugador;
 import com.shotvalue.analizador_xgot.model.Tiro;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 
@@ -26,9 +27,15 @@ public class InicioController {
     private Label fechaLabel;
     @FXML
     private Label bienvenidaLabel;
-
+    @FXML
+    private Button btnCrearEquipo;
+    private AppController appController;
 
     private String nombreUsuario;
+
+    public void setAppController(AppController appController) {
+        this.appController = appController;
+    }
 
     public void setNombreUsuario(String nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
@@ -39,6 +46,14 @@ public class InicioController {
 
     @FXML
     public void initialize() {
+        // resto de tu initialize (si lo hubiera)
+
+        // acción del botón
+        btnCrearEquipo.setOnAction(e -> {
+            if (appController != null) {
+                appController.openCrearEquipo();   // método nuevo en AppController
+            }
+        });
     }
 
     private void cargarDatos() {

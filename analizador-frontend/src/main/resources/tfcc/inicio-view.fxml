@@ -59,7 +59,7 @@
 
         <!-- Acciones rápidas -->
         <HBox spacing="20" alignment="CENTER">
-            <Button text="Crear equipo" prefWidth="140" style="-fx-background-color: #16A085; -fx-text-fill: white;"/>
+            <Button fx:id="btnCrearEquipo" text="Crear equipo" prefWidth="140" style="-fx-background-color: #16A085; -fx-text-fill: white;"/>
             <Button text="Registrar evento" prefWidth="140" style="-fx-background-color: #2980B9; -fx-text-fill: white;"/>
             <Button text="Visualizar datos" prefWidth="140" style="-fx-background-color: #8E44AD; -fx-text-fill: white;"/>
             <Button text="Informes" prefWidth="140" style="-fx-background-color: #D35400; -fx-text-fill: white;"/>

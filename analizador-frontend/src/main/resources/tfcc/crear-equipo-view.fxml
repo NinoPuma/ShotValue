@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.shotvalue.analizador_xgot.controller.CrearEquipoController"
+           style="-fx-background-color:#262626;">
+
+    <!-- CONTENEDOR principal, ahora de 800 px de ancho -->
+    <VBox alignment="CENTER"
+          spacing="48"
+          maxWidth="800">                         <!-- 👈 aún más ancho -->
+
+        <!-- Logo (un poco más grande) -->
+        <ImageView fitWidth="200" preserveRatio="true">
+            <image>
+                <Image url="@../img/logo.png"/>
+            </image>
+        </ImageView>
+
+        <!-- TÍTULO XL -->
+        <Label text="Crear Equipo"
+               style="-fx-text-fill:white;
+                      -fx-font-size:32px;         /* +4 px más grande */
+                      -fx-font-weight:bold;"/>
+
+        <!-- GRID de campos + botones -->
+        <GridPane hgap="22" vgap="28">            <!-- más espacio -->
+            <columnConstraints>
+                <!-- Columna etiqueta -->
+                <ColumnConstraints halignment="RIGHT" prefWidth="150"/>
+                <!-- Columna campos / botones -->
+                <ColumnConstraints prefWidth="520"/>
+            </columnConstraints>
+
+            <!-- CAMPO NOMBRE -->
+            <Label text="Nombre:" style="-fx-text-fill:white;"
+                   GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+
+            <TextField fx:id="nameField"
+                       promptText="Nombre del equipo"
+                       GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+            <!-- BOTONES –– en la MISMA columna del TextField para quedar alineados -->
+            <HBox spacing="30" alignment="CENTER_LEFT"
+                  GridPane.rowIndex="1" GridPane.columnIndex="1">
+                <Button fx:id="guardarBtn" text="Guardar"
+                        style="-fx-background-color:#00C29A;
+                               -fx-text-fill:white;
+                               -fx-font-weight:bold;
+                               -fx-pref-width:160;    /* botones más grandes */
+                               -fx-pref-height:40;"/>
+
+                <Button fx:id="limpiarBtn" text="Limpiar"
+                        style="-fx-background-color:transparent;
+                               -fx-text-fill:white;
+                               -fx-border-color:white;
+                               -fx-border-width:1;
+                               -fx-pref-width:160;
+                               -fx-pref-height:40;"/>
+            </HBox>
+        </GridPane>
+
+        <!-- Margen exterior superior / inferior -->
+        <padding><Insets top="80" bottom="80" left="60" right="60"/></padding>
+    </VBox>
+</StackPane>

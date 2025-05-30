@@ -50,6 +50,10 @@ public class AppController {
         // Vista inicial por defecto
         cargarVista("/tfcc/inicio-view.fxml", btnInicio);
     }
+    public void openCrearEquipo() {
+        cargarVista("/tfcc/crear-equipo-view.fxml", null);
+    }
+
 
     private void cargarVista(String rutaFXML, Button botonActivo) {
         try {
