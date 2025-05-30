@@ -82,7 +82,8 @@ public class ImportadorCompleto {
                             String position = null;
                             if (positionsArray != null && positionsArray.size() > 0) {
                                 JsonObject firstPosition = positionsArray.get(0).getAsJsonObject();
-                                position = firstPosition.get("position").getAsString();
+                                String posEnIngles = firstPosition.get("position").getAsString();
+                                position = traducirPosicion(posEnIngles);
                             }
 
                             String jersey = jugadorObj.has("jersey_number") ? jugadorObj.get("jersey_number").getAsString() : null;
@@ -243,6 +244,7 @@ public class ImportadorCompleto {
                 }
             }
 
+
             pool.shutdown();
 
             System.out.println("🎯 RESUMEN FINAL:");
@@ -253,5 +255,57 @@ public class ImportadorCompleto {
             System.out.println(" - Tiros en 'tiros':           " + tirosCol.countDocuments());
             System.out.println("🏁 Importación completa");
         }
+    }
+
+    private static String traducirPosicion(String posicionIngles) {
+        Map<String, String> traducciones = new HashMap<>();
+        traducciones.put("Goalkeeper", "Arquero");
+        traducciones.put("Right Back", "Lateral Derecho");
+        traducciones.put("Left Back", "Lateral Izquierdo");
+        traducciones.put("Center Back", "Defensor Central");
+        traducciones.put("Right Wing Back", "Carrilero Derecho");
+        traducciones.put("Left Wing Back", "Carrilero Izquierdo");
+
+        // Nuevas combinaciones centrales
+        traducciones.put("Defensive Midfield", "Mediocentro Defensivo");
+        traducciones.put("Center Midfield", "Mediocampista Central");
+        traducciones.put("Left Center Midfield", "Mediocampista Izquierdo");
+        traducciones.put("Right Center Midfield", "Mediocampista Derecho");
+        traducciones.put("Attacking Midfield", "Mediapunta");
+        traducciones.put("Center Attacking Midfield", "Mediapunta Central");
+        traducciones.put("Center Defensive Midfield", "Mediocentro Defensivo Central");
+
+        // Nuevos laterales centrales
+        traducciones.put("Left Center Back", "Defensor Central Izquierdo");
+        traducciones.put("Right Center Back", "Defensor Central Derecho");
+
+        // Nuevos delanteros centrales
+        traducciones.put("Center Forward", "Delantero Centro");
+        traducciones.put("Right Center Forward", "Delantero Derecho");
+        traducciones.put("Left Center Forward", "Delantero Izquierdo");
+
+        // Delanteros y extremos
+        traducciones.put("Right Wing", "Extremo Derecho");
+        traducciones.put("Left Wing", "Extremo Izquierdo");
+        traducciones.put("Striker", "Delantero");
+        traducciones.put("Second Striker", "Segundo Delantero");
+
+        // 🚨 Nuevas posiciones detectadas
+        traducciones.put("Left Defensive Midfield", "Mediocentro Defensivo Izquierdo");
+        traducciones.put("Right Defensive Midfield", "Mediocentro Defensivo Derecho");
+        traducciones.put("Right Midfield", "Mediocampista Derecho");
+        traducciones.put("Left Midfield", "Mediocampista Izquierdo");
+
+        traducciones.put("Attacking Midfield", "Mediapunta");
+        traducciones.put("Center Attacking Midfield", "Mediapunta Central");
+        traducciones.put("Left Attacking Midfield", "Mediapunta Izquierdo");
+        traducciones.put("Right Attacking Midfield", "Mediapunta Derecho");
+
+
+        if (!traducciones.containsKey(posicionIngles)) {
+            System.out.println("⚠️ Posición sin traducir: " + posicionIngles);
+        }
+
+        return traducciones.getOrDefault(posicionIngles, posicionIngles);
     }
 }
