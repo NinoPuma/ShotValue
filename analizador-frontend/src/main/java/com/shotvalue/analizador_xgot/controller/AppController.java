@@ -57,6 +57,8 @@ public class AppController {
 
     private void cargarVista(String rutaFXML, Button botonActivo) {
         try {
+            boolean nueva = false;
+
             Parent root = viewCache.computeIfAbsent(rutaFXML, ruta -> {
                 try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
@@ -73,10 +75,22 @@ public class AppController {
                 }
             });
 
-            if (controladorVisible != null) controladorVisible.onHide();
-            controladorVisible = ctlCache.get(rutaFXML);
-            if (controladorVisible != null) controladorVisible.onShow();
+            // 👇 Si ya estaba cacheado, obtenemos el controlador
+            ViewLifecycle nuevoControlador = ctlCache.get(rutaFXML);
 
+            // 🔁 Notificar que el anterior se oculta
+            if (controladorVisible != null && controladorVisible != nuevoControlador) {
+                controladorVisible.onHide();
+            }
+
+            controladorVisible = nuevoControlador;
+
+            // ✅ Llamar a onShow() aunque sea primera vez
+            if (controladorVisible != null) {
+                controladorVisible.onShow();
+            }
+
+            // Mostrar vista
             setContenido(root);
             resetearEstilosMenu();
             if (botonActivo != null) {
