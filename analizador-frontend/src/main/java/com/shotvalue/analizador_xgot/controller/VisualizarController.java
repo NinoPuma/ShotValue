@@ -12,11 +12,9 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import org.controlsfx.control.textfield.TextFields;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.net.URL;
 import java.util.*;
-
 
 public class VisualizarController implements Initializable {
 
@@ -30,8 +28,6 @@ public class VisualizarController implements Initializable {
     private TextField playerSearchField;
     @FXML
     private ComboBox<String> thirdBox, laneBox;
-    @FXML
-    private ComboBox<String> eventTypeBox, visualizationTypeBox;
     @FXML
     private Button applyFiltersBtn;
     @FXML
@@ -51,7 +47,6 @@ public class VisualizarController implements Initializable {
 
     private JugadorApiClient jugadorApiClient = new JugadorApiClient();
 
-
     private List<Tiro> ultimoTiros = new ArrayList<>();
 
     @Override
@@ -65,13 +60,7 @@ public class VisualizarController implements Initializable {
         minuteFromSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 120, 0));
         minuteToSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 120, 90));
 
-        eventTypeBox.getItems().setAll("Tiros", "Pases", "Duelos");
-        eventTypeBox.setValue("Tiros");
-
-        visualizationTypeBox.getItems().setAll("Mapa de tiros", "Análisis de goles", "Tiros + Goles", "Mapa de calor", "Zonas xGOT");
-        visualizationTypeBox.setValue("Tiros + Goles");
-
-        periodBox.getItems().setAll("Todos los períodos", "1° Tiempo", "2° Tiempo", "ET", "Penales");
+        periodBox.getItems().setAll("Todos los períodos", "1° Tiempo", "2° Tiempo", "ET - 1° Tiempo", "ET - 2° Tiempo", "Penales");
         periodBox.setValue("Todos los períodos");
 
         teamSideBox.getItems().setAll("Ambos equipos", "Local", "Visitante");
@@ -98,6 +87,42 @@ public class VisualizarController implements Initializable {
 
         applyFiltersBtn.setOnAction(event -> aplicarFiltros());
 
+        periodBox.setOnAction(e -> {
+            String selected = periodBox.getValue();
+            boolean disableMinutos = false;
+
+            switch (selected) {
+                case "1° Tiempo" -> {
+                    minuteFromSpinner.getValueFactory().setValue(0);
+                    minuteToSpinner.getValueFactory().setValue(45);
+                }
+                case "2° Tiempo" -> {
+                    minuteFromSpinner.getValueFactory().setValue(45);
+                    minuteToSpinner.getValueFactory().setValue(90);
+                }
+                case "ET - 1° Tiempo" -> {
+                    minuteFromSpinner.getValueFactory().setValue(90);
+                    minuteToSpinner.getValueFactory().setValue(105);
+                }
+                case "ET - 2° Tiempo" -> {
+                    minuteFromSpinner.getValueFactory().setValue(105);
+                    minuteToSpinner.getValueFactory().setValue(120);
+                }
+
+                case "Penales" -> {
+                    disableMinutos = true;
+                }
+                default -> {
+                    minuteFromSpinner.setOpacity(disableMinutos ? 0.5 : 1.0);
+                    minuteToSpinner.setOpacity(disableMinutos ? 0.5 : 1.0);
+
+                }
+            }
+
+            minuteFromSpinner.setDisable(disableMinutos);
+            minuteToSpinner.setDisable(disableMinutos);
+        });
+
         new Thread(() -> {
             try {
                 List<String> nombres = jugadorApiClient.getNombresCompletos();
@@ -106,13 +131,30 @@ public class VisualizarController implements Initializable {
                 e.printStackTrace();
             }
         }).start();
-
     }
 
     private void aplicarFiltros() {
         Map<String, String> filtros = new HashMap<>();
-        filtros.put("minutoDesde", String.valueOf(minuteFromSpinner.getValue()));
-        filtros.put("minutoHasta", String.valueOf(minuteToSpinner.getValue()));
+        String periodoSeleccionado = periodBox.getValue();
+
+        String periodo = switch (periodBox.getValue()) {
+            case "1° Tiempo" -> "1";
+            case "2° Tiempo" -> "2";
+            case "ET - 1° Tiempo" -> "3";
+            case "ET - 2° Tiempo" -> "4";
+            case "Penales" -> "5";
+            default -> "";
+        };
+
+        if (!periodo.isEmpty()) filtros.put("period", periodo);
+
+        if (periodoSeleccionado.equals("Penales")) {
+            filtros.put("tipoJugada", "Penalty");
+        } else {
+            filtros.put("minutoDesde", String.valueOf(minuteFromSpinner.getValue()));
+            filtros.put("minutoHasta", String.valueOf(minuteToSpinner.getValue()));
+        }
+
         filtros.put("bodyPart", bodyPartBox.getValue());
         filtros.put("preAction", preActionBox.getValue());
         filtros.put("result", resultBox.getValue());
@@ -166,9 +208,6 @@ public class VisualizarController implements Initializable {
                 default -> color = Color.WHITE;
             }
 
-
-            System.out.println("Resultado raw: '" + resultadoRaw + "', normalizado: '" + resultado + "', color: " + color);
-
             gc.setStroke(color);
             gc.setLineWidth(2.0);
             gc.strokeLine(x1, y1, x2, y2);
@@ -204,13 +243,11 @@ public class VisualizarController implements Initializable {
 
             if (destinoY == null) continue;
 
-            // 🔧 Forzar visualización exacta para poste
             if ("post".equalsIgnoreCase(resultado)) {
                 destinoY = (destinoY < 40.0) ? 34.5 : 45.5;
-                if (destinoZ == null || destinoZ < 0.2) destinoZ = 0.2; // conservamos altura si es válida
+                if (destinoZ == null || destinoZ < 0.2) destinoZ = 0.2;
             }
 
-            // Seguridad por si falta z
             if (destinoZ == null || destinoZ < 0.2) destinoZ = 0.2;
             if (destinoZ > arcoZMax) destinoZ = arcoZMax;
 
@@ -219,8 +256,6 @@ public class VisualizarController implements Initializable {
 
             double xCanvas = paddingX + xRel * drawWidth;
             double yCanvas = paddingY + yRel * drawHeight;
-
-            System.out.println("🎯 " + resultado + " → xCanvas: " + xCanvas + " | yCanvas: " + yCanvas);
 
             Color color = switch (resultado) {
                 case "goal" -> Color.LIMEGREEN;
