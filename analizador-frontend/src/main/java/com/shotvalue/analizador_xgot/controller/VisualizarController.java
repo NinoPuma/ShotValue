@@ -137,6 +137,17 @@ public class VisualizarController implements Initializable {
         Map<String, String> filtros = new HashMap<>();
         String periodoSeleccionado = periodBox.getValue();
 
+        String periodo = switch (periodBox.getValue()) {
+            case "1° Tiempo" -> "1";
+            case "2° Tiempo" -> "2";
+            case "ET - 1° Tiempo" -> "3";
+            case "ET - 2° Tiempo" -> "4";
+            case "Penales" -> "5";
+            default -> "";
+        };
+
+        if (!periodo.isEmpty()) filtros.put("period", periodo);
+
         if (periodoSeleccionado.equals("Penales")) {
             filtros.put("tipoJugada", "Penalty");
         } else {

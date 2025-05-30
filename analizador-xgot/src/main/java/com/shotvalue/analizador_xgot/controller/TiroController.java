@@ -51,6 +51,14 @@ public class TiroController {
         String area = filtros.getOrDefault("area", "Cualquier zona");
         String xg = filtros.getOrDefault("xg", "");
         String jugador = filtros.getOrDefault("jugador", "");
+        String periodStr = filtros.getOrDefault("period", null);
+        Integer period = null;
+        if (periodStr != null && !periodStr.isBlank()) {
+            try {
+                period = Integer.parseInt(periodStr);
+            } catch (NumberFormatException ignored) {}
+        }
+
 
         return service.filtrarTiros(
                 minutoDesde,
@@ -60,7 +68,8 @@ public class TiroController {
                 result,
                 area,
                 xg,
-                jugador
+                jugador,
+                period
         );
     }
 

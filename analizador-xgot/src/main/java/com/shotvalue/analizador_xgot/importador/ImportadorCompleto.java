@@ -192,6 +192,7 @@ public class ImportadorCompleto {
                                 }
                                 tiro.setXgot(ev.getShot().getStatsbombXg());
                                 tiro.setMinuto(ev.getMinute());
+                                tiro.setPeriod(ev.getPeriod());
 
                                 // Jugador y equipo
                                 String jugadorNombre = jugador.getPlayerName();

@@ -1,5 +1,6 @@
 package com.shotvalue.analizador_xgot.model;
 
+import com.google.gson.annotations.SerializedName;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -18,6 +19,8 @@ public class Tiro {
     private String jugadorNombre;
     private String equipoNombre;
     private String equipoId;
+    @SerializedName("period")
+    private int period;
     private double xgot;
     private boolean porteroNoSeMueve;
     private boolean brazosExtendidos;
@@ -288,6 +291,9 @@ public class Tiro {
     public void setEquipoId(String equipoId) {
         this.equipoId = equipoId;
     }
+
+    public int getPeriod() { return period; }
+    public void setPeriod(int period) { this.period = period; }
 
     @Override
     public String toString() {
