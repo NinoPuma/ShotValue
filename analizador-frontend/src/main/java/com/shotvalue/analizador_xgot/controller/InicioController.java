@@ -3,6 +3,7 @@ package com.shotvalue.analizador_xgot.controller;
 import com.shotvalue.analizador_xgot.api.EstadisticasApiClient;
 import com.shotvalue.analizador_xgot.model.Jugador;
 import com.shotvalue.analizador_xgot.model.Tiro;
+import com.shotvalue.analizador_xgot.view.ViewLifecycle;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -10,7 +11,7 @@ import javafx.scene.control.ListView;
 
 import java.util.List;
 
-public class InicioController {
+public class InicioController implements ViewLifecycle {
 
     @FXML
     private Label equiposCount;
@@ -27,15 +28,12 @@ public class InicioController {
     @FXML
     private Label bienvenidaLabel;
 
-
     private String nombreUsuario;
 
     public void setNombreUsuario(String nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
         bienvenidaLabel.setText("¡Bienvenido, " + nombreUsuario + "!");
-        cargarDatos(); // 👈 ahora lo llamamos desde acá
     }
-
 
     @FXML
     public void initialize() {
@@ -74,4 +72,12 @@ public class InicioController {
         }).start();
     }
 
+    @Override
+    public void onShow() {
+        cargarDatos();
+    }
+
+    @Override
+    public void onHide() {
+    }
 }

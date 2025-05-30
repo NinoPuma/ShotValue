@@ -1,5 +1,6 @@
 package com.shotvalue.analizador_xgot.controller;
 
+import com.shotvalue.analizador_xgot.view.ViewLifecycle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -11,6 +12,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AppController {
 
@@ -26,10 +29,12 @@ public class AppController {
     private final String defaultStyle = "-fx-background-color: transparent; -fx-text-fill: white;";
     private final String activeStyle = "-fx-background-color: #0F7F7F; -fx-text-fill: white; -fx-font-weight: bold;";
 
-    // ✅ Este método ahora funciona como corresponde con contenidoCentro
+    private final Map<String, Parent> viewCache = new HashMap<>();
+    private final Map<String, ViewLifecycle> ctlCache = new HashMap<>();
+    private ViewLifecycle controladorVisible = null;
+
     public void setContenido(Node contenido) {
         contenidoCentro.getChildren().setAll(contenido);
-
         AnchorPane.setTopAnchor(contenido, 0.0);
         AnchorPane.setRightAnchor(contenido, 0.0);
         AnchorPane.setBottomAnchor(contenido, 0.0);
@@ -39,7 +44,7 @@ public class AppController {
     @FXML
     public void initialize() {
         btnInicio.setOnAction(e -> cargarVista("/tfcc/inicio-view.fxml", btnInicio));
-        btnEquipos.setOnAction(e -> cargarVista("/tfcc/equipos-controller.fxml", btnEquipos));
+        btnEquipos.setOnAction(e -> cargarVista("/tfcc/equipos-view.fxml", btnEquipos));
         btnRegistrar.setOnAction(e -> cargarVista("/tfcc/registrar-view.fxml", btnRegistrar));
         btnVisualizar.setOnAction(e -> cargarVista("/tfcc/visualizar-view.fxml", btnVisualizar));
         btnInformes.setOnAction(e -> cargarVista("/tfcc/informes-view.fxml", btnInformes));
@@ -47,21 +52,52 @@ public class AppController {
         btnAyuda.setOnAction(e -> cargarVista("/tfcc/ayuda-view.fxml", btnAyuda));
         btnSalir.setOnAction(e -> cerrarSesion());
 
-        // Vista inicial por defecto
         cargarVista("/tfcc/inicio-view.fxml", btnInicio);
     }
 
     private void cargarVista(String rutaFXML, Button botonActivo) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
-            Parent vista = loader.load();
-            setContenido(vista); // usamos el método nuevo
+            boolean nueva = false;
 
+            Parent root = viewCache.computeIfAbsent(rutaFXML, ruta -> {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
+                    Parent nodo = loader.load();
+                    Object controller = loader.getController();
+
+                    if (controller instanceof ViewLifecycle lifecycle) {
+                        ctlCache.put(ruta, lifecycle);
+                    }
+
+                    return nodo;
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            // 👇 Si ya estaba cacheado, obtenemos el controlador
+            ViewLifecycle nuevoControlador = ctlCache.get(rutaFXML);
+
+            // 🔁 Notificar que el anterior se oculta
+            if (controladorVisible != null && controladorVisible != nuevoControlador) {
+                controladorVisible.onHide();
+            }
+
+            controladorVisible = nuevoControlador;
+
+            // ✅ Llamar a onShow() aunque sea primera vez
+            if (controladorVisible != null) {
+                controladorVisible.onShow();
+            }
+
+            // Mostrar vista
+            setContenido(root);
             resetearEstilosMenu();
             if (botonActivo != null) {
                 botonActivo.setStyle(activeStyle);
             }
-        } catch (IOException ex) {
+
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -86,6 +122,11 @@ public class AppController {
             stage.setMaximized(false);
             stage.centerOnScreen();
             stage.show();
+
+            viewCache.clear();
+            ctlCache.clear();
+            controladorVisible = null;
+
         } catch (IOException ex) {
             ex.printStackTrace();
         }
