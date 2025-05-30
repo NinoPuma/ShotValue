@@ -3,7 +3,6 @@ package com.shotvalue.analizador_xgot.controller;
 import com.shotvalue.analizador_xgot.api.JugadorApiClient;
 import com.shotvalue.analizador_xgot.api.TiroApiClient;
 import com.shotvalue.analizador_xgot.model.Tiro;
-import com.shotvalue.analizador_xgot.view.ViewLifecycle;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,26 +16,41 @@ import org.controlsfx.control.textfield.TextFields;
 import java.net.URL;
 import java.util.*;
 
-public class VisualizarController implements Initializable, ViewLifecycle {
+public class VisualizarController implements Initializable {
 
-    @FXML private ComboBox<String> periodBox, teamSideBox, thirdBox, laneBox;
-    @FXML private ComboBox<String> eventTypeBox, visualizationTypeBox;
-    @FXML private ComboBox<String> areaBox, situationBox, bodyPartBox, preActionBox, resultBox;
-    @FXML private Spinner<Integer> minuteFromSpinner, minuteToSpinner;
-    @FXML private TextField playerSearchField, xgField;
-    @FXML private Button applyFiltersBtn;
-    @FXML private ImageView goalView, fieldMap;
-    @FXML private Label legendLabel;
-    @FXML private Canvas canvasTiros, canvasArco;
+    @FXML
+    private ComboBox<String> periodBox;
+    @FXML
+    private Spinner<Integer> minuteFromSpinner, minuteToSpinner;
+    @FXML
+    private ComboBox<String> teamSideBox;
+    @FXML
+    private TextField playerSearchField;
+    @FXML
+    private ComboBox<String> thirdBox, laneBox;
+    @FXML
+    private Button applyFiltersBtn;
+    @FXML
+    private ComboBox<String> areaBox, situationBox, bodyPartBox, preActionBox, resultBox;
+    @FXML
+    private TextField xgField;
+    @FXML
+    private ImageView goalView;
+    @FXML
+    private Label legendLabel;
+    @FXML
+    private Canvas canvasTiros;
+    @FXML
+    private Canvas canvasArco;
+    @FXML
+    private ImageView fieldMap;
 
-    private final JugadorApiClient jugadorApiClient = new JugadorApiClient();
+    private JugadorApiClient jugadorApiClient = new JugadorApiClient();
+
     private List<Tiro> ultimoTiros = new ArrayList<>();
-
-    private boolean filtrosAplicados = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Valores por defecto
         areaBox.getItems().addAll("Cualquier zona", "Área chica", "Área grande", "Fuera del área");
         situationBox.getItems().addAll("Cualquier situación", "Juego abierto", "Balón parado", "Contraataque");
         bodyPartBox.getItems().addAll("Cualquier parte", "Pie izquierdo", "Pie derecho", "Cabeza", "Otro");
@@ -46,13 +60,7 @@ public class VisualizarController implements Initializable, ViewLifecycle {
         minuteFromSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 120, 0));
         minuteToSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 120, 90));
 
-        eventTypeBox.getItems().setAll("Tiros", "Pases", "Duelos");
-        eventTypeBox.setValue("Tiros");
-
-        visualizationTypeBox.getItems().setAll("Mapa de tiros", "Análisis de goles", "Tiros + Goles", "Mapa de calor", "Zonas xGOT");
-        visualizationTypeBox.setValue("Tiros + Goles");
-
-        periodBox.getItems().setAll("Todos los períodos", "1° Tiempo", "2° Tiempo", "ET", "Penales");
+        periodBox.getItems().setAll("Todos los períodos", "1° Tiempo", "2° Tiempo", "ET - 1° Tiempo", "ET - 2° Tiempo", "Penales");
         periodBox.setValue("Todos los períodos");
 
         teamSideBox.getItems().setAll("Ambos equipos", "Local", "Visitante");
@@ -77,9 +85,42 @@ public class VisualizarController implements Initializable, ViewLifecycle {
         canvasArco.toFront();
         canvasArco.setMouseTransparent(true);
 
-        applyFiltersBtn.setOnAction(event -> {
-            aplicarFiltros();
-            filtrosAplicados = true;
+        applyFiltersBtn.setOnAction(event -> aplicarFiltros());
+
+        periodBox.setOnAction(e -> {
+            String selected = periodBox.getValue();
+            boolean disableMinutos = false;
+
+            switch (selected) {
+                case "1° Tiempo" -> {
+                    minuteFromSpinner.getValueFactory().setValue(0);
+                    minuteToSpinner.getValueFactory().setValue(45);
+                }
+                case "2° Tiempo" -> {
+                    minuteFromSpinner.getValueFactory().setValue(45);
+                    minuteToSpinner.getValueFactory().setValue(90);
+                }
+                case "ET - 1° Tiempo" -> {
+                    minuteFromSpinner.getValueFactory().setValue(90);
+                    minuteToSpinner.getValueFactory().setValue(105);
+                }
+                case "ET - 2° Tiempo" -> {
+                    minuteFromSpinner.getValueFactory().setValue(105);
+                    minuteToSpinner.getValueFactory().setValue(120);
+                }
+
+                case "Penales" -> {
+                    disableMinutos = true;
+                }
+                default -> {
+                    minuteFromSpinner.setOpacity(disableMinutos ? 0.5 : 1.0);
+                    minuteToSpinner.setOpacity(disableMinutos ? 0.5 : 1.0);
+
+                }
+            }
+
+            minuteFromSpinner.setDisable(disableMinutos);
+            minuteToSpinner.setDisable(disableMinutos);
         });
 
         new Thread(() -> {
@@ -92,22 +133,28 @@ public class VisualizarController implements Initializable, ViewLifecycle {
         }).start();
     }
 
-    @Override
-    public void onShow() {
-        if (filtrosAplicados) {
-            aplicarFiltros();
-        }
-    }
-
-    @Override
-    public void onHide() {
-        // No hacemos nada por ahora, pero podrías guardar estado aquí si fuera necesario
-    }
-
     private void aplicarFiltros() {
         Map<String, String> filtros = new HashMap<>();
-        filtros.put("minutoDesde", String.valueOf(minuteFromSpinner.getValue()));
-        filtros.put("minutoHasta", String.valueOf(minuteToSpinner.getValue()));
+        String periodoSeleccionado = periodBox.getValue();
+
+        String periodo = switch (periodBox.getValue()) {
+            case "1° Tiempo" -> "1";
+            case "2° Tiempo" -> "2";
+            case "ET - 1° Tiempo" -> "3";
+            case "ET - 2° Tiempo" -> "4";
+            case "Penales" -> "5";
+            default -> "";
+        };
+
+        if (!periodo.isEmpty()) filtros.put("period", periodo);
+
+        if (periodoSeleccionado.equals("Penales")) {
+            filtros.put("tipoJugada", "Penalty");
+        } else {
+            filtros.put("minutoDesde", String.valueOf(minuteFromSpinner.getValue()));
+            filtros.put("minutoHasta", String.valueOf(minuteToSpinner.getValue()));
+        }
+
         filtros.put("bodyPart", bodyPartBox.getValue());
         filtros.put("preAction", preActionBox.getValue());
         filtros.put("result", resultBox.getValue());
@@ -131,7 +178,9 @@ public class VisualizarController implements Initializable, ViewLifecycle {
 
     private void drawTirosInternal(List<Tiro> tiros) {
         GraphicsContext gc = canvasTiros.getGraphicsContext2D();
-        gc.clearRect(0, 0, canvasTiros.getWidth(), canvasTiros.getHeight());
+        double width = canvasTiros.getWidth();
+        double height = canvasTiros.getHeight();
+        gc.clearRect(0, 0, width, height);
 
         double escalaX = 354.4 / 120.0;
         double escalaY = 244.0 / 80.0;
@@ -149,14 +198,15 @@ public class VisualizarController implements Initializable, ViewLifecycle {
             String resultadoRaw = tiro.getResultado();
             String resultado = resultadoRaw != null ? resultadoRaw.toLowerCase().trim() : "";
 
-            Color color = switch (resultado) {
-                case "goal" -> Color.LIMEGREEN;
-                case "saved" -> Color.GOLD;
-                case "off t" -> Color.CRIMSON;
-                case "blocked" -> Color.ORANGE;
-                case "post" -> Color.GRAY;
-                default -> Color.WHITE;
-            };
+            Color color;
+            switch (resultado) {
+                case "goal" -> color = Color.LIMEGREEN;
+                case "saved" -> color = Color.GOLD;
+                case "off t" -> color = Color.CRIMSON;
+                case "blocked" -> color = Color.ORANGE;
+                case "post" -> color = Color.GRAY;
+                default -> color = Color.WHITE;
+            }
 
             gc.setStroke(color);
             gc.setLineWidth(2.0);
@@ -171,10 +221,13 @@ public class VisualizarController implements Initializable, ViewLifecycle {
         GraphicsContext gc = canvasArco.getGraphicsContext2D();
         gc.clearRect(0, 0, canvasArco.getWidth(), canvasArco.getHeight());
 
+        double canvasWidth = canvasArco.getWidth();   // 500
+        double canvasHeight = canvasArco.getHeight(); // 150
+
         double paddingX = 8.0;
         double paddingY = 8.0;
-        double drawWidth = canvasArco.getWidth() - 2 * paddingX;
-        double drawHeight = canvasArco.getHeight() - 2 * paddingY;
+        double drawWidth = canvasWidth - 2 * paddingX;
+        double drawHeight = canvasHeight - 2 * paddingY;
 
         double arcoYMin = 30.0;
         double arcoYMax = 50.0;
@@ -191,7 +244,7 @@ public class VisualizarController implements Initializable, ViewLifecycle {
             if (destinoY == null) continue;
 
             if ("post".equalsIgnoreCase(resultado)) {
-                destinoY = destinoY < 40.0 ? 34.5 : 45.5;
+                destinoY = (destinoY < 40.0) ? 34.5 : 45.5;
                 if (destinoZ == null || destinoZ < 0.2) destinoZ = 0.2;
             }
 

@@ -13,6 +13,8 @@ public class Shot {
     @SerializedName("end_location")
     private List<Double> endLocation;
 
+    @SerializedName("type")
+    private NamedValue type;
     private NamedValue technique;
     private NamedValue zone;
 
@@ -66,6 +68,14 @@ public class Shot {
 
     public void setEndLocation(List<Double> endLocation) {
         this.endLocation = endLocation;
+    }
+
+    public NamedValue getType() {
+        return type;
+    }
+
+    public void setType(NamedValue type) {
+        this.type = type;
     }
 
 }

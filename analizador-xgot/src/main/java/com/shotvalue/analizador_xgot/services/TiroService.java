@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class TiroService {
@@ -37,10 +38,10 @@ public class TiroService {
             int minutoDesde, int minutoHasta,
             String parteDelCuerpo, String tipoDeJugada,
             String resultado, String zonaDelDisparo,
-            String xgotStr, String nombreJugador
+            String xgotStr, String nombreJugador,
+            Integer period
     ) {
         double xgotFiltro = -1.0;
-
         if (xgotStr != null && !xgotStr.isEmpty()) {
             try {
                 xgotFiltro = Double.parseDouble(xgotStr);
@@ -52,15 +53,20 @@ public class TiroService {
         double finalXgotFiltro = xgotFiltro;
         String nombre = nombreJugador != null ? nombreJugador.toLowerCase() : "";
 
-        return repo.findAll().stream()
+        Stream<Tiro> stream = repo.findAll().stream()
                 .filter(t -> t.getMinuto() >= minutoDesde && t.getMinuto() <= minutoHasta)
                 .filter(t -> parteDelCuerpo.equals("Cualquier parte") || t.getParteDelCuerpo().equalsIgnoreCase(parteDelCuerpo))
                 .filter(t -> tipoDeJugada.equals("Todas las acciones") || t.getTipoDeJugada().equalsIgnoreCase(tipoDeJugada))
                 .filter(t -> resultado.equals("Todos los resultados") || t.getResultado().equalsIgnoreCase(resultado))
                 .filter(t -> zonaDelDisparo.equals("Cualquier zona") || t.getZonaDelDisparo().equalsIgnoreCase(zonaDelDisparo))
                 .filter(t -> finalXgotFiltro < 0 || t.getXgot() >= finalXgotFiltro)
-                .filter(t -> nombre.isEmpty() || (t.getJugadorNombre() != null && t.getJugadorNombre().toLowerCase().contains(nombre)))
-                .collect(Collectors.toList());
+                .filter(t -> nombre.isEmpty() || (t.getJugadorNombre() != null && t.getJugadorNombre().toLowerCase().contains(nombre)));
+
+        if (period != null) {
+            stream = stream.filter(t -> t.getPeriod() == period);
+        }
+
+        return stream.collect(Collectors.toList());
     }
 
 }
