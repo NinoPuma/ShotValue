@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/tiros")
@@ -40,22 +41,22 @@ public class TiroController {
     }
 
     // ✅ Nuevo endpoint para filtros desde el frontend
-    @GetMapping("/buscar")
-    public List<Tiro> filtrarTiros(
-            @RequestParam int minutoDesde,
-            @RequestParam int minutoHasta,
-            @RequestParam String bodyPart,
-            @RequestParam String preAction,
-            @RequestParam String result,
-            @RequestParam String area,
-            @RequestParam(required = false) String xg,
-            @RequestParam(required = false) String jugador
-    ) {
+    @PostMapping("/filtrar")
+    public List<Tiro> filtrarTiros(@RequestBody Map<String, String> filtros) {
+        int minutoDesde = parseInt(filtros.getOrDefault("minutoDesde", "0"));
+        int minutoHasta = parseInt(filtros.getOrDefault("minutoHasta", "120"));
+        String parte = filtros.getOrDefault("bodyPart", "Cualquier parte");
+        String tipo = filtros.getOrDefault("tipoJugada", "Todas las acciones");
+        String result = filtros.getOrDefault("result", "Todos los resultados");
+        String area = filtros.getOrDefault("area", "Cualquier zona");
+        String xg = filtros.getOrDefault("xg", "");
+        String jugador = filtros.getOrDefault("jugador", "");
+
         return service.filtrarTiros(
                 minutoDesde,
                 minutoHasta,
-                bodyPart,
-                preAction,
+                parte,
+                tipo,
                 result,
                 area,
                 xg,
@@ -63,4 +64,11 @@ public class TiroController {
         );
     }
 
+    private int parseInt(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
 }

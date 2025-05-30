@@ -22,22 +22,19 @@ public class TiroApiClient {
     private static final String BASE_URL = "http://localhost:8080/api";
 
     public static List<Tiro> filtrarTiros(Map<String, String> filtros) throws Exception {
-        String query = filtros.entrySet().stream()
-                .map(entry -> URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8) + "=" +
-                        URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8))
-                .collect(Collectors.joining("&"));
-
-        URI uri = URI.create(BASE_URL + "/tiros/buscar?" + query);
+        String json = gson.toJson(filtros);
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(uri)
-                .GET()
+                .uri(URI.create(BASE_URL + "/tiros/filtrar"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json, StandardCharsets.UTF_8))
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+        System.out.println("🧪 JSON recibido: " + response.body()); // depuración
+
         Type listType = new TypeToken<List<Tiro>>() {}.getType();
         return gson.fromJson(response.body(), listType);
     }
-
 }

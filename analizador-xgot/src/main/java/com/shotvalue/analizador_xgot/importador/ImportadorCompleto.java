@@ -186,6 +186,10 @@ public class ImportadorCompleto {
                                 tiro.setParteDelCuerpo(ev.getShot().getBodyPart() != null ? ev.getShot().getBodyPart().getName() : "Desconocida");
                                 tiro.setTipoDeJugada(ev.getShot().getTechnique() != null ? ev.getShot().getTechnique().getName() : "Desconocida");
                                 tiro.setZonaDelDisparo(ev.getShot().getZone() != null ? ev.getShot().getZone().getName() : "Sin zona");
+                                // Si el tipo de jugada es un penal, lo seteamos explícitamente
+                                if (ev.getShot().getType() != null && "Penalty".equalsIgnoreCase(ev.getShot().getType().getName())) {
+                                    tiro.setTipoDeJugada("Penalty");
+                                }
                                 tiro.setXgot(ev.getShot().getStatsbombXg());
                                 tiro.setMinuto(ev.getMinute());
 
