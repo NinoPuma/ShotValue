@@ -76,7 +76,9 @@ public class LoginController {
 
                                 InicioController inicioController = contentLoader.getController();
                                 inicioController.setNombreUsuario(nombre);
-                                inicioController.onShow();
+                                inicioController.setAppController(appController);
+                                
+
                                 appController.setContenido(inicioView); // ✅ Ahora funciona
 
                                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

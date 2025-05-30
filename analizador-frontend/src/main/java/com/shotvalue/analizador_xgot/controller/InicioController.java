@@ -3,15 +3,15 @@ package com.shotvalue.analizador_xgot.controller;
 import com.shotvalue.analizador_xgot.api.EstadisticasApiClient;
 import com.shotvalue.analizador_xgot.model.Jugador;
 import com.shotvalue.analizador_xgot.model.Tiro;
-import com.shotvalue.analizador_xgot.view.ViewLifecycle;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 
 import java.util.List;
 
-public class InicioController implements ViewLifecycle {
+public class InicioController {
 
     @FXML
     private Label equiposCount;
@@ -27,16 +27,33 @@ public class InicioController implements ViewLifecycle {
     private Label fechaLabel;
     @FXML
     private Label bienvenidaLabel;
+    @FXML
+    private Button btnCrearEquipo;
+    private AppController appController;
 
     private String nombreUsuario;
+
+    public void setAppController(AppController appController) {
+        this.appController = appController;
+    }
 
     public void setNombreUsuario(String nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
         bienvenidaLabel.setText("¡Bienvenido, " + nombreUsuario + "!");
+        cargarDatos(); // 👈 ahora lo llamamos desde acá
     }
+
 
     @FXML
     public void initialize() {
+        // resto de tu initialize (si lo hubiera)
+
+        // acción del botón
+        btnCrearEquipo.setOnAction(e -> {
+            if (appController != null) {
+                appController.openCrearEquipo();   // método nuevo en AppController
+            }
+        });
     }
 
     private void cargarDatos() {
@@ -72,12 +89,4 @@ public class InicioController implements ViewLifecycle {
         }).start();
     }
 
-    @Override
-    public void onShow() {
-        cargarDatos();
-    }
-
-    @Override
-    public void onHide() {
-    }
 }
