@@ -3,6 +3,7 @@ package com.shotvalue.analizador_xgot.controller;
 import com.shotvalue.analizador_xgot.api.JugadorApiClient;
 import com.shotvalue.analizador_xgot.api.TiroApiClient;
 import com.shotvalue.analizador_xgot.model.Tiro;
+import com.shotvalue.analizador_xgot.view.ViewLifecycle;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -12,50 +13,30 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import org.controlsfx.control.textfield.TextFields;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.net.URL;
 import java.util.*;
 
+public class VisualizarController implements Initializable, ViewLifecycle {
 
-public class VisualizarController implements Initializable {
+    @FXML private ComboBox<String> periodBox, teamSideBox, thirdBox, laneBox;
+    @FXML private ComboBox<String> eventTypeBox, visualizationTypeBox;
+    @FXML private ComboBox<String> areaBox, situationBox, bodyPartBox, preActionBox, resultBox;
+    @FXML private Spinner<Integer> minuteFromSpinner, minuteToSpinner;
+    @FXML private TextField playerSearchField, xgField;
+    @FXML private Button applyFiltersBtn;
+    @FXML private ImageView goalView, fieldMap;
+    @FXML private Label legendLabel;
+    @FXML private Canvas canvasTiros, canvasArco;
 
-    @FXML
-    private ComboBox<String> periodBox;
-    @FXML
-    private Spinner<Integer> minuteFromSpinner, minuteToSpinner;
-    @FXML
-    private ComboBox<String> teamSideBox;
-    @FXML
-    private TextField playerSearchField;
-    @FXML
-    private ComboBox<String> thirdBox, laneBox;
-    @FXML
-    private ComboBox<String> eventTypeBox, visualizationTypeBox;
-    @FXML
-    private Button applyFiltersBtn;
-    @FXML
-    private ComboBox<String> areaBox, situationBox, bodyPartBox, preActionBox, resultBox;
-    @FXML
-    private TextField xgField;
-    @FXML
-    private ImageView goalView;
-    @FXML
-    private Label legendLabel;
-    @FXML
-    private Canvas canvasTiros;
-    @FXML
-    private Canvas canvasArco;
-    @FXML
-    private ImageView fieldMap;
-
-    private JugadorApiClient jugadorApiClient = new JugadorApiClient();
-
-
+    private final JugadorApiClient jugadorApiClient = new JugadorApiClient();
     private List<Tiro> ultimoTiros = new ArrayList<>();
+
+    private boolean filtrosAplicados = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Valores por defecto
         areaBox.getItems().addAll("Cualquier zona", "Área chica", "Área grande", "Fuera del área");
         situationBox.getItems().addAll("Cualquier situación", "Juego abierto", "Balón parado", "Contraataque");
         bodyPartBox.getItems().addAll("Cualquier parte", "Pie izquierdo", "Pie derecho", "Cabeza", "Otro");
@@ -96,7 +77,10 @@ public class VisualizarController implements Initializable {
         canvasArco.toFront();
         canvasArco.setMouseTransparent(true);
 
-        applyFiltersBtn.setOnAction(event -> aplicarFiltros());
+        applyFiltersBtn.setOnAction(event -> {
+            aplicarFiltros();
+            filtrosAplicados = true;
+        });
 
         new Thread(() -> {
             try {
@@ -106,7 +90,18 @@ public class VisualizarController implements Initializable {
                 e.printStackTrace();
             }
         }).start();
+    }
 
+    @Override
+    public void onShow() {
+        if (filtrosAplicados) {
+            aplicarFiltros();
+        }
+    }
+
+    @Override
+    public void onHide() {
+        // No hacemos nada por ahora, pero podrías guardar estado aquí si fuera necesario
     }
 
     private void aplicarFiltros() {
@@ -136,9 +131,7 @@ public class VisualizarController implements Initializable {
 
     private void drawTirosInternal(List<Tiro> tiros) {
         GraphicsContext gc = canvasTiros.getGraphicsContext2D();
-        double width = canvasTiros.getWidth();
-        double height = canvasTiros.getHeight();
-        gc.clearRect(0, 0, width, height);
+        gc.clearRect(0, 0, canvasTiros.getWidth(), canvasTiros.getHeight());
 
         double escalaX = 354.4 / 120.0;
         double escalaY = 244.0 / 80.0;
@@ -156,18 +149,14 @@ public class VisualizarController implements Initializable {
             String resultadoRaw = tiro.getResultado();
             String resultado = resultadoRaw != null ? resultadoRaw.toLowerCase().trim() : "";
 
-            Color color;
-            switch (resultado) {
-                case "goal" -> color = Color.LIMEGREEN;
-                case "saved" -> color = Color.GOLD;
-                case "off t" -> color = Color.CRIMSON;
-                case "blocked" -> color = Color.ORANGE;
-                case "post" -> color = Color.GRAY;
-                default -> color = Color.WHITE;
-            }
-
-
-            System.out.println("Resultado raw: '" + resultadoRaw + "', normalizado: '" + resultado + "', color: " + color);
+            Color color = switch (resultado) {
+                case "goal" -> Color.LIMEGREEN;
+                case "saved" -> Color.GOLD;
+                case "off t" -> Color.CRIMSON;
+                case "blocked" -> Color.ORANGE;
+                case "post" -> Color.GRAY;
+                default -> Color.WHITE;
+            };
 
             gc.setStroke(color);
             gc.setLineWidth(2.0);
@@ -182,13 +171,10 @@ public class VisualizarController implements Initializable {
         GraphicsContext gc = canvasArco.getGraphicsContext2D();
         gc.clearRect(0, 0, canvasArco.getWidth(), canvasArco.getHeight());
 
-        double canvasWidth = canvasArco.getWidth();   // 500
-        double canvasHeight = canvasArco.getHeight(); // 150
-
         double paddingX = 8.0;
         double paddingY = 8.0;
-        double drawWidth = canvasWidth - 2 * paddingX;
-        double drawHeight = canvasHeight - 2 * paddingY;
+        double drawWidth = canvasArco.getWidth() - 2 * paddingX;
+        double drawHeight = canvasArco.getHeight() - 2 * paddingY;
 
         double arcoYMin = 30.0;
         double arcoYMax = 50.0;
@@ -204,13 +190,11 @@ public class VisualizarController implements Initializable {
 
             if (destinoY == null) continue;
 
-            // 🔧 Forzar visualización exacta para poste
             if ("post".equalsIgnoreCase(resultado)) {
-                destinoY = (destinoY < 40.0) ? 34.5 : 45.5;
-                if (destinoZ == null || destinoZ < 0.2) destinoZ = 0.2; // conservamos altura si es válida
+                destinoY = destinoY < 40.0 ? 34.5 : 45.5;
+                if (destinoZ == null || destinoZ < 0.2) destinoZ = 0.2;
             }
 
-            // Seguridad por si falta z
             if (destinoZ == null || destinoZ < 0.2) destinoZ = 0.2;
             if (destinoZ > arcoZMax) destinoZ = arcoZMax;
 
@@ -219,8 +203,6 @@ public class VisualizarController implements Initializable {
 
             double xCanvas = paddingX + xRel * drawWidth;
             double yCanvas = paddingY + yRel * drawHeight;
-
-            System.out.println("🎯 " + resultado + " → xCanvas: " + xCanvas + " | yCanvas: " + yCanvas);
 
             Color color = switch (resultado) {
                 case "goal" -> Color.LIMEGREEN;
