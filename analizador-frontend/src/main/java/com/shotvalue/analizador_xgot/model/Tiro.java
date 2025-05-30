@@ -75,7 +75,7 @@ public class Tiro {
         return destinoZ;
     }
 
-    public void setDestinoZ() {
+    public void setDestinoZ(Double destinoZ) {
         this.destinoZ = destinoZ;
     }
 

@@ -78,7 +78,13 @@ public class ImportadorCompleto {
                             if (!jugadoresInsertados.add(playerId)) continue;
 
                             String playerName = jugadorObj.get("player_name").getAsString();
-                            String position = jugadorObj.has("position") ? jugadorObj.get("position").getAsString() : null;
+                            JsonArray positionsArray = jugadorObj.getAsJsonArray("positions");
+                            String position = null;
+                            if (positionsArray != null && positionsArray.size() > 0) {
+                                JsonObject firstPosition = positionsArray.get(0).getAsJsonObject();
+                                position = firstPosition.get("position").getAsString();
+                            }
+
                             String jersey = jugadorObj.has("jersey_number") ? jugadorObj.get("jersey_number").getAsString() : null;
 
                             Document nuevoJugador = new Document("_id", playerId)
