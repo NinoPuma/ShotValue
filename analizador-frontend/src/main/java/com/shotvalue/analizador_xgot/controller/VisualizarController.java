@@ -182,40 +182,55 @@ public class VisualizarController implements Initializable {
         GraphicsContext gc = canvasArco.getGraphicsContext2D();
         gc.clearRect(0, 0, canvasArco.getWidth(), canvasArco.getHeight());
 
-        // 🔧 Medidas del arco real
-        double arcoAncho = 7.32;
-        double arcoAlto = 2.44;
+        double canvasWidth = canvasArco.getWidth();   // 500
+        double canvasHeight = canvasArco.getHeight(); // 150
 
-        // 🔧 Datos obtenidos con los clics
-        double offsetX = 119.20;
-        double offsetY = 16.80;
-        double escalaX = 264.0 / arcoAncho;
-        double escalaY = 104.0 / arcoAlto;
+        double paddingX = 8.0;
+        double paddingY = 8.0;
+        double drawWidth = canvasWidth - 2 * paddingX;
+        double drawHeight = canvasHeight - 2 * paddingY;
 
-        double arcoInicioX = 120 - arcoAncho / 2;
-        double arcoInicioY = 40 - arcoAlto / 2;
+        double arcoYMin = 30.0;
+        double arcoYMax = 50.0;
+        double arcoZMin = 0.0;
+        double arcoZMax = 2.44;
 
         for (Tiro tiro : tiros) {
-            if (tiro.getDestinoX() == null || tiro.getDestinoY() == null) continue;
+            String resultado = tiro.getResultado() != null ? tiro.getResultado().trim().toLowerCase() : "";
+            if (!(resultado.equals("goal") || resultado.equals("saved") || resultado.equals("post"))) continue;
 
-            double xRelativo = tiro.getDestinoX() - arcoInicioX;
-            double yRelativo = tiro.getDestinoY() - arcoInicioY;
+            Double destinoY = tiro.getDestinoY();
+            Double destinoZ = tiro.getDestinoZ();
 
-            if (xRelativo < 0 || xRelativo > arcoAncho || yRelativo < 0 || yRelativo > arcoAlto)
-                continue;
+            if (destinoY == null) continue;
 
-            double x = offsetX + xRelativo * escalaX;
-            double y = offsetY + yRelativo * escalaY;
+            // 🔧 Forzar visualización exacta para poste
+            if ("post".equalsIgnoreCase(resultado)) {
+                destinoY = (destinoY < 40.0) ? 34.5 : 45.5;
+                if (destinoZ == null || destinoZ < 0.2) destinoZ = 0.2; // conservamos altura si es válida
+            }
 
-            Color color = switch (tiro.getResultado().toLowerCase()) {
-                case "gol" -> Color.LIME;
-                case "atajado" -> Color.DODGERBLUE;
-                default -> Color.GREY;
+            // Seguridad por si falta z
+            if (destinoZ == null || destinoZ < 0.2) destinoZ = 0.2;
+            if (destinoZ > arcoZMax) destinoZ = arcoZMax;
+
+            double xRel = (destinoY - arcoYMin) / (arcoYMax - arcoYMin);
+            double yRel = 1.0 - (destinoZ - arcoZMin) / (arcoZMax - arcoZMin);
+
+            double xCanvas = paddingX + xRel * drawWidth;
+            double yCanvas = paddingY + yRel * drawHeight;
+
+            System.out.println("🎯 " + resultado + " → xCanvas: " + xCanvas + " | yCanvas: " + yCanvas);
+
+            Color color = switch (resultado) {
+                case "goal" -> Color.LIMEGREEN;
+                case "saved" -> Color.GOLD;
+                case "post" -> Color.GRAY;
+                default -> Color.DARKGRAY;
             };
 
             gc.setFill(color);
-            gc.fillOval(x - 4, y - 4, 8, 8);
+            gc.fillOval(xCanvas - 4, yCanvas - 4, 8, 8);
         }
     }
-
 }

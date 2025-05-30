@@ -11,6 +11,7 @@ public class Tiro {
     private double y;
     private Double destinoX;
     private Double destinoY;
+    private Double destinoZ;
     private String parteDelCuerpo;
     private String tipoDeJugada;
     private String resultado;
@@ -121,6 +122,13 @@ public class Tiro {
         this.destinoY = destinoY;
     }
 
+    public Double getDestinoZ() {
+        return destinoZ;
+    }
+
+    public void setDestinoZ(Double destinoZ) {
+        this.destinoZ = destinoZ;
+    }
     public boolean isPorteroNoSeMueve() {
         return porteroNoSeMueve;
     }

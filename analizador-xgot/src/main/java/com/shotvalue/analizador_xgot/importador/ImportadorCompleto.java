@@ -78,7 +78,13 @@ public class ImportadorCompleto {
                             if (!jugadoresInsertados.add(playerId)) continue;
 
                             String playerName = jugadorObj.get("player_name").getAsString();
-                            String position = jugadorObj.has("position") ? jugadorObj.get("position").getAsString() : null;
+                            JsonArray positionsArray = jugadorObj.getAsJsonArray("positions");
+                            String position = null;
+                            if (positionsArray != null && positionsArray.size() > 0) {
+                                JsonObject firstPosition = positionsArray.get(0).getAsJsonObject();
+                                position = firstPosition.get("position").getAsString();
+                            }
+
                             String jersey = jugadorObj.has("jersey_number") ? jugadorObj.get("jersey_number").getAsString() : null;
 
                             Document nuevoJugador = new Document("_id", playerId)
@@ -122,6 +128,12 @@ public class ImportadorCompleto {
                         continue;
                     }
 
+                    if (tirosCol.countDocuments(Filters.eq("partidoId", matchId)) > 0) {
+                        System.out.println("⏩ Tiros ya importados para " + matchId);
+                        continue;
+                    }
+
+
                     futures.add(pool.submit(() -> {
                         try (FileReader reader = new FileReader(eventoFile.toFile())) {
                             Type listType = new TypeToken<List<Evento>>() {
@@ -164,6 +176,9 @@ public class ImportadorCompleto {
                                 if (ev.getShot().getEndLocation() != null && ev.getShot().getEndLocation().size() >= 2) {
                                     tiro.setDestinoX(ev.getShot().getEndLocation().get(0));
                                     tiro.setDestinoY(ev.getShot().getEndLocation().get(1));
+                                    if (ev.getShot().getEndLocation().size() >= 3) {
+                                        tiro.setDestinoZ(ev.getShot().getEndLocation().get(2));
+                                    }
                                 }
 
                                 tiro.setResultado(ev.getShot().getOutcome() != null ? ev.getShot().getOutcome().getName() : "Desconocido");
