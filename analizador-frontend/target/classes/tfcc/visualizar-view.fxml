@@ -6,6 +6,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.Circle?>
+
 <BorderPane xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.shotvalue.analizador_xgot.controller.VisualizarController">
@@ -131,6 +132,7 @@
                         </ImageView>
                         <Canvas fx:id="canvasTiros" width="500" height="250" />
                     </StackPane>
+
                     <StackPane>
                         <ImageView fx:id="goalView" fitWidth="500" fitHeight="150" preserveRatio="true">
                             <image>
@@ -139,9 +141,23 @@
                         </ImageView>
                         <Canvas fx:id="canvasArco" width="500" height="150" />
                     </StackPane>
-                    <Label fx:id="legendLabel"
-                           text="Leyenda: ● Gol | ◯ xG | ✖ Fallo"
-                           textFill="white" style="-fx-font-size: 12px;"/>
+
+                    <!-- NUEVA LEYENDA DEBAJO DEL ARCO -->
+                    <HBox spacing="10" alignment="CENTER">
+                        <Label text="Leyenda:" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
+                        <HBox spacing="5" alignment="CENTER">
+                            <Circle radius="6" fill="LIMEGREEN"/>
+                            <Label text="Gol" style="-fx-text-fill: white;"/>
+                        </HBox>
+                        <HBox spacing="5" alignment="CENTER">
+                            <Circle radius="6" fill="GOLD"/>
+                            <Label text="Atajado" style="-fx-text-fill: white;"/>
+                        </HBox>
+                        <HBox spacing="5" alignment="CENTER">
+                            <Circle radius="6" fill="GRAY"/>
+                            <Label text="Poste" style="-fx-text-fill: white;"/>
+                        </HBox>
+                    </HBox>
 
                 </VBox>
             </HBox>
