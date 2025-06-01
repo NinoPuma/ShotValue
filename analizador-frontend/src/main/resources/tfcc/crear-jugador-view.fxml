@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.shotvalue.analizador_xgot.controller.CrearJugadorController"
+            style="-fx-background-color:#262626;">
+
+    <VBox alignment="TOP_LEFT"
+          spacing="30"
+          AnchorPane.topAnchor="20"
+          AnchorPane.leftAnchor="20">
+
+        <!-- logo -->
+        <ImageView fx:id="logoImage" fitWidth="80" fitHeight="80" preserveRatio="true">
+            <image><Image url="@/img/logo.png"/></image>
+        </ImageView>
+
+        <!-- título -->
+        <Label text="Crear Jugador"
+               style="-fx-text-fill:white; -fx-font-size:26px; -fx-font-weight:bold;"/>
+
+        <!-- grid de campos -->
+        <GridPane hgap="15" vgap="15">
+            <columnConstraints>
+                <!-- ambas columnas alineadas a la izquierda -->
+                <ColumnConstraints halignment="LEFT" minWidth="140"/>
+                <ColumnConstraints halignment="LEFT" minWidth="260"/>
+            </columnConstraints>
+
+            <Label text="Equipo:" style="-fx-text-fill:white;"
+                   GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <ComboBox fx:id="equipoBox" promptText="Selecciona equipo"
+                      GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+            <Label text="Nombre Completo:" style="-fx-text-fill:white;"
+                   GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <TextField fx:id="nombreField" promptText="Ej: Lionel Messi"
+                       GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+            <Label text="Número de Camiseta:" style="-fx-text-fill:white;"
+                   GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <TextField fx:id="dorsalField" promptText="Ej: 10"
+                       GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+            <Label text="Posición:" style="-fx-text-fill:white;"
+                   GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <ComboBox fx:id="posicionBox" promptText="Selecciona posición"
+                      GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+        </GridPane>
+
+        <!-- botones -->
+        <HBox spacing="15">
+            <Button fx:id="guardarBtn" text="Guardar"
+                    style="-fx-background-color:#00C29A;-fx-text-fill:white;-fx-font-weight:bold;-fx-pref-width:120;"/>
+            <Button fx:id="limpiarBtn" text="Limpiar"
+                    style="-fx-background-color:transparent;-fx-text-fill:white;-fx-border-color:white;-fx-pref-width:120;"/>
+        </HBox>
+
+        <padding><Insets bottom="30"/></padding>
+    </VBox>
+</AnchorPane>

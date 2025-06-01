@@ -8,7 +8,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class JugadorApiClient {
 
@@ -58,4 +60,22 @@ public class JugadorApiClient {
                     "Error al obtener jugadores del equipo " + teamId + ": " + response.statusCode());
         }
     }
+
+    public static CompletableFuture<Void> saveJugadorAsync(Jugador jugador){
+        String json = gson.toJson(jugador);
+
+        HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL))
+                .header("Content-Type","application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json, StandardCharsets.UTF_8))
+                .build();
+
+        return client.sendAsync(req, HttpResponse.BodyHandlers.ofString())
+                .thenAccept(resp -> {
+                    if(resp.statusCode() < 200 || resp.statusCode() >= 300){
+                        throw new RuntimeException("Error al crear jugador: "+resp.body());
+                    }
+                });
+    }
+
 }
