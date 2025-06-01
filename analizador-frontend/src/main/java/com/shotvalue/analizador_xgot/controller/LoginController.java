@@ -5,14 +5,16 @@ import com.google.gson.GsonBuilder;
 import com.shotvalue.analizador_xgot.model.Usuario;
 import com.shotvalue.analizador_xgot.util.LocalDateAdapter;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import javafx.event.ActionEvent;
-import javafx.scene.Node;
 
 import java.io.IOException;
 import java.net.URI;
@@ -25,90 +27,88 @@ import java.util.Map;
 
 public class LoginController {
 
-    @FXML
-    private TextField usernameField; // usamos esto como emailField
-    @FXML
-    private PasswordField passwordField;
+    /* ----------- FXML ----------- */
+    @FXML private TextField     usernameField;   // se usa como email
+    @FXML private PasswordField passwordField;
 
+    /* ----------- helpers ----------- */
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final Gson gson = new GsonBuilder()
             .registerTypeAdapter(java.time.LocalDate.class, new LocalDateAdapter())
             .create();
 
+    /* ================================================================== */
     @FXML
     private void handleLogin(ActionEvent event) {
-        String email = usernameField.getText();
-        String password = passwordField.getText();
+
+        String email    = usernameField.getText().trim();
+        String password = passwordField.getText().trim();
 
         if (email.isEmpty() || password.isEmpty()) {
             showAlert("Completa todos los campos.");
             return;
         }
 
-        Map<String, String> loginData = new HashMap<>();
-        loginData.put("email", email);
-        loginData.put("password", password);
+        Map<String, String> body = new HashMap<>();
+        body.put("email", email);
+        body.put("password", password);
 
-        String json = gson.toJson(loginData);
-
-        HttpRequest request = HttpRequest.newBuilder()
+        HttpRequest req = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/api/login"))
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(json, StandardCharsets.UTF_8))
+                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(body), StandardCharsets.UTF_8))
                 .build();
 
-        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenAccept(response -> {
-                    if (response.statusCode() == 200) {
-                        String responseBody = response.body();
-                        Usuario usuario = gson.fromJson(responseBody, Usuario.class);
-                        String nombre = usuario.getUsername(); // o usuario.getNombreCompleto() si lo preferís
+        httpClient.sendAsync(req, HttpResponse.BodyHandlers.ofString())
+                .thenAccept(resp -> {
+                    if (resp.statusCode() == 200) {
+
+                        Usuario usr  = gson.fromJson(resp.body(), Usuario.class);
+                        String nombre = usr.getUsername();           // o getNombreCompleto()
 
                         Platform.runLater(() -> {
                             try {
-                                FXMLLoader layoutLoader = new FXMLLoader(getClass().getResource("/tfcc/app-layout.fxml"));
-                                Parent layoutRoot = layoutLoader.load();
+                                /* cargamos el layout principal */
+                                FXMLLoader loader = new FXMLLoader(getClass()
+                                        .getResource("/tfcc/app-layout.fxml"));
+                                Parent root       = loader.load();
 
-                                AppController appController = layoutLoader.getController();
+                                /* PASAMOS EL NOMBRE del usuario al controlador principal */
+                                AppController app = loader.getController();
+                                app.setUserName(nombre);
 
-                                FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/tfcc/inicio-view.fxml"));
-                                Parent inicioView = contentLoader.load();
-
-                                InicioController inicioController = contentLoader.getController();
-                                inicioController.setNombreUsuario(nombre);
-                                inicioController.setAppController(appController);
-                                
-
-                                appController.setContenido(inicioView); // ✅ Ahora funciona
-
-                                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                                stage.setScene(new Scene(layoutRoot));
+                                Stage stage = (Stage) ((Node) event.getSource())
+                                        .getScene().getWindow();
+                                stage.setScene(new Scene(root));
                                 stage.setTitle("Inicio");
                                 stage.centerOnScreen();
                                 stage.setMaximized(false);
                                 stage.show();
 
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                            } catch (IOException ex) {
+                                ex.printStackTrace();
+                                showAlert("No se pudo cargar la aplicación.");
                             }
                         });
+
                     } else {
-                        showError("Login fallido: " + response.body());
+                        showAlert("Login fallido: " + resp.body());
                     }
                 })
-                .exceptionally(e -> {
-                    e.printStackTrace();
-                    showError("No se pudo conectar al servidor.");
+                .exceptionally(ex -> {
+                    ex.printStackTrace();
+                    showAlert("No se pudo conectar al servidor.");
                     return null;
                 });
     }
 
+    /* ---------- navegación registro ---------- */
     @FXML
     private void goToRegister() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/tfcc/registro.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) usernameField.getScene().getWindow();
+            FXMLLoader fx = new FXMLLoader(getClass().getResource("/tfcc/registro.fxml"));
+            Parent root   = fx.load();
+            Stage stage   = (Stage) usernameField.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.centerOnScreen();
         } catch (IOException e) {
@@ -116,15 +116,12 @@ public class LoginController {
         }
     }
 
-    private void showAlert(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Login Fallido");
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
-    }
-
-    private void showError(String mensaje) {
-        Platform.runLater(() -> showAlert(mensaje));
+    /* ---------- util ---------- */
+    private void showAlert(String msg) {
+        Alert a = new Alert(Alert.AlertType.ERROR);
+        a.setTitle("Error");
+        a.setHeaderText(null);
+        a.setContentText(msg);
+        a.showAndWait();
     }
 }
