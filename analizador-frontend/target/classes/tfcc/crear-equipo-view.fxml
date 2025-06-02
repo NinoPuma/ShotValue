@@ -9,12 +9,10 @@
            fx:controller="com.shotvalue.analizador_xgot.controller.CrearEquipoController"
            style="-fx-background-color:#262626;">
 
-    <!-- CONTENEDOR principal, ahora de 800 px de ancho -->
     <VBox alignment="CENTER"
           spacing="48"
-          maxWidth="800">                         <!-- 👈 aún más ancho -->
+          maxWidth="800">
 
-        <!-- Logo (un poco más grande) -->
         <ImageView fitWidth="200" preserveRatio="true">
             <image>
                 <Image url="@../img/logo.png"/>
