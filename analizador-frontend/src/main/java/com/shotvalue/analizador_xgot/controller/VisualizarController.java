@@ -108,20 +108,25 @@ public class VisualizarController implements Initializable {
                     minuteFromSpinner.getValueFactory().setValue(105);
                     minuteToSpinner.getValueFactory().setValue(120);
                 }
-
                 case "Penales" -> {
                     disableMinutos = true;
                 }
-                default -> {
-                    minuteFromSpinner.setOpacity(disableMinutos ? 0.5 : 1.0);
-                    minuteToSpinner.setOpacity(disableMinutos ? 0.5 : 1.0);
-
+                case "Todos los períodos" -> {
+                    minuteFromSpinner.getValueFactory().setValue(0);
+                    minuteToSpinner.getValueFactory().setValue(120);
                 }
             }
 
-            minuteFromSpinner.setDisable(disableMinutos);
-            minuteToSpinner.setDisable(disableMinutos);
+            boolean isTodos = selected.equals("Todos los períodos");
+            boolean isPenales = selected.equals("Penales");
+
+            minuteFromSpinner.setDisable(isPenales);
+            minuteToSpinner.setDisable(isPenales);
+
+            minuteFromSpinner.setOpacity(isPenales ? 0.5 : 1.0);
+            minuteToSpinner.setOpacity(isPenales ? 0.5 : 1.0);
         });
+
 
         new Thread(() -> {
             try {
