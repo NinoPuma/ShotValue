@@ -108,25 +108,20 @@ public class VisualizarController implements Initializable {
                     minuteFromSpinner.getValueFactory().setValue(105);
                     minuteToSpinner.getValueFactory().setValue(120);
                 }
+
                 case "Penales" -> {
                     disableMinutos = true;
                 }
-                case "Todos los períodos" -> {
-                    minuteFromSpinner.getValueFactory().setValue(0);
-                    minuteToSpinner.getValueFactory().setValue(120);
+                default -> {
+                    minuteFromSpinner.setOpacity(disableMinutos ? 0.5 : 1.0);
+                    minuteToSpinner.setOpacity(disableMinutos ? 0.5 : 1.0);
+
                 }
             }
 
-            boolean isTodos = selected.equals("Todos los períodos");
-            boolean isPenales = selected.equals("Penales");
-
-            minuteFromSpinner.setDisable(isPenales);
-            minuteToSpinner.setDisable(isPenales);
-
-            minuteFromSpinner.setOpacity(isPenales ? 0.5 : 1.0);
-            minuteToSpinner.setOpacity(isPenales ? 0.5 : 1.0);
+            minuteFromSpinner.setDisable(disableMinutos);
+            minuteToSpinner.setDisable(disableMinutos);
         });
-
 
         new Thread(() -> {
             try {
@@ -200,18 +195,16 @@ public class VisualizarController implements Initializable {
             double x2 = offsetX + tiro.getDestinoX() * escalaX;
             double y2 = offsetY + tiro.getDestinoY() * escalaY;
 
-            String resultadoRaw = tiro.getResultado();
-            String resultado = resultadoRaw != null ? resultadoRaw.toLowerCase().trim() : "";
+            String resultado = tiro.getResultado() != null ? tiro.getResultado().trim().toLowerCase() : "";
 
-            Color color;
-            switch (resultado) {
-                case "goal" -> color = Color.LIMEGREEN;
-                case "saved" -> color = Color.GOLD;
-                case "off t" -> color = Color.CRIMSON;
-                case "blocked" -> color = Color.ORANGE;
-                case "post" -> color = Color.GRAY;
-                default -> color = Color.WHITE;
-            }
+            Color color = switch (resultado) {
+                case "gol" -> Color.LIMEGREEN;
+                case "atajado" -> Color.GOLD;
+                case "fuera" -> Color.CRIMSON;
+                case "bloqueado" -> Color.ORANGE;
+                case "poste" -> Color.GRAY;
+                default -> Color.WHITE;
+            };
 
             gc.setStroke(color);
             gc.setLineWidth(2.0);
@@ -241,14 +234,15 @@ public class VisualizarController implements Initializable {
 
         for (Tiro tiro : tiros) {
             String resultado = tiro.getResultado() != null ? tiro.getResultado().trim().toLowerCase() : "";
-            if (!(resultado.equals("goal") || resultado.equals("saved") || resultado.equals("post"))) continue;
+            if (!(resultado.equals("gol") || resultado.equals("atajadoo") || resultado.equals("atajado") || resultado.equals("poste")))
+                continue;
 
             Double destinoY = tiro.getDestinoY();
             Double destinoZ = tiro.getDestinoZ();
 
             if (destinoY == null) continue;
 
-            if ("post".equalsIgnoreCase(resultado)) {
+            if ("poste".equalsIgnoreCase(resultado)) {
                 destinoY = (destinoY < 40.0) ? 34.5 : 45.5;
                 if (destinoZ == null || destinoZ < 0.2) destinoZ = 0.2;
             }
@@ -263,9 +257,9 @@ public class VisualizarController implements Initializable {
             double yCanvas = paddingY + yRel * drawHeight;
 
             Color color = switch (resultado) {
-                case "goal" -> Color.LIMEGREEN;
-                case "saved" -> Color.GOLD;
-                case "post" -> Color.GRAY;
+                case "gol" -> Color.LIMEGREEN;
+                case "atajado" -> Color.GOLD;
+                case "poste" -> Color.GRAY;
                 default -> Color.DARKGRAY;
             };
 
