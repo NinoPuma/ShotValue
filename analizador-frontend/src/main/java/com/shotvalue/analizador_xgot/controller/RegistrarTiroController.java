@@ -23,7 +23,6 @@ import java.util.concurrent.CompletableFuture;
 
 public class RegistrarTiroController implements ViewLifecycle {
 
-    // ────────── COMBOBOX y CONTROLES ──────────
     @FXML private ComboBox<Equipo> equipoBox;
     @FXML private ComboBox<Jugador> jugadorBox;
 
@@ -32,27 +31,22 @@ public class RegistrarTiroController implements ViewLifecycle {
 
     @FXML private ComboBox<String> areaBox, situationBox, bodyPartBox, preActionBox, resultBox;
 
-    // ────────── IMÁGENES y CANVAS ──────────
     @FXML private ImageView fieldMap;
     @FXML private Canvas canvasTiros;
     @FXML private ImageView goalView;
     @FXML private Canvas canvasArco;
 
-    // ────────── CAMPOS PARA MOSTRAR ÁNGULOS X,Y ──────────
     @FXML private TextField angleXFieldCampo;
     @FXML private TextField angleYFieldCampo;
     @FXML private TextField angleXFieldArco;
     @FXML private TextField angleYFieldArco;
 
-    // ────────── BOTÓN GUARDAR ──────────
     @FXML private Button guardarBtn;
 
-    // ────────── ÚLTIMO FORMULARIO (para restaurar estado) ──────────
     private Tiro ultimoFormulario = new Tiro();
 
     @FXML
     public void initialize() {
-        // 1) Cargar lista de equipos asíncronamente
         EquiposApiClient.getEquiposAsync()
                 .thenAccept(this::llenarComboEquipos)
                 .exceptionally(ex -> {
@@ -63,7 +57,6 @@ public class RegistrarTiroController implements ViewLifecycle {
                     return null;
                 });
 
-        // 2) Al seleccionar un equipo, cargar sus jugadores
         equipoBox.setOnAction(e -> {
             Equipo seleccionado = equipoBox.getValue();
             if (seleccionado != null) {
@@ -71,7 +64,6 @@ public class RegistrarTiroController implements ViewLifecycle {
             }
         });
 
-        // 3) Configurar spinners de minuto
         minuteFromSpinner.setValueFactory(
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 120, 0)
         );
@@ -79,13 +71,11 @@ public class RegistrarTiroController implements ViewLifecycle {
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 120, 90)
         );
 
-        // 4) Configurar ComboBoxes de tercio y carril
         thirdBox.getItems().setAll("Todos", "Defensivo", "Medio", "Ofensivo");
         thirdBox.setValue("Todos");
         laneBox.getItems().setAll("Todos", "Izquierdo", "Central", "Derecho");
         laneBox.setValue("Todos");
 
-        // 5) Configurar filtros adicionales
         areaBox.getItems().setAll("Cualquier zona", "Área chica", "Área grande", "Fuera del área");
         areaBox.setValue("Cualquier zona");
         situationBox.getItems().setAll("Cualquier situación", "Juego abierto", "Balón parado", "Contraataque");
@@ -97,38 +87,28 @@ public class RegistrarTiroController implements ViewLifecycle {
         resultBox.getItems().setAll("Todos los resultados", "Gol", "Atajado", "Fuera", "Bloqueado", "Poste");
         resultBox.setValue("Todos los resultados");
 
-        // ─── IMPORTANTE: Detectar clics sobre EL CANVAS (no sobre el ImageView),
-        // porque el canvas transparente está encima de la imagen y captura el evento.
-
-        // 6) Listener para “clic en el canvas del campo”:
         canvasTiros.setOnMouseClicked(e -> {
             double cx = e.getX();
             double cy = e.getY();
             ultimoFormulario.setX(cx);
             ultimoFormulario.setY(cy);
-
-            // Dibujar punto donde se hizo clic
             dibujarPuntoCancha(cx, cy);
 
-            // Calcular vector (dx, dy) desde el centro del canvas
             double centerX = canvasTiros.getWidth() / 2.0;
             double centerY = canvasTiros.getHeight() / 2.0;
             double dx = cx - centerX;
-            double dy = centerY - cy; // invertido para convención (opcional)
+            double dy = centerY - cy;
 
-            // Mostrar las dos componentes en ángulo X, Y
             angleXFieldCampo.setText(String.format("%.1f", dx));
             angleYFieldCampo.setText(String.format("%.1f", dy));
         });
 
-        // 7) Listener para “clic en el canvas del arco”:
         canvasArco.setOnMouseClicked(e -> {
             double gx = e.getX();
             double gy = e.getY();
             ultimoFormulario.setDestinoX(gx);
             ultimoFormulario.setDestinoY(gy);
 
-            // Dibujar punto en el canvas del arco
             dibujarPuntoArco(gx, gy);
 
             double centerXArco = canvasArco.getWidth() / 2.0;
@@ -143,10 +123,6 @@ public class RegistrarTiroController implements ViewLifecycle {
         // 8) Botón “Guardar tiro”
         guardarBtn.setOnAction(evt -> guardarTiro());
     }
-
-    // ────────────────────────────────────────────────────────────────────
-    // Métodos auxiliares para poblar ComboBox y lógica de dibujo ↓↓↓
-    // ────────────────────────────────────────────────────────────────────
 
     private void llenarComboEquipos(List<Equipo> lista) {
         Platform.runLater(() -> {
@@ -201,9 +177,6 @@ public class RegistrarTiroController implements ViewLifecycle {
         });
     }
 
-    // ────────────────────────────────────────────────────────────────────
-    // Dibujar un punto amarillo en el Canvas del campo
-    // ────────────────────────────────────────────────────────────────────
     private void dibujarPuntoCancha(double x, double y) {
         GraphicsContext gc = canvasTiros.getGraphicsContext2D();
         gc.clearRect(0, 0, canvasTiros.getWidth(), canvasTiros.getHeight());
@@ -211,9 +184,6 @@ public class RegistrarTiroController implements ViewLifecycle {
         gc.fillOval(x - 4, y - 4, 8, 8);
     }
 
-    // ────────────────────────────────────────────────────────────────────
-    // Dibujar un punto naranja en el Canvas del arco
-    // ────────────────────────────────────────────────────────────────────
     private void dibujarPuntoArco(double x, double y) {
         GraphicsContext gc = canvasArco.getGraphicsContext2D();
         gc.clearRect(0, 0, canvasArco.getWidth(), canvasArco.getHeight());
@@ -221,9 +191,6 @@ public class RegistrarTiroController implements ViewLifecycle {
         gc.fillOval(x - 4, y - 4, 8, 8);
     }
 
-    // ────────────────────────────────────────────────────────────────────
-    // Lógica de guardar tiro (sin xgField ni periodBox) ↓↓↓
-    // ────────────────────────────────────────────────────────────────────
     private void guardarTiro() {
         try {
             Equipo selEq = equipoBox.getValue();
@@ -243,7 +210,6 @@ public class RegistrarTiroController implements ViewLifecycle {
             tiro.setJugadorId(selJ.getPlayerId());
             tiro.setJugadorNombre(selJ.getPlayerName());
 
-            // Minuto desde el spinner “Desde”
             tiro.setMinuto(minuteFromSpinner.getValue());
 
             tiro.setThird(thirdBox.getValue());
@@ -257,13 +223,11 @@ public class RegistrarTiroController implements ViewLifecycle {
 
             tiro.setXgot(0.0);
 
-            // Coordenadas de clic en cancha y arco
             tiro.setX(ultimoFormulario.getX());
             tiro.setY(ultimoFormulario.getY());
             tiro.setDestinoX(ultimoFormulario.getDestinoX());
             tiro.setDestinoY(ultimoFormulario.getDestinoY());
 
-            // Llamada a la API para salvar Tiro (asíncrona)
             TiroApiClient.saveTiroAsync(tiro)
                     .thenAccept(saved -> Platform.runLater(() -> {
                         alerta("Éxito",
@@ -287,22 +251,18 @@ public class RegistrarTiroController implements ViewLifecycle {
     }
 
     private void limpiarFormulario() {
-        // Resetear minutos
         minuteFromSpinner.getValueFactory().setValue(0);
         minuteToSpinner.getValueFactory().setValue(90);
 
-        // Resetear terci o / carril
         thirdBox.setValue("Todos");
         laneBox.setValue("Todos");
 
-        // Resetear filtros adicionales
         areaBox.setValue("Cualquier zona");
         situationBox.setValue("Cualquier situación");
         bodyPartBox.setValue("Cualquier parte");
         preActionBox.setValue("Todas las acciones");
         resultBox.setValue("Todos los resultados");
 
-        // Limpiar ambos Canvas y los TextField de ángulo
         GraphicsContext gc1 = canvasTiros.getGraphicsContext2D();
         gc1.clearRect(0, 0, canvasTiros.getWidth(), canvasTiros.getHeight());
         GraphicsContext gc2 = canvasArco.getGraphicsContext2D();
@@ -313,7 +273,6 @@ public class RegistrarTiroController implements ViewLifecycle {
         angleXFieldArco.clear();
         angleYFieldArco.clear();
 
-        // Resetear el modelo
         ultimoFormulario = new Tiro();
     }
 
@@ -326,13 +285,9 @@ public class RegistrarTiroController implements ViewLifecycle {
         a.showAndWait();
     }
 
-    // ────────────────────────────────────────────────────────────────────
-    // Implementación de ViewLifecycle ↓↓↓
-    // ────────────────────────────────────────────────────────────────────
     @Override
     public void onShow() {
         if (ultimoFormulario != null) {
-            // Restaurar equipo y jugador si ya estaban seleccionados
             if (ultimoFormulario.getEquipoId() != 0) {
                 for (Equipo eq : equipoBox.getItems()) {
                     if (eq.getTeamId() == ultimoFormulario.getEquipoId()) {
@@ -351,17 +306,14 @@ public class RegistrarTiroController implements ViewLifecycle {
                 });
             }
 
-            // Restaurar minuto
             minuteFromSpinner.getValueFactory().setValue(ultimoFormulario.getMinuto());
             minuteToSpinner.getValueFactory().setValue(ultimoFormulario.getMinuto());
 
-            // Restaurar filtros adicionales
             areaBox.setValue(ultimoFormulario.getArea());
             bodyPartBox.setValue(ultimoFormulario.getBodyPart());
             preActionBox.setValue(ultimoFormulario.getPreAction());
             resultBox.setValue(ultimoFormulario.getResult());
 
-            // Restaurar coordenadas, dibujar puntos y mostrar ángulos X/Y
             if (ultimoFormulario.getX() != 0.0 && ultimoFormulario.getY() != 0.0) {
                 dibujarPuntoCancha(ultimoFormulario.getX(), ultimoFormulario.getY());
                 double cx = ultimoFormulario.getX();
@@ -407,7 +359,6 @@ public class RegistrarTiroController implements ViewLifecycle {
             ultimoFormulario.setPreAction(preActionBox.getValue());
             ultimoFormulario.setResult(resultBox.getValue());
         } catch (Exception ignored) {
-            // No hacer nada si falla
         }
     }
 }
