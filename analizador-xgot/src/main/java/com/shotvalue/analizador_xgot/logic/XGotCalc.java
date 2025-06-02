@@ -26,7 +26,9 @@ public class XGotCalc {
         if (tiro.isPorteroTapado()) score += 0.1;
         if (tiro.isTiroConBote()) score += 0.05;
 
+        // Aseguramos que quede en [0,1] y redondeamos a 3 decimales:
         score = Math.max(0, Math.min(score, 1.0));
         return Math.round(score * 1000.0) / 1000.0;
     }
 }
+

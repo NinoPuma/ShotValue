@@ -17,7 +17,6 @@ import java.util.Map;
 
 public class AppController {
 
-    /* ────────── FXML ────────── */
     @FXML private BorderPane  mainPane;
     @FXML private AnchorPane  contenidoCentro;
 
@@ -25,17 +24,14 @@ public class AppController {
             btnInformes, btnPerfil, btnAyuda, btnSalir,
             btnCrearJugador, btnCrearEquipo;
 
-    /* ────────── estilos ────────── */
     private final String defaultStyle = "-fx-background-color: transparent; -fx-text-fill: white;";
     private final String activeStyle  = "-fx-background-color: #0F7F7F; -fx-text-fill: white; -fx-font-weight: bold;";
 
-    /* ────────── caches ────────── */
     private final Map<String, Parent>        viewCache = new HashMap<>();
     private final Map<String, ViewLifecycle> ctlCache  = new HashMap<>();
     private       ViewLifecycle              controladorVisible;
 
-    /* ────────── estado usuario ────────── */
-    private String userName;    // la establece LoginController
+    private String userName;
 
     public void setUserName(String name) {
         this.userName = name;
@@ -45,12 +41,10 @@ public class AppController {
         }
     }
 
-    /*  botón que la vista Inicio llamará  */
     public void openCrearEquipo() {
         cargarVista("/tfcc/crear-equipo-view.fxml", null);
     }
 
-    /* ────────── listeners y carga inicial ────────── */
     @FXML
     private void initialize() {
         btnInicio        .setOnAction(e -> cargarVista("/tfcc/inicio-view.fxml",        btnInicio));
@@ -64,10 +58,9 @@ public class AppController {
         btnAyuda         .setOnAction(e -> cargarVista("/tfcc/ayuda-view.fxml",         btnAyuda));
         btnSalir         .setOnAction(e -> cerrarSesion());
 
-        cargarVista("/tfcc/inicio-view.fxml", btnInicio);   // primera vista
+        cargarVista("/tfcc/inicio-view.fxml", btnInicio);
     }
 
-    /* ────────── helper anclar ────────── */
     private void setContenido(Node n) {
         contenidoCentro.getChildren().setAll(n);
         AnchorPane.setTopAnchor   (n, 0.0);
@@ -76,10 +69,8 @@ public class AppController {
         AnchorPane.setLeftAnchor  (n, 0.0);
     }
 
-    /* ────────── carga de vistas ────────── */
     private void cargarVista(String rutaFXML, Button botonActivo) {
         try {
-            /* “Inicio” siempre se recarga para refrescar datos */
             if (rutaFXML.equals("/tfcc/inicio-view.fxml")) {
                 viewCache.remove(rutaFXML);
                 ctlCache .remove(rutaFXML);
@@ -93,9 +84,8 @@ public class AppController {
 
                     if (ctl instanceof ViewLifecycle life) ctlCache.put(ruta, life);
 
-                    /* Configuraciones específicas para InicioController */
                     if (ctl instanceof InicioController ini) {
-                        ini.setAppController(this);          // ← importa para “Crear Equipo”
+                        ini.setAppController(this);
                         if (userName != null) ini.setNombreUsuario(userName);
                     }
                     return nodo;
@@ -105,13 +95,11 @@ public class AppController {
                 }
             });
 
-            /* ciclo de vida */
             ViewLifecycle nuevo = ctlCache.get(rutaFXML);
             if (controladorVisible != null && controladorVisible != nuevo) controladorVisible.onHide();
             controladorVisible = nuevo;
             if (controladorVisible != null) controladorVisible.onShow();
 
-            /* muestra y estilos */
             setContenido(root);
             resetearEstilosMenu();
             if (botonActivo != null) botonActivo.setStyle(activeStyle);
@@ -133,13 +121,10 @@ public class AppController {
         btnAyuda.setStyle(defaultStyle);
     }
 
-    /* ────────── logout ────────── */
     private void cerrarSesion() {
         try {
-            // 🔁 Desactivar auto-login para la próxima vez
             LoginController.desactivarRecordarSesion();
 
-            // Volver al login
             Stage stage = (Stage) contenidoCentro.getScene().getWindow();
             Parent login = FXMLLoader.load(getClass().getResource("/tfcc/login.fxml"));
             stage.setScene(new Scene(login));
@@ -147,7 +132,6 @@ public class AppController {
             stage.setMaximized(false);
             stage.centerOnScreen();
 
-            // Reset interno
             viewCache.clear();
             ctlCache.clear();
             controladorVisible = null;

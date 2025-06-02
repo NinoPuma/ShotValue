@@ -1,181 +1,413 @@
 package com.shotvalue.analizador_xgot.controller;
 
-import com.shotvalue.analizador_xgot.api.TiroCreacionApiClient;
-import com.shotvalue.analizador_xgot.model.TiroCreacion;
+import com.shotvalue.analizador_xgot.api.EquiposApiClient;
+import com.shotvalue.analizador_xgot.api.JugadorApiClient;
+import com.shotvalue.analizador_xgot.api.TiroApiClient;
+import com.shotvalue.analizador_xgot.model.Equipo;
+import com.shotvalue.analizador_xgot.model.Jugador;
+import com.shotvalue.analizador_xgot.model.Tiro;
 import com.shotvalue.analizador_xgot.view.ViewLifecycle;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.Window;
+import javafx.util.StringConverter;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class RegistrarTiroController implements ViewLifecycle {
 
-    @FXML private ComboBox<String> jugadorBox;
-    @FXML private ComboBox<String> equipoBox;
-    @FXML private ComboBox<String> parteCuerpoBox;
-    @FXML private ComboBox<String> tipoJugadaBox;
-    @FXML private ComboBox<String> resultadoBox;
-    @FXML private TextField minutoField;
+    // ────────── COMBOBOX y CONTROLES ──────────
+    @FXML private ComboBox<Equipo> equipoBox;
+    @FXML private ComboBox<Jugador> jugadorBox;
 
-    @FXML private CheckBox porteroNoSeMueveCheck;
-    @FXML private CheckBox brazosExtendidosCheck;
-    @FXML private CheckBox presionDefensivaCheck;
-    @FXML private CheckBox reboteCheck;
-    @FXML private CheckBox manoDominanteCheck;
-    @FXML private CheckBox dentroDelAreaCheck;
-    @FXML private CheckBox jugadaElaboradaCheck;
-    @FXML private CheckBox tiroConBoteCheck;
-    @FXML private CheckBox porteroTapadoCheck;
+    @FXML private Spinner<Integer> minuteFromSpinner, minuteToSpinner;
+    @FXML private ComboBox<String> thirdBox, laneBox;
 
-    @FXML private TextField anguloField;
-    @FXML private TextField velocidadField;
-    @FXML private TextField piesSueloField;
-    @FXML private TextField defensasCercaField;
-    @FXML private TextField zonaDisparoField;
+    @FXML private ComboBox<String> areaBox, situationBox, bodyPartBox, preActionBox, resultBox;
 
-    @FXML private ImageView fieldImage;
-    @FXML private TextField xField;
-    @FXML private TextField yField;
-    @FXML private TextField destinoXField;
-    @FXML private TextField destinoYField;
+    // ────────── IMÁGENES y CANVAS ──────────
+    @FXML private ImageView fieldMap;
+    @FXML private Canvas canvasTiros;
+    @FXML private ImageView goalView;
+    @FXML private Canvas canvasArco;
 
+    // ────────── CAMPOS PARA MOSTRAR ÁNGULOS X,Y ──────────
+    @FXML private TextField angleXFieldCampo;
+    @FXML private TextField angleYFieldCampo;
+    @FXML private TextField angleXFieldArco;
+    @FXML private TextField angleYFieldArco;
+
+    // ────────── BOTÓN GUARDAR ──────────
     @FXML private Button guardarBtn;
 
-    private TiroCreacion ultimoFormulario = new TiroCreacion();
+    // ────────── ÚLTIMO FORMULARIO (para restaurar estado) ──────────
+    private Tiro ultimoFormulario = new Tiro();
 
     @FXML
     public void initialize() {
-        parteCuerpoBox.getItems().setAll("Pie", "Cabeza", "Otro");
-        tipoJugadaBox.getItems().setAll("Tiro", "Contra", "Juego elaborado");
-        resultadoBox.getItems().setAll("Gol", "Atajado", "Fuera", "Bloqueado");
+        // 1) Cargar lista de equipos asíncronamente
+        EquiposApiClient.getEquiposAsync()
+                .thenAccept(this::llenarComboEquipos)
+                .exceptionally(ex -> {
+                    Platform.runLater(() ->
+                            alerta("Error", "No se pudieron cargar equipos:\n" + ex.getMessage(),
+                                    javafx.scene.control.Alert.AlertType.ERROR)
+                    );
+                    return null;
+                });
 
-        // TODO: Cargar jugadorBox y equipoBox desde API si es necesario
+        // 2) Al seleccionar un equipo, cargar sus jugadores
+        equipoBox.setOnAction(e -> {
+            Equipo seleccionado = equipoBox.getValue();
+            if (seleccionado != null) {
+                cargarJugadoresPorEquipo(seleccionado.getTeamId());
+            }
+        });
 
-        fieldImage.addEventHandler(MouseEvent.MOUSE_CLICKED, this::onFieldClick);
+        // 3) Configurar spinners de minuto
+        minuteFromSpinner.setValueFactory(
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 120, 0)
+        );
+        minuteToSpinner.setValueFactory(
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 120, 90)
+        );
+
+        // 4) Configurar ComboBoxes de tercio y carril
+        thirdBox.getItems().setAll("Todos", "Defensivo", "Medio", "Ofensivo");
+        thirdBox.setValue("Todos");
+        laneBox.getItems().setAll("Todos", "Izquierdo", "Central", "Derecho");
+        laneBox.setValue("Todos");
+
+        // 5) Configurar filtros adicionales
+        areaBox.getItems().setAll("Cualquier zona", "Área chica", "Área grande", "Fuera del área");
+        areaBox.setValue("Cualquier zona");
+        situationBox.getItems().setAll("Cualquier situación", "Juego abierto", "Balón parado", "Contraataque");
+        situationBox.setValue("Cualquier situación");
+        bodyPartBox.getItems().setAll("Cualquier parte", "Pie izquierdo", "Pie derecho", "Cabeza", "Otro");
+        bodyPartBox.setValue("Cualquier parte");
+        preActionBox.getItems().setAll("Todas las acciones", "Pase", "Regate", "Rebote", "Centro");
+        preActionBox.setValue("Todas las acciones");
+        resultBox.getItems().setAll("Todos los resultados", "Gol", "Atajado", "Fuera", "Bloqueado", "Poste");
+        resultBox.setValue("Todos los resultados");
+
+        // ─── IMPORTANTE: Detectar clics sobre EL CANVAS (no sobre el ImageView),
+        // porque el canvas transparente está encima de la imagen y captura el evento.
+
+        // 6) Listener para “clic en el canvas del campo”:
+        canvasTiros.setOnMouseClicked(e -> {
+            double cx = e.getX();
+            double cy = e.getY();
+            ultimoFormulario.setX(cx);
+            ultimoFormulario.setY(cy);
+
+            // Dibujar punto donde se hizo clic
+            dibujarPuntoCancha(cx, cy);
+
+            // Calcular vector (dx, dy) desde el centro del canvas
+            double centerX = canvasTiros.getWidth() / 2.0;
+            double centerY = canvasTiros.getHeight() / 2.0;
+            double dx = cx - centerX;
+            double dy = centerY - cy; // invertido para convención (opcional)
+
+            // Mostrar las dos componentes en ángulo X, Y
+            angleXFieldCampo.setText(String.format("%.1f", dx));
+            angleYFieldCampo.setText(String.format("%.1f", dy));
+        });
+
+        // 7) Listener para “clic en el canvas del arco”:
+        canvasArco.setOnMouseClicked(e -> {
+            double gx = e.getX();
+            double gy = e.getY();
+            ultimoFormulario.setDestinoX(gx);
+            ultimoFormulario.setDestinoY(gy);
+
+            // Dibujar punto en el canvas del arco
+            dibujarPuntoArco(gx, gy);
+
+            double centerXArco = canvasArco.getWidth() / 2.0;
+            double centerYArco = canvasArco.getHeight() / 2.0;
+            double dx2 = gx - centerXArco;
+            double dy2 = centerYArco - gy;
+
+            angleXFieldArco.setText(String.format("%.1f", dx2));
+            angleYFieldArco.setText(String.format("%.1f", dy2));
+        });
+
+        // 8) Botón “Guardar tiro”
         guardarBtn.setOnAction(evt -> guardarTiro());
     }
 
-    private void onFieldClick(MouseEvent e) {
-        xField.setText(String.format("%.1f", e.getX()));
-        yField.setText(String.format("%.1f", e.getY()));
+    // ────────────────────────────────────────────────────────────────────
+    // Métodos auxiliares para poblar ComboBox y lógica de dibujo ↓↓↓
+    // ────────────────────────────────────────────────────────────────────
+
+    private void llenarComboEquipos(List<Equipo> lista) {
+        Platform.runLater(() -> {
+            equipoBox.getItems().setAll(lista);
+            equipoBox.setConverter(new StringConverter<>() {
+                @Override
+                public String toString(Equipo team) {
+                    return (team == null ? "" : team.getName());
+                }
+                @Override
+                public Equipo fromString(String string) {
+                    return null;
+                }
+            });
+        });
     }
 
+    private void cargarJugadoresPorEquipo(int teamId) {
+        CompletableFuture
+                .supplyAsync(() -> {
+                    try {
+                        return JugadorApiClient.getJugadoresPorEquipo(teamId);
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                })
+                .thenAccept(this::llenarComboJugadores)
+                .exceptionally(ex -> {
+                    Platform.runLater(() ->
+                            alerta("Error",
+                                    "No se pudieron cargar jugadores:\n" + ex.getCause().getMessage(),
+                                    javafx.scene.control.Alert.AlertType.ERROR
+                            )
+                    );
+                    return null;
+                });
+    }
+
+    private void llenarComboJugadores(List<Jugador> lista) {
+        Platform.runLater(() -> {
+            jugadorBox.getItems().setAll(lista);
+            jugadorBox.setConverter(new StringConverter<>() {
+                @Override
+                public String toString(Jugador jug) {
+                    return (jug == null ? "" : jug.getPlayerName());
+                }
+                @Override
+                public Jugador fromString(String string) {
+                    return null;
+                }
+            });
+        });
+    }
+
+    // ────────────────────────────────────────────────────────────────────
+    // Dibujar un punto amarillo en el Canvas del campo
+    // ────────────────────────────────────────────────────────────────────
+    private void dibujarPuntoCancha(double x, double y) {
+        GraphicsContext gc = canvasTiros.getGraphicsContext2D();
+        gc.clearRect(0, 0, canvasTiros.getWidth(), canvasTiros.getHeight());
+        gc.setFill(Color.YELLOW);
+        gc.fillOval(x - 4, y - 4, 8, 8);
+    }
+
+    // ────────────────────────────────────────────────────────────────────
+    // Dibujar un punto naranja en el Canvas del arco
+    // ────────────────────────────────────────────────────────────────────
+    private void dibujarPuntoArco(double x, double y) {
+        GraphicsContext gc = canvasArco.getGraphicsContext2D();
+        gc.clearRect(0, 0, canvasArco.getWidth(), canvasArco.getHeight());
+        gc.setFill(Color.ORANGE);
+        gc.fillOval(x - 4, y - 4, 8, 8);
+    }
+
+    // ────────────────────────────────────────────────────────────────────
+    // Lógica de guardar tiro (sin xgField ni periodBox) ↓↓↓
+    // ────────────────────────────────────────────────────────────────────
     private void guardarTiro() {
         try {
-            TiroCreacion tiro = new TiroCreacion();
-            tiro.setX(Double.parseDouble(xField.getText()));
-            tiro.setY(Double.parseDouble(yField.getText()));
-            tiro.setDestinoX(destinoXField.getText().isEmpty() ? null : Double.valueOf(destinoXField.getText()));
-            tiro.setDestinoY(destinoYField.getText().isEmpty() ? null : Double.valueOf(destinoYField.getText()));
+            Equipo selEq = equipoBox.getValue();
+            Jugador selJ = jugadorBox.getValue();
+            if (selEq == null) {
+                alerta("Falta Equipo", "Selecciona un equipo", javafx.scene.control.Alert.AlertType.WARNING);
+                return;
+            }
+            if (selJ == null) {
+                alerta("Falta Jugador", "Selecciona un jugador", javafx.scene.control.Alert.AlertType.WARNING);
+                return;
+            }
 
-            tiro.setJugadorNombre(jugadorBox.getValue());
-            tiro.setEquipoNombre(equipoBox.getValue());
-            tiro.setParteDelCuerpo(parteCuerpoBox.getValue());
-            tiro.setTipoDeJugada(tipoJugadaBox.getValue());
-            tiro.setResultado(resultadoBox.getValue());
-            tiro.setMinuto(Integer.parseInt(minutoField.getText()));
+            Tiro tiro = new Tiro();
+            tiro.setEquipoId(selEq.getTeamId());
+            tiro.setEquipoNombre(selEq.getName());
+            tiro.setJugadorId(selJ.getPlayerId());
+            tiro.setJugadorNombre(selJ.getPlayerName());
 
-            tiro.setPorteroNoSeMueve(porteroNoSeMueveCheck.isSelected());
-            tiro.setBrazosExtendidos(brazosExtendidosCheck.isSelected());
-            tiro.setPresionDefensiva(presionDefensivaCheck.isSelected());
-            tiro.setRebote(reboteCheck.isSelected());
-            tiro.setManoDominante(manoDominanteCheck.isSelected());
-            tiro.setDentroDelArea(dentroDelAreaCheck.isSelected());
-            tiro.setJugadaElaborada(jugadaElaboradaCheck.isSelected());
-            tiro.setTiroConBote(tiroConBoteCheck.isSelected());
-            tiro.setPorteroTapado(porteroTapadoCheck.isSelected());
+            // Minuto desde el spinner “Desde”
+            tiro.setMinuto(minuteFromSpinner.getValue());
 
-            tiro.setAnguloDisparo(Double.parseDouble(anguloField.getText()));
-            tiro.setVelocidadDisparo(Double.parseDouble(velocidadField.getText()));
-            tiro.setPiesEnSuelo(Integer.parseInt(piesSueloField.getText()));
-            tiro.setCantidadDefensasCerca(Integer.parseInt(defensasCercaField.getText()));
-            tiro.setZonaDelDisparo(zonaDisparoField.getText());
+            tiro.setThird(thirdBox.getValue());
+            tiro.setLane(laneBox.getValue());
 
-            TiroCreacionApiClient.saveTiro(tiro)
+            tiro.setArea(areaBox.getValue());
+            tiro.setSituation(situationBox.getValue());
+            tiro.setBodyPart(bodyPartBox.getValue());
+            tiro.setPreAction(preActionBox.getValue());
+            tiro.setResult(resultBox.getValue());
+
+            tiro.setXgot(0.0);
+
+            // Coordenadas de clic en cancha y arco
+            tiro.setX(ultimoFormulario.getX());
+            tiro.setY(ultimoFormulario.getY());
+            tiro.setDestinoX(ultimoFormulario.getDestinoX());
+            tiro.setDestinoY(ultimoFormulario.getDestinoY());
+
+            // Llamada a la API para salvar Tiro (asíncrona)
+            TiroApiClient.saveTiroAsync(tiro)
                     .thenAccept(saved -> Platform.runLater(() -> {
-                        Alert ok = new Alert(Alert.AlertType.INFORMATION, "Tiro guardado con ID: " + saved.getId());
-                        ok.showAndWait();
+                        alerta("Éxito",
+                                "Tiro guardado con ID: " + saved.getId() +
+                                        "\n xGOT calculado: " + saved.getXgot(),
+                                javafx.scene.control.Alert.AlertType.INFORMATION
+                        );
+                        limpiarFormulario();
                     }))
                     .exceptionally(ex -> {
                         Platform.runLater(() ->
-                                new Alert(Alert.AlertType.ERROR, "Error al guardar tiro:\n" + ex.getMessage()).showAndWait()
+                                alerta("Error al guardar", ex.getMessage(), javafx.scene.control.Alert.AlertType.ERROR)
                         );
                         return null;
                     });
 
-        } catch (Exception ex) {
-            new Alert(Alert.AlertType.WARNING, "Revisa los campos: " + ex.getMessage()).showAndWait();
+        } catch (Exception e) {
+            alerta("Error Validación", "Revisa los campos:\n" + e.getMessage(),
+                    javafx.scene.control.Alert.AlertType.WARNING);
+        }
+    }
+
+    private void limpiarFormulario() {
+        // Resetear minutos
+        minuteFromSpinner.getValueFactory().setValue(0);
+        minuteToSpinner.getValueFactory().setValue(90);
+
+        // Resetear terci o / carril
+        thirdBox.setValue("Todos");
+        laneBox.setValue("Todos");
+
+        // Resetear filtros adicionales
+        areaBox.setValue("Cualquier zona");
+        situationBox.setValue("Cualquier situación");
+        bodyPartBox.setValue("Cualquier parte");
+        preActionBox.setValue("Todas las acciones");
+        resultBox.setValue("Todos los resultados");
+
+        // Limpiar ambos Canvas y los TextField de ángulo
+        GraphicsContext gc1 = canvasTiros.getGraphicsContext2D();
+        gc1.clearRect(0, 0, canvasTiros.getWidth(), canvasTiros.getHeight());
+        GraphicsContext gc2 = canvasArco.getGraphicsContext2D();
+        gc2.clearRect(0, 0, canvasArco.getWidth(), canvasArco.getHeight());
+
+        angleXFieldCampo.clear();
+        angleYFieldCampo.clear();
+        angleXFieldArco.clear();
+        angleYFieldArco.clear();
+
+        // Resetear el modelo
+        ultimoFormulario = new Tiro();
+    }
+
+    private void alerta(String titulo, String mensaje, javafx.scene.control.Alert.AlertType tipo) {
+        Window owner = equipoBox.getScene().getWindow();
+        javafx.scene.control.Alert a = new javafx.scene.control.Alert(tipo, mensaje, ButtonType.OK);
+        a.setTitle(titulo);
+        a.initOwner(owner);
+        a.initModality(Modality.WINDOW_MODAL);
+        a.showAndWait();
+    }
+
+    // ────────────────────────────────────────────────────────────────────
+    // Implementación de ViewLifecycle ↓↓↓
+    // ────────────────────────────────────────────────────────────────────
+    @Override
+    public void onShow() {
+        if (ultimoFormulario != null) {
+            // Restaurar equipo y jugador si ya estaban seleccionados
+            if (ultimoFormulario.getEquipoId() != 0) {
+                for (Equipo eq : equipoBox.getItems()) {
+                    if (eq.getTeamId() == ultimoFormulario.getEquipoId()) {
+                        equipoBox.setValue(eq);
+                        break;
+                    }
+                }
+                cargarJugadoresPorEquipo(ultimoFormulario.getEquipoId());
+                Platform.runLater(() -> {
+                    for (Jugador j : jugadorBox.getItems()) {
+                        if (j.getPlayerId() == ultimoFormulario.getJugadorId()) {
+                            jugadorBox.setValue(j);
+                            break;
+                        }
+                    }
+                });
+            }
+
+            // Restaurar minuto
+            minuteFromSpinner.getValueFactory().setValue(ultimoFormulario.getMinuto());
+            minuteToSpinner.getValueFactory().setValue(ultimoFormulario.getMinuto());
+
+            // Restaurar filtros adicionales
+            areaBox.setValue(ultimoFormulario.getArea());
+            bodyPartBox.setValue(ultimoFormulario.getBodyPart());
+            preActionBox.setValue(ultimoFormulario.getPreAction());
+            resultBox.setValue(ultimoFormulario.getResult());
+
+            // Restaurar coordenadas, dibujar puntos y mostrar ángulos X/Y
+            if (ultimoFormulario.getX() != 0.0 && ultimoFormulario.getY() != 0.0) {
+                dibujarPuntoCancha(ultimoFormulario.getX(), ultimoFormulario.getY());
+                double cx = ultimoFormulario.getX();
+                double cy = ultimoFormulario.getY();
+                double centerX = canvasTiros.getWidth() / 2.0;
+                double centerY = canvasTiros.getHeight() / 2.0;
+                double dx = cx - centerX;
+                double dy = centerY - cy;
+                angleXFieldCampo.setText(String.format("%.1f", dx));
+                angleYFieldCampo.setText(String.format("%.1f", dy));
+            }
+            if (ultimoFormulario.getDestinoX() != 0.0 && ultimoFormulario.getDestinoY() != 0.0) {
+                dibujarPuntoArco(ultimoFormulario.getDestinoX(), ultimoFormulario.getDestinoY());
+                double gx = ultimoFormulario.getDestinoX();
+                double gy = ultimoFormulario.getDestinoY();
+                double centerXA = canvasArco.getWidth() / 2.0;
+                double centerYA = canvasArco.getHeight() / 2.0;
+                double dx2 = gx - centerXA;
+                double dy2 = centerYA - gy;
+                angleXFieldArco.setText(String.format("%.1f", dx2));
+                angleYFieldArco.setText(String.format("%.1f", dy2));
+            }
         }
     }
 
     @Override
     public void onHide() {
         try {
-            TiroCreacion t = new TiroCreacion();
-            t.setJugadorNombre(jugadorBox.getValue());
-            t.setEquipoNombre(equipoBox.getValue());
-            t.setParteDelCuerpo(parteCuerpoBox.getValue());
-            t.setTipoDeJugada(tipoJugadaBox.getValue());
-            t.setResultado(resultadoBox.getValue());
-            t.setMinuto(Integer.parseInt(minutoField.getText()));
+            Equipo selEq = equipoBox.getValue();
+            Jugador selJ = jugadorBox.getValue();
+            if (selEq != null) {
+                ultimoFormulario.setEquipoId(selEq.getTeamId());
+                ultimoFormulario.setEquipoNombre(selEq.getName());
+            }
+            if (selJ != null) {
+                ultimoFormulario.setJugadorId(selJ.getPlayerId());
+                ultimoFormulario.setJugadorNombre(selJ.getPlayerName());
+            }
 
-            t.setX(Double.parseDouble(xField.getText()));
-            t.setY(Double.parseDouble(yField.getText()));
-            t.setDestinoX(destinoXField.getText().isEmpty() ? null : Double.parseDouble(destinoXField.getText()));
-            t.setDestinoY(destinoYField.getText().isEmpty() ? null : Double.parseDouble(destinoYField.getText()));
-
-            t.setPorteroNoSeMueve(porteroNoSeMueveCheck.isSelected());
-            t.setBrazosExtendidos(brazosExtendidosCheck.isSelected());
-            t.setPresionDefensiva(presionDefensivaCheck.isSelected());
-            t.setRebote(reboteCheck.isSelected());
-            t.setManoDominante(manoDominanteCheck.isSelected());
-            t.setDentroDelArea(dentroDelAreaCheck.isSelected());
-            t.setJugadaElaborada(jugadaElaboradaCheck.isSelected());
-            t.setTiroConBote(tiroConBoteCheck.isSelected());
-            t.setPorteroTapado(porteroTapadoCheck.isSelected());
-
-            t.setAnguloDisparo(Double.parseDouble(anguloField.getText()));
-            t.setVelocidadDisparo(Double.parseDouble(velocidadField.getText()));
-            t.setPiesEnSuelo(Integer.parseInt(piesSueloField.getText()));
-            t.setCantidadDefensasCerca(Integer.parseInt(defensasCercaField.getText()));
-            t.setZonaDelDisparo(zonaDisparoField.getText());
-
-            ultimoFormulario = t;
+            ultimoFormulario.setMinuto(minuteFromSpinner.getValue());
+            ultimoFormulario.setArea(areaBox.getValue());
+            ultimoFormulario.setBodyPart(bodyPartBox.getValue());
+            ultimoFormulario.setPreAction(preActionBox.getValue());
+            ultimoFormulario.setResult(resultBox.getValue());
         } catch (Exception ignored) {
+            // No hacer nada si falla
         }
-    }
-
-    @Override
-    public void onShow() {
-        if (ultimoFormulario == null) return;
-
-        jugadorBox.setValue(ultimoFormulario.getJugadorNombre());
-        equipoBox.setValue(ultimoFormulario.getEquipoNombre());
-        parteCuerpoBox.setValue(ultimoFormulario.getParteDelCuerpo());
-        tipoJugadaBox.setValue(ultimoFormulario.getTipoDeJugada());
-        resultadoBox.setValue(ultimoFormulario.getResultado());
-        minutoField.setText(String.valueOf(ultimoFormulario.getMinuto()));
-
-        xField.setText(String.valueOf(ultimoFormulario.getX()));
-        yField.setText(String.valueOf(ultimoFormulario.getY()));
-        destinoXField.setText(ultimoFormulario.getDestinoX() != null ? String.valueOf(ultimoFormulario.getDestinoX()) : "");
-        destinoYField.setText(ultimoFormulario.getDestinoY() != null ? String.valueOf(ultimoFormulario.getDestinoY()) : "");
-
-        porteroNoSeMueveCheck.setSelected(ultimoFormulario.isPorteroNoSeMueve());
-        brazosExtendidosCheck.setSelected(ultimoFormulario.isBrazosExtendidos());
-        presionDefensivaCheck.setSelected(ultimoFormulario.isPresionDefensiva());
-        reboteCheck.setSelected(ultimoFormulario.isRebote());
-        manoDominanteCheck.setSelected(ultimoFormulario.isManoDominante());
-        dentroDelAreaCheck.setSelected(ultimoFormulario.isDentroDelArea());
-        jugadaElaboradaCheck.setSelected(ultimoFormulario.isJugadaElaborada());
-        tiroConBoteCheck.setSelected(ultimoFormulario.isTiroConBote());
-        porteroTapadoCheck.setSelected(ultimoFormulario.isPorteroTapado());
-
-        anguloField.setText(String.valueOf(ultimoFormulario.getAnguloDisparo()));
-        velocidadField.setText(String.valueOf(ultimoFormulario.getVelocidadDisparo()));
-        piesSueloField.setText(String.valueOf(ultimoFormulario.getPiesEnSuelo()));
-        defensasCercaField.setText(String.valueOf(ultimoFormulario.getCantidadDefensasCerca()));
-        zonaDisparoField.setText(ultimoFormulario.getZonaDelDisparo());
     }
 }
