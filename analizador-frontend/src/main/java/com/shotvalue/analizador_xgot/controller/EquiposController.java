@@ -16,42 +16,54 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+/**
+ * Vista de equipos + jugadores.
+ * – Se mantienen todas las funcionalidades (tabla, filtro, ViewLifecycle)
+ * – Usa únicamente métodos estáticos de JugadorApiClient (sin instancias).
+ * – CADA vez que se muestra la vista se vuelve a consultar la lista de equipos,
+ *   por lo que los equipos recién creados aparecen de inmediato.
+ */
 public class EquiposController implements ViewLifecycle {
 
+    /* ---------- FXML ---------- */
     @FXML private ComboBox<Equipo> equipoSelector;
-    @FXML private TextField jugadorSearchField;
+    @FXML private TextField        jugadorSearchField;
     @FXML private TableView<Jugador> playerTable;
 
+    /* ---------- listas ---------- */
     private final ObservableList<Jugador> jugadoresOriginales = FXCollections.observableArrayList();
     private final ObservableList<Jugador> jugadoresFiltrados  = FXCollections.observableArrayList();
 
-    private final JugadorApiClient jugadorApi = new JugadorApiClient();
+    /* ---------- estado de UI ---------- */
+    private   Equipo equipoSeleccionado;   // se recuerda entre vistas
+    private   String textoBuscado;
 
-    // 🧠 Variables de persistencia
-    private Equipo equipoSeleccionado;
-    private String textoBuscado;
-
+    /* ========== INIT ========== */
     @FXML
-    public void initialize() {
+    private void initialize() {
         configurarTabla();
         configurarBuscador();
-        cargarEquipos();
+        cargarEquipos();          // primera carga
     }
 
+    /* ========== TABLA ========== */
     private void configurarTabla() {
         TableColumn<Jugador,String> colNombre = new TableColumn<>("Nombre");
         colNombre.setCellValueFactory(j ->
-                new ReadOnlyStringWrapper(j.getValue().getPlayerName() != null ? j.getValue().getPlayerName() : "Sin nombre"));
+                new ReadOnlyStringWrapper(j.getValue().getPlayerName() != null
+                        ? j.getValue().getPlayerName() : "Sin nombre"));
         colNombre.setPrefWidth(200);
 
         TableColumn<Jugador,String> colDorsal = new TableColumn<>("Dorsal");
         colDorsal.setCellValueFactory(j ->
-                new ReadOnlyStringWrapper(j.getValue().getJerseyNumber() != null ? j.getValue().getJerseyNumber() : "-"));
+                new ReadOnlyStringWrapper(j.getValue().getJerseyNumber() != null
+                        ? j.getValue().getJerseyNumber() : "-"));
         colDorsal.setPrefWidth(80);
 
         TableColumn<Jugador,String> colPos = new TableColumn<>("Posición");
         colPos.setCellValueFactory(j ->
-                new ReadOnlyStringWrapper(j.getValue().getPosition() != null ? j.getValue().getPosition() : "Sin posición"));
+                new ReadOnlyStringWrapper(j.getValue().getPosition() != null
+                        ? j.getValue().getPosition() : "Sin posición"));
         colPos.setPrefWidth(120);
 
         playerTable.getColumns().setAll(colNombre, colPos, colDorsal);
@@ -59,42 +71,47 @@ public class EquiposController implements ViewLifecycle {
         playerTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
 
+    /* ========== EQUIPOS ========== */
     private void cargarEquipos() {
         EquiposApiClient.getEquiposAsync()
                 .thenAccept(this::poblarComboEquipos)
-                .exceptionally(ex -> {
-                    ex.printStackTrace();
-                    return null;
-                });
+                .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
 
     private void poblarComboEquipos(List<Equipo> equipos) {
         Platform.runLater(() -> {
             equipoSelector.setItems(FXCollections.observableArrayList(equipos));
-            equipoSelector.setOnAction(evt -> {
-                Equipo sel = equipoSelector.getValue();
-                if (sel != null) {
-                    equipoSeleccionado = sel;
-                    cargarJugadores(sel.getTeamId());
-                }
-            });
 
-            // Restauramos equipo previamente seleccionado si existe
-            if (equipoSeleccionado != null) {
+            // listener sólo se añade una vez
+            if (equipoSelector.getOnAction() == null) {
+                equipoSelector.setOnAction(evt -> {
+                    Equipo sel = equipoSelector.getValue();
+                    if (sel != null) {
+                        equipoSeleccionado = sel;
+                        cargarJugadores(sel.getTeamId());
+                    }
+                });
+            }
+
+            /* restaura selección previa si existe y aún está en la lista */
+            if (equipoSeleccionado != null && equipos.contains(equipoSeleccionado)) {
                 equipoSelector.setValue(equipoSeleccionado);
                 cargarJugadores(equipoSeleccionado.getTeamId());
             }
         });
     }
 
+    /* ========== JUGADORES ========== */
     private void cargarJugadores(int teamId) {
-        CompletableFuture.supplyAsync(() -> {
+        CompletableFuture
+                .supplyAsync(() -> {
                     try {
-                        return jugadorApi.getJugadoresPorEquipo(teamId);
+                        return JugadorApiClient.getJugadoresPorEquipo(teamId); // llamada estática
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
-                }).thenAccept(this::poblarTablaJugadores)
+                })
+                .thenAccept(this::poblarTablaJugadores)
                 .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
 
@@ -105,36 +122,32 @@ public class EquiposController implements ViewLifecycle {
         });
     }
 
+    /* ========== BUSCADOR ========== */
     private void configurarBuscador() {
-        jugadorSearchField.textProperty().addListener((obs, oldVal, newVal) -> {
-            textoBuscado = newVal; // guardamos el texto
-            aplicarFiltro(newVal);
+        jugadorSearchField.textProperty().addListener((obs, o, n) -> {
+            textoBuscado = n;
+            aplicarFiltro(n);
         });
     }
 
     private void aplicarFiltro(String texto) {
         jugadoresFiltrados.setAll(
                 jugadoresOriginales.stream()
-                        .filter(j -> j.getPlayerName() != null && j.getPlayerName().toLowerCase().contains(texto.toLowerCase()))
+                        .filter(j -> j.getPlayerName() != null &&
+                                j.getPlayerName().toLowerCase().contains(texto.toLowerCase()))
                         .collect(Collectors.toList())
         );
     }
 
+    /* ========== ViewLifecycle ========== */
     @Override
     public void onShow() {
-        if (!jugadoresOriginales.isEmpty()) {
-            aplicarFiltro(textoBuscado != null ? textoBuscado : "");
-            if (equipoSeleccionado != null) {
-                equipoSelector.setValue(equipoSeleccionado);
-            }
-        } else {
-            cargarEquipos(); // por si es la primera vez
-        }
+        cargarEquipos();
     }
 
     @Override
     public void onHide() {
         equipoSeleccionado = equipoSelector.getValue();
-        textoBuscado = jugadorSearchField.getText();
+        textoBuscado       = jugadorSearchField.getText();
     }
 }

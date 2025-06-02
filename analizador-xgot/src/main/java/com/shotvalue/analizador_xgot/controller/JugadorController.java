@@ -3,10 +3,12 @@ package com.shotvalue.analizador_xgot.controller;
 import com.shotvalue.analizador_xgot.model.Jugador;
 import com.shotvalue.analizador_xgot.services.JugadorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*")          // quita o ajusta si ya gestionas CORS
 @RestController
 @RequestMapping("/api/jugadores")
 public class JugadorController {
@@ -14,13 +16,13 @@ public class JugadorController {
     @Autowired
     private JugadorService service;
 
-    // Devuelve todos los jugadores
+    /* ---------- GET ---------- */
+
     @GetMapping
     public List<Jugador> getAll() {
         return service.getAll();
     }
 
-    // Devuelve los jugadores de un equipo por teamId
     @GetMapping("/porEquipo/{teamId}")
     public List<Jugador> getByTeamId(@PathVariable int teamId) {
         return service.getByTeamId(teamId);
@@ -31,4 +33,11 @@ public class JugadorController {
         return service.obtenerNombresCompletos();
     }
 
+    /* ---------- POST  (nuevo) ---------- */
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Jugador crear(@RequestBody Jugador jugador) {
+        return service.save(jugador);
+    }
 }

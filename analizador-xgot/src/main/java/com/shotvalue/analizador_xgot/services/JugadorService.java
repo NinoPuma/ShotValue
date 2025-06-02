@@ -10,8 +10,11 @@ import java.util.Optional;
 
 @Service
 public class JugadorService {
+
     @Autowired
     private JugadorRepository repo;
+
+    /* ---------- CRUD básico ---------- */
 
     public List<Jugador> getAll() {
         return repo.findAll();
@@ -25,22 +28,25 @@ public class JugadorService {
         return repo.findById(id);
     }
 
-    public List<Jugador> getByTeamId(int teamId) {
-        return repo.findByTeamId(teamId);
-    }
-
     public void delete(String id) {
         repo.deleteById(id);
     }
 
+    /* ---------- consultas ---------- */
+
+    public List<Jugador> getByTeamId(int teamId) {
+        return repo.findByTeamId(teamId);
+    }
+
+    /**
+     * Lista de nombres (sin duplicados, ni nulos/vacíos)
+     */
     public List<String> obtenerNombresCompletos() {
         return repo.findAll()
                 .stream()
-                .map(Jugador::getPlayer_name) // o getPlayerName()
-                .filter(nombre -> nombre != null && !nombre.isBlank())
+                .map(Jugador::getPlayerName)      // ← ¡getter correcto!
+                .filter(n -> n != null && !n.isBlank())
                 .distinct()
                 .toList();
     }
-
-
 }

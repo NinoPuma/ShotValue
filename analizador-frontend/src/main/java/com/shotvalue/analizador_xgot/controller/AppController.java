@@ -23,7 +23,7 @@ public class AppController {
 
     @FXML private Button btnInicio, btnEquipos, btnRegistrar, btnVisualizar,
             btnInformes, btnPerfil, btnAyuda, btnSalir,
-            btnCrearJugador;      // ← botón lateral
+            btnCrearJugador, btnCrearEquipo;
 
     /* ────────── estilos ────────── */
     private final String defaultStyle = "-fx-background-color: transparent; -fx-text-fill: white;";
@@ -56,6 +56,7 @@ public class AppController {
         btnInicio        .setOnAction(e -> cargarVista("/tfcc/inicio-view.fxml",        btnInicio));
         btnEquipos       .setOnAction(e -> cargarVista("/tfcc/equipos-view.fxml",       btnEquipos));
         btnRegistrar     .setOnAction(e -> cargarVista("/tfcc/registrar-view.fxml",     btnRegistrar));
+        btnCrearEquipo  .setOnAction(e -> cargarVista("/tfcc/crear-equipo-view.fxml",  btnCrearEquipo));
         btnCrearJugador  .setOnAction(e -> cargarVista("/tfcc/crear-jugador-view.fxml", btnCrearJugador));
         btnVisualizar    .setOnAction(e -> cargarVista("/tfcc/visualizar-view.fxml",    btnVisualizar));
         btnInformes      .setOnAction(e -> cargarVista("/tfcc/informes-view.fxml",      btnInformes));
@@ -124,6 +125,7 @@ public class AppController {
         btnInicio.setStyle(defaultStyle);
         btnEquipos.setStyle(defaultStyle);
         btnRegistrar.setStyle(defaultStyle);
+        btnCrearEquipo .setStyle(defaultStyle);
         btnCrearJugador.setStyle(defaultStyle);
         btnVisualizar.setStyle(defaultStyle);
         btnInformes.setStyle(defaultStyle);
