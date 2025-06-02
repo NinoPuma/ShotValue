@@ -136,6 +136,10 @@ public class AppController {
     /* ────────── logout ────────── */
     private void cerrarSesion() {
         try {
+            // 🔁 Desactivar auto-login para la próxima vez
+            LoginController.desactivarRecordarSesion();
+
+            // Volver al login
             Stage stage = (Stage) contenidoCentro.getScene().getWindow();
             Parent login = FXMLLoader.load(getClass().getResource("/tfcc/login.fxml"));
             stage.setScene(new Scene(login));
@@ -143,6 +147,7 @@ public class AppController {
             stage.setMaximized(false);
             stage.centerOnScreen();
 
+            // Reset interno
             viewCache.clear();
             ctlCache.clear();
             controladorVisible = null;

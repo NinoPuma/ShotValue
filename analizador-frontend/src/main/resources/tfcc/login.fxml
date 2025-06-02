@@ -35,6 +35,9 @@
                      maxWidth="320"
                      style="-fx-font-size: 14px; -fx-padding: 10; -fx-background-radius: 8;" />
 
+      <CheckBox fx:id="rememberMeCheckBox" text="Recordar sesión"
+                style="-fx-font-size: 12px; -fx-text-fill: #34495e;" />
+
       <Button text="Entrar" onAction="#handleLogin" maxWidth="180"
               style="-fx-background-color: #27ae60; -fx-text-fill: white;
                        -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 8;" />
