@@ -60,7 +60,7 @@ public class VisualizarController implements Initializable {
         minuteFromSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 120, 0));
         minuteToSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 120, 90));
 
-        periodBox.getItems().setAll("Todos los períodos", "1° Tiempo", "2° Tiempo", "ET - 1° Tiempo", "ET - 2° Tiempo");
+        periodBox.getItems().setAll("Todos los períodos", "1° Tiempo", "2° Tiempo", "ET - 1° Tiempo", "ET - 2° Tiempo", "Penales");
         periodBox.setValue("Todos los períodos");
 
         teamSideBox.getItems().setAll("Ambos equipos", "Local", "Visitante");
@@ -108,6 +108,15 @@ public class VisualizarController implements Initializable {
                     minuteFromSpinner.getValueFactory().setValue(105);
                     minuteToSpinner.getValueFactory().setValue(120);
                 }
+                case "Penales" -> {
+                    disableMinutos = true;
+                    minuteFromSpinner.getValueFactory().setValue(120);
+                    minuteToSpinner.getValueFactory().setValue(120);
+                }
+                case "Todos los períodos" -> {
+                    minuteFromSpinner.getValueFactory().setValue(0);
+                    minuteToSpinner.getValueFactory().setValue(120);
+                }
                 default -> {
                     minuteFromSpinner.setOpacity(1.0);
                     minuteToSpinner.setOpacity(1.0);
@@ -116,6 +125,8 @@ public class VisualizarController implements Initializable {
 
             minuteFromSpinner.setDisable(disableMinutos);
             minuteToSpinner.setDisable(disableMinutos);
+            minuteFromSpinner.setOpacity(disableMinutos ? 0.5 : 1.0);
+            minuteToSpinner.setOpacity(disableMinutos ? 0.5 : 1.0);
         });
 
         new Thread(() -> {
@@ -137,6 +148,7 @@ public class VisualizarController implements Initializable {
             case "2° Tiempo" -> "2";
             case "ET - 1° Tiempo" -> "3";
             case "ET - 2° Tiempo" -> "4";
+            case "Penales" -> "5";
             default -> "";
         };
 
