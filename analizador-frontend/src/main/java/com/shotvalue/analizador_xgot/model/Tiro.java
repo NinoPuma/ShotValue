@@ -7,6 +7,7 @@ public class Tiro {
     private String jugadorNombre;   // Nombre del jugador (opcional para mostrar)
     private int equipoId;           // ID del equipo
     private String equipoNombre;    // Nombre del equipo (opcional para mostrar)
+    private String teamSide;
 
     private double destinoX;        // Coordenada X del tiro
     private double destinoY;        // Coordenada Y del tiro
@@ -17,6 +18,10 @@ public class Tiro {
     private String preAction;       // Acción previa
     private String result;          // Resultado del tiro
     private String area;            // Zona del campo
+
+    private String third;           // ← “Tercio” (Defensivo, Medio, Ofensivo, Todos)
+    private String lane;            // ← “Carril” (Izquierdo, Central, Derecho, Todos)
+    private String situation;       // ← “Situación” (Juego abierto, Balón parado, etc.)
 
     private double xgot;            // Expected Goals On Target
     private double x;               // Coordenada X
@@ -33,6 +38,7 @@ public class Tiro {
         this.jugadorNombre = jugadorNombre;
         this.equipoId = equipoId;
         this.equipoNombre = equipoNombre;
+        this.teamSide = null;
         this.minuto = minuto;
         this.bodyPart = bodyPart;
         this.preAction = preAction;
@@ -41,6 +47,9 @@ public class Tiro {
         this.xgot = xgot;
         this.x = x;
         this.y = y;
+        this.third = null;
+        this.lane = null;
+        this.situation = null;
     }
 
     public String getId() {
@@ -142,6 +151,14 @@ public class Tiro {
 
     public void setArea(String area) {
         this.area = area;
+    }
+
+    public String getTeamSide() {
+        return teamSide;
+    }
+
+    public void setTeamSide(String teamSide) {
+        this.teamSide = teamSide;
     }
 
     public double getXgot() {

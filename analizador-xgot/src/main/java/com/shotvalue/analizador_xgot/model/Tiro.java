@@ -39,6 +39,14 @@ public class Tiro {
     private String jugadorId;
     private String partidoId;
     private int minuto;
+    private String tercio;
+    private String preAction;
+
+    private String teamSide;  // Local o Visitante
+    private String third;     // Tercio: Defensivo, Medio, Ofensivo
+    private String lane;      // Carril: Izquierdo, Central, Derecho
+    private String situation; // Situación de juego
+
 
     public Tiro() {
     }
@@ -132,6 +140,7 @@ public class Tiro {
     public void setDestinoZ(Double destinoZ) {
         this.destinoZ = destinoZ;
     }
+
     public boolean isPorteroNoSeMueve() {
         return porteroNoSeMueve;
     }
@@ -292,8 +301,57 @@ public class Tiro {
         this.equipoId = equipoId;
     }
 
-    public int getPeriod() { return period; }
-    public void setPeriod(int period) { this.period = period; }
+    public int getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(int period) {
+        this.period = period;
+    }
+
+    public String getTercio() {
+        return tercio;
+    }
+
+    public void setTercio(String tercio) {
+        this.tercio = tercio;
+    }
+
+    public String getPreAction() {
+        return preAction;
+    }
+
+    public void setPreAction(String preAction) {
+        this.preAction = preAction;
+    }
+
+    public String getTeamSide() {
+        return teamSide;
+    }
+    public void setTeamSide(String teamSide) {
+        this.teamSide = teamSide;
+    }
+
+    public String getThird() {
+        return third;
+    }
+    public void setThird(String third) {
+        this.third = third;
+    }
+
+    public String getLane() {
+        return lane;
+    }
+    public void setLane(String lane) {
+        this.lane = lane;
+    }
+
+    public String getSituation() {
+        return situation;
+    }
+    public void setSituation(String situation) {
+        this.situation = situation;
+    }
 
     @Override
     public String toString() {

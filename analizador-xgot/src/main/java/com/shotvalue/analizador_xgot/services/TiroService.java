@@ -39,7 +39,8 @@ public class TiroService {
             String parteDelCuerpo, String tipoDeJugada,
             String resultado, String zonaDelDisparo,
             String xgotStr, String nombreJugador,
-            Integer period
+            Integer period, String preAction, String teamSide,
+            String third, String lane, String situation
     ) {
         double xgotFiltro = -1.0;
         if (xgotStr != null && !xgotStr.isEmpty()) {
@@ -60,7 +61,18 @@ public class TiroService {
                 .filter(t -> resultado.equals("Todos los resultados") || t.getResultado().equalsIgnoreCase(resultado))
                 .filter(t -> zonaDelDisparo.equals("Cualquier zona") || t.getZonaDelDisparo().equalsIgnoreCase(zonaDelDisparo))
                 .filter(t -> finalXgotFiltro < 0 || t.getXgot() >= finalXgotFiltro)
-                .filter(t -> nombre.isEmpty() || (t.getJugadorNombre() != null && t.getJugadorNombre().toLowerCase().contains(nombre)));
+                .filter(t -> nombre.isEmpty() || (t.getJugadorNombre() != null && t.getJugadorNombre().toLowerCase().contains(nombre)))
+                .filter(t -> preAction.equals("Todas las acciones") || preAction.equalsIgnoreCase(t.getPreAction()))
+                .filter(t -> teamSide.equals("Ambos equipos")
+                || (t.getTeamSide() != null && t.getTeamSide().equalsIgnoreCase(teamSide)))
+                .filter(t -> third.equals("Todos")
+                        || (t.getThird() != null && t.getThird().equalsIgnoreCase(third)))
+                // Filtramos por carril
+                .filter(t -> lane.equals("Todos")
+                        || (t.getLane() != null && t.getLane().equalsIgnoreCase(lane)))
+                // Filtramos por situación de juego
+                .filter(t -> situation.equals("Cualquier situación")
+                        || (t.getSituation() != null && t.getSituation().equalsIgnoreCase(situation)));
 
         if (period != null) {
             stream = stream.filter(t -> t.getPeriod() == period);
@@ -68,5 +80,4 @@ public class TiroService {
 
         return stream.collect(Collectors.toList());
     }
-
 }

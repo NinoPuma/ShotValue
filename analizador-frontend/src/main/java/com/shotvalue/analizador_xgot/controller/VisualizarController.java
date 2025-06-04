@@ -54,13 +54,13 @@ public class VisualizarController implements Initializable {
         areaBox.getItems().addAll("Cualquier zona", "Área chica", "Área grande", "Fuera del área");
         situationBox.getItems().addAll("Cualquier situación", "Juego abierto", "Balón parado", "Contraataque");
         bodyPartBox.getItems().addAll("Cualquier parte", "Pie izquierdo", "Pie derecho", "Cabeza", "Otro");
-        preActionBox.getItems().addAll("Todas las acciones", "Pase", "Regate", "Rebote", "Centro");
+        preActionBox.getItems().addAll("Todas las acciones", "Pase", "Regate", "Rebote", "Centro", "Penal", "No definido");
         resultBox.getItems().addAll("Todos los resultados", "Gol", "Atajado", "Fuera", "Bloqueado");
 
         minuteFromSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 120, 0));
         minuteToSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 120, 90));
 
-        periodBox.getItems().setAll("Todos los períodos", "1° Tiempo", "2° Tiempo", "ET - 1° Tiempo", "ET - 2° Tiempo", "Penales");
+        periodBox.getItems().setAll("Todos los períodos", "1° Tiempo", "2° Tiempo", "ET - 1° Tiempo", "ET - 2° Tiempo");
         periodBox.setValue("Todos los períodos");
 
         teamSideBox.getItems().setAll("Ambos equipos", "Local", "Visitante");
@@ -108,14 +108,9 @@ public class VisualizarController implements Initializable {
                     minuteFromSpinner.getValueFactory().setValue(105);
                     minuteToSpinner.getValueFactory().setValue(120);
                 }
-
-                case "Penales" -> {
-                    disableMinutos = true;
-                }
                 default -> {
-                    minuteFromSpinner.setOpacity(disableMinutos ? 0.5 : 1.0);
-                    minuteToSpinner.setOpacity(disableMinutos ? 0.5 : 1.0);
-
+                    minuteFromSpinner.setOpacity(1.0);
+                    minuteToSpinner.setOpacity(1.0);
                 }
             }
 
@@ -142,18 +137,18 @@ public class VisualizarController implements Initializable {
             case "2° Tiempo" -> "2";
             case "ET - 1° Tiempo" -> "3";
             case "ET - 2° Tiempo" -> "4";
-            case "Penales" -> "5";
             default -> "";
         };
 
         if (!periodo.isEmpty()) filtros.put("period", periodo);
 
-        if (periodoSeleccionado.equals("Penales")) {
-            filtros.put("tipoJugada", "Penalty");
-        } else {
-            filtros.put("minutoDesde", String.valueOf(minuteFromSpinner.getValue()));
-            filtros.put("minutoHasta", String.valueOf(minuteToSpinner.getValue()));
-        }
+        filtros.put("minutoDesde", String.valueOf(minuteFromSpinner.getValue()));
+        filtros.put("minutoHasta", String.valueOf(minuteToSpinner.getValue()));
+
+        filtros.put("teamSide", teamSideBox.getValue());
+        filtros.put("third", thirdBox.getValue());
+        filtros.put("lane", laneBox.getValue());
+        filtros.put("situation", situationBox.getValue());
 
         filtros.put("bodyPart", bodyPartBox.getValue());
         filtros.put("preAction", preActionBox.getValue());
@@ -219,8 +214,8 @@ public class VisualizarController implements Initializable {
         GraphicsContext gc = canvasArco.getGraphicsContext2D();
         gc.clearRect(0, 0, canvasArco.getWidth(), canvasArco.getHeight());
 
-        double canvasWidth = canvasArco.getWidth();   // 500
-        double canvasHeight = canvasArco.getHeight(); // 150
+        double canvasWidth = canvasArco.getWidth();
+        double canvasHeight = canvasArco.getHeight();
 
         double paddingX = 8.0;
         double paddingY = 8.0;

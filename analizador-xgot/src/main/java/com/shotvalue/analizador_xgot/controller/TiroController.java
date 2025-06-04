@@ -40,7 +40,7 @@ public class TiroController {
         service.delete(id);
     }
 
-    // ✅ Nuevo endpoint para filtros desde el frontend
+    // ✅ Filtro extendido
     @PostMapping("/filtrar")
     public List<Tiro> filtrarTiros(@RequestBody Map<String, String> filtros) {
         int minutoDesde = parseInt(filtros.getOrDefault("minutoDesde", "0"));
@@ -49,8 +49,14 @@ public class TiroController {
         String tipo = filtros.getOrDefault("tipoJugada", "Todas las acciones");
         String result = filtros.getOrDefault("result", "Todos los resultados");
         String area = filtros.getOrDefault("area", "Cualquier zona");
+        String teamSide = filtros.getOrDefault("teamSide",        "Ambos equipos");
+        String third    = filtros.getOrDefault("third",           "Todos");
+        String lane     = filtros.getOrDefault("lane",            "Todos");
+        String situation= filtros.getOrDefault("situation",       "Cualquier situación");
         String xg = filtros.getOrDefault("xg", "");
         String jugador = filtros.getOrDefault("jugador", "");
+        String preAction = filtros.getOrDefault("preAction", "Todas las acciones");
+
         String periodStr = filtros.getOrDefault("period", null);
         Integer period = null;
         if (periodStr != null && !periodStr.isBlank()) {
@@ -58,7 +64,6 @@ public class TiroController {
                 period = Integer.parseInt(periodStr);
             } catch (NumberFormatException ignored) {}
         }
-
 
         return service.filtrarTiros(
                 minutoDesde,
@@ -69,11 +74,16 @@ public class TiroController {
                 area,
                 xg,
                 jugador,
-                period
+                period,
+                preAction,
+                teamSide,
+                third,
+                lane,
+                situation
         );
     }
 
-    private int parseInt(String s) {
+        private int parseInt(String s) {
         try {
             return Integer.parseInt(s);
         } catch (NumberFormatException e) {
