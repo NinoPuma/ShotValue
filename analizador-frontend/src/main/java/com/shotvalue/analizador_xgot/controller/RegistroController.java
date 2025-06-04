@@ -99,9 +99,26 @@ public class RegistroController {
             return;
         }
 
-        // Si todo está bien, crear el usuario
-        Usuario nuevoUsuario = new Usuario(null, username, email, password, null, null, null, null);
+        // Si todo está bien, crear el usuario con TODOS los campos
+        String nombreCompleto     = nombreCompletoField.getText().trim();
+        String rol                = rolComboBox.getValue();          // asegúrate de que no sea null
+        String telefono           = telefonoField.getText().trim();
+        LocalDate fechaNacimiento = fechaNacimientoPicker.getValue(); // puede ser null si el usuario no lo puso
+
+        Usuario nuevoUsuario = new Usuario(
+                null,            // id (lo generará el backend)
+                username,
+                email,
+                password,
+                nombreCompleto,
+                rol,
+                telefono,
+                fechaNacimiento,
+                null             // avatarUrl (lo subirás más adelante, si procede)
+        );
+
         sendRegistration(nuevoUsuario);
+
     }
 
 

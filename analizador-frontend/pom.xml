@@ -10,19 +10,16 @@
 
     <!-- ======== Propiedades globales ======== -->
     <properties>
-        <!-- JDK 17 LTS -->
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <!-- JavaFX -->
         <javafx.version>21.0.7</javafx.version>
     </properties>
 
     <!-- ======== Dependencias ======== -->
     <dependencies>
 
-        <!-- JavaFX (Controles + FXML) -->
+        <!-- JavaFX -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -34,37 +31,39 @@
             <version>${javafx.version}</version>
         </dependency>
 
-        <!-- Apache HttpClient 5 -->
+        <!-- HTTP Client -->
         <dependency>
             <groupId>org.apache.httpcomponents.client5</groupId>
             <artifactId>httpclient5</artifactId>
             <version>5.3</version>
         </dependency>
 
-        <!-- Gson: JSON ↔︎ POJOs -->
+        <!-- Gson -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.10.1</version>
         </dependency>
 
-        <!-- XChart: gráficas offline en JavaFX -->
+        <!-- XChart -->
         <dependency>
             <groupId>org.knowm.xchart</groupId>
             <artifactId>xchart</artifactId>
             <version>3.8.2</version>
         </dependency>
+
+        <!-- Spring Context -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>6.2.5</version>
-            <scope>compile</scope>
         </dependency>
 
+        <!-- ControlsFX -->
         <dependency>
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
-            <version>11.1.1</version> <!-- O la versión compatible con tu JavaFX -->
+            <version>11.1.1</version>
         </dependency>
 
     </dependencies>
@@ -73,25 +72,29 @@
     <build>
         <plugins>
 
-            <!-- Plugin Maven para JavaFX -->
+            <!-- Plugin JavaFX -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
 
                 <configuration>
-                    <!-- Clase principal correcta -->
-                    <mainClass>com.shotvalue.analizador_xgot.controller.Launcher</mainClass>
+                    <mainClass>com.shotvalue.analizador_xgot.Launcher</mainClass>
+                    <options>
+                        <option>--add-exports=javafx.base/com.sun.javafx.event=ALL-UNNAMED</option>
+                    </options>
                 </configuration>
 
-                <!-- Permite: mvn javafx:run -->
                 <executions>
                     <execution>
-                        <goals><goal>run</goal></goals>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
 
         </plugins>
     </build>
+
 </project>

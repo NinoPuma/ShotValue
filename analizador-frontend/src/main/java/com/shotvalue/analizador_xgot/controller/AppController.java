@@ -34,8 +34,7 @@ public class AppController {
     private final Map<String, ViewLifecycle> ctlCache  = new HashMap<>();
     private       ViewLifecycle              controladorVisible;
 
-    /* ────────── estado usuario ────────── */
-    private String userName;    // la establece LoginController
+    private String userName;
 
     public void setUserName(String name) {
         this.userName = name;
@@ -45,12 +44,9 @@ public class AppController {
         }
     }
 
-    /*  botón que la vista Inicio llamará  */
     public void openCrearEquipo() {
         cargarVista("/tfcc/crear-equipo-view.fxml", null);
     }
-
-    /* ────────── listeners y carga inicial ────────── */
     @FXML
     private void initialize() {
         btnInicio        .setOnAction(e -> cargarVista("/tfcc/inicio-view.fxml",        btnInicio));
@@ -67,7 +63,6 @@ public class AppController {
         cargarVista("/tfcc/inicio-view.fxml", btnInicio);   // primera vista
     }
 
-    /* ────────── helper anclar ────────── */
     private void setContenido(Node n) {
         contenidoCentro.getChildren().setAll(n);
         AnchorPane.setTopAnchor   (n, 0.0);
@@ -76,7 +71,6 @@ public class AppController {
         AnchorPane.setLeftAnchor  (n, 0.0);
     }
 
-    /* ────────── carga de vistas ────────── */
     private void cargarVista(String rutaFXML, Button botonActivo) {
         try {
             /* “Inicio” siempre se recarga para refrescar datos */
@@ -105,13 +99,11 @@ public class AppController {
                 }
             });
 
-            /* ciclo de vida */
             ViewLifecycle nuevo = ctlCache.get(rutaFXML);
             if (controladorVisible != null && controladorVisible != nuevo) controladorVisible.onHide();
             controladorVisible = nuevo;
             if (controladorVisible != null) controladorVisible.onShow();
 
-            /* muestra y estilos */
             setContenido(root);
             resetearEstilosMenu();
             if (botonActivo != null) botonActivo.setStyle(activeStyle);
@@ -133,11 +125,9 @@ public class AppController {
         btnAyuda.setStyle(defaultStyle);
     }
 
-    /* ────────── logout ────────── */
     private void cerrarSesion() {
         try {
-            // 🔁 Desactivar auto-login para la próxima vez
-            LoginController.desactivarRecordarSesion();
+            LoginController.clearRememberMe();
 
             // Volver al login
             Stage stage = (Stage) contenidoCentro.getScene().getWindow();
