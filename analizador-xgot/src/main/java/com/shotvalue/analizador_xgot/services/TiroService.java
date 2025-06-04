@@ -56,28 +56,105 @@ public class TiroService {
 
         Stream<Tiro> stream = repo.findAll().stream()
                 .filter(t -> t.getMinuto() >= minutoDesde && t.getMinuto() <= minutoHasta)
-                .filter(t -> parteDelCuerpo.equals("Cualquier parte") || t.getParteDelCuerpo().equalsIgnoreCase(parteDelCuerpo))
+                .filter(t -> parteDelCuerpo.equals("Cualquier parte") || obtenerParteDelCuerpo(t).equalsIgnoreCase(parteDelCuerpo))
                 .filter(t -> tipoDeJugada.equals("Todas las acciones") || t.getTipoDeJugada().equalsIgnoreCase(tipoDeJugada))
-                .filter(t -> resultado.equals("Todos los resultados") || t.getResultado().equalsIgnoreCase(resultado))
-                .filter(t -> zonaDelDisparo.equals("Cualquier zona") || t.getZonaDelDisparo().equalsIgnoreCase(zonaDelDisparo))
+                .filter(t -> resultado.equals("Todos los resultados") || obtenerResultado(t).equalsIgnoreCase(resultado))
+                .filter(t -> zonaDelDisparo.equals("Cualquier zona") || obtenerArea(t).equalsIgnoreCase(zonaDelDisparo))
                 .filter(t -> finalXgotFiltro < 0 || t.getXgot() >= finalXgotFiltro)
                 .filter(t -> nombre.isEmpty() || (t.getJugadorNombre() != null && t.getJugadorNombre().toLowerCase().contains(nombre)))
                 .filter(t -> preAction.equals("Todas las acciones") || preAction.equalsIgnoreCase(t.getPreAction()))
-                .filter(t -> teamSide.equals("Ambos equipos")
-                || (t.getTeamSide() != null && t.getTeamSide().equalsIgnoreCase(teamSide)))
-                .filter(t -> third.equals("Todos")
-                        || (t.getThird() != null && t.getThird().equalsIgnoreCase(third)))
-                // Filtramos por carril
-                .filter(t -> lane.equals("Todos")
-                        || (t.getLane() != null && t.getLane().equalsIgnoreCase(lane)))
-                // Filtramos por situación de juego
-                .filter(t -> situation.equals("Cualquier situación")
-                        || (t.getSituation() != null && t.getSituation().equalsIgnoreCase(situation)));
+                .filter(t -> teamSide.equals("Ambos equipos") ||
+                        obtenerTeamSide(t).equalsIgnoreCase(teamSide))
+                .filter(t -> third.equals("Todos") ||
+                        obtenerThird(t).equalsIgnoreCase(third))
+                .filter(t -> lane.equals("Todos") ||
+                        obtenerLane(t).equalsIgnoreCase(lane))
+                .filter(t -> situation.equals("Cualquier situación") ||
+                        obtenerSituation(t).equalsIgnoreCase(situation));
 
         if (period != null) {
             stream = stream.filter(t -> t.getPeriod() == period);
         }
 
         return stream.collect(Collectors.toList());
+    }
+
+    /**
+     * Devuelve el tercio de campo. Si el valor viene cargado desde la base de
+     * datos se respeta, de lo contrario se calcula a partir de la coordenada X.
+     */
+    private String obtenerThird(Tiro t) {
+        if (t.getThird() != null) return t.getThird();
+
+        double x = t.getX();
+        if (x <= 40) return "Defensivo";
+        if (x <= 80) return "Medio";
+        return "Ofensivo";
+    }
+
+    /**
+     * Devuelve el carril. Si viene definido se usa tal cual, de lo contrario
+     * se calcula usando la coordenada Y del disparo.
+     */
+    private String obtenerLane(Tiro t) {
+        if (t.getLane() != null) return t.getLane();
+
+        double y = t.getY();
+        if (y < 26.67) return "Izquierdo";
+        if (y < 53.33) return "Central";
+        return "Derecho";
+    }
+
+    /**
+     * Devuelve la situación de juego. Si no existe se asume "Juego abierto".
+     */
+    private String obtenerSituation(Tiro t) {
+        return t.getSituation() != null ? t.getSituation() : "Juego abierto";
+    }
+
+    /**
+     * Obtiene el lado del equipo (local/visitante). Si no se dispone de la
+     * información se devuelve "Ambos equipos" para no filtrar por este campo.
+     */
+    private String obtenerTeamSide(Tiro t) {
+        return t.getTeamSide() != null ? t.getTeamSide() : "Ambos equipos";
+    }
+
+    private String obtenerParteDelCuerpo(Tiro t) {
+        return t.getParteDelCuerpo() != null ? t.getParteDelCuerpo() : "Otro";
+    }
+
+    /**
+     * Devuelve la acción previa normalizada.
+     */
+    private String obtenerPreAction(Tiro t) {
+        String pre = t.getPreAction();
+        if (pre == null || pre.isBlank() || pre.equalsIgnoreCase("Otra")) {
+            return "No definido";
+        }
+        return pre;
+    }
+
+    /**
+     * Devuelve el resultado del tiro, o "Desconocido" si no se dispone de información.
+     */
+    private String obtenerResultado(Tiro t) {
+        return t.getResultado() != null ? t.getResultado() : "Desconocido";
+    }
+
+    /**
+     * Clasifica el disparo en Área chica, Área grande o Fuera del área.
+     */
+    private String obtenerArea(Tiro t) {
+        String zona = t.getZonaDelDisparo();
+        if (zona == null || zona.isBlank()) {
+            zona = t.isDentroDelArea() ? "Área grande" : "Fuera del área";
+        }
+
+        zona = zona.toLowerCase();
+        if (zona.contains("chica")) return "Área chica";
+        if (zona.contains("fuera")) return "Fuera del área";
+        if (zona.contains("libre")) return "Fuera del área";
+        return "Área grande";
     }
 }
