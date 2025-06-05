@@ -9,12 +9,13 @@ public class Tiro {
     @Id
     private String id;
 
+
     private double x;
     private double y;
     private Double destinoX;
     private Double destinoY;
     private Double destinoZ;
-
+    private double xg;
     private String parteDelCuerpo;
     private String tipoDeJugada;
     private String resultado;
@@ -277,6 +278,14 @@ public class Tiro {
     }
     public void setPorteroTapado(boolean porteroTapado) {
         this.porteroTapado = porteroTapado;
+    }
+
+    public double getXg() {
+        return xg;
+    }
+
+    public void setXg(double xg) {
+        this.xg = xg;
     }
 
     @Override
