@@ -1,33 +1,35 @@
-// src/main/java/com/shotvalue/analizador_xgot/session/UserSession.java
 package com.shotvalue.analizador_xgot.session;
 
 import com.shotvalue.analizador_xgot.model.Usuario;
 
-/**
- * Guarda al usuario autenticado y lo hace accesible desde
- * cualquier parte del frontend JavaFX.
- */
+/** Gestiona la sesión del usuario logeado en memoria. */
 public final class UserSession {
 
-    private static UserSession instance;
-    private final Usuario usuario;
+    private static Usuario current;
 
-    private UserSession(Usuario usuario) {
-        this.usuario = usuario;
-    }
+    private UserSession() {}           // utilitaria: no instanciable
 
-    /** Inicia la sesión -- llamarlo justo después de un login correcto. */
-    public static void start(Usuario usuario) {
-        instance = new UserSession(usuario);
-    }
-
-    /** Devuelve el usuario que ha iniciado sesión (o null si nadie ha iniciado). */
     public static Usuario get() {
-        return instance == null ? null : instance.usuario;
+        return current;
     }
 
-    /** Borra los datos al hacer logout. */
+    /** Establece/actualiza los datos del usuario en memoria. */
+    public static void set(Usuario usuario) {
+        current = usuario;
+    }
+
+    /** Alias para compatibilidad con código existente. */
+    public static void start(Usuario usuario) {
+        set(usuario);
+    }
+
+    /** Limpia la sesión actual. */
     public static void clear() {
-        instance = null;
+        current = null;
+    }
+
+    /** ¿Hay alguien logeado? */
+    public static boolean isLogged() {
+        return current != null;
     }
 }
