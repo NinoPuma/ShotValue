@@ -40,4 +40,5 @@ public class JugadorController {
     public Jugador crear(@RequestBody Jugador jugador) {
         return service.save(jugador);
     }
+
 }

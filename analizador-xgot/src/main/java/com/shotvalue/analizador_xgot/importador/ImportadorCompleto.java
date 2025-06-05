@@ -182,14 +182,15 @@ public class ImportadorCompleto {
                                     }
                                 }
 
-                                tiro.setResultado(ev.getShot().getOutcome() != null ? ev.getShot().getOutcome().getName() : "Desconocido");
-                                tiro.setParteDelCuerpo(ev.getShot().getBodyPart() != null ? ev.getShot().getBodyPart().getName() : "Desconocida");
-                                tiro.setTipoDeJugada(ev.getShot().getTechnique() != null ? ev.getShot().getTechnique().getName() : "Desconocida");
-                                tiro.setZonaDelDisparo(ev.getShot().getZone() != null ? ev.getShot().getZone().getName() : "Sin zona");
-                                // Si el tipo de jugada es un penal, lo seteamos explícitamente
+                                tiro.setResultado(traducir(ev.getShot().getOutcome() != null ? ev.getShot().getOutcome().getName() : "Desconocido", "resultado"));
+                                tiro.setParteDelCuerpo(traducir(ev.getShot().getBodyPart() != null ? ev.getShot().getBodyPart().getName() : "Desconocida", "parte"));
+                                tiro.setTipoDeJugada(traducir(ev.getShot().getTechnique() != null ? ev.getShot().getTechnique().getName() : "Desconocida", "jugada"));
+                                tiro.setZonaDelDisparo(traducir(ev.getShot().getZone() != null ? ev.getShot().getZone().getName() : "Sin zona", "zona"));
+
                                 if (ev.getShot().getType() != null && "Penalty".equalsIgnoreCase(ev.getShot().getType().getName())) {
                                     tiro.setTipoDeJugada("Penalty");
                                 }
+
                                 tiro.setXgot(ev.getShot().getStatsbombXg());
                                 tiro.setMinuto(ev.getMinute());
                                 tiro.setPeriod(ev.getPeriod());
@@ -313,4 +314,44 @@ public class ImportadorCompleto {
 
         return traducciones.getOrDefault(posicionIngles, posicionIngles);
     }
+
+    private static String traducir(String valor, String tipo) {
+        if (valor == null) return "Desconocido";
+
+        return switch (tipo) {
+            case "resultado" -> switch (valor.toLowerCase()) {
+                case "goal" -> "Gol";
+                case "saved" -> "Atajado";
+                case "off t" -> "Fuera";
+                case "blocked" -> "Bloqueado";
+                case "post" -> "Poste";
+                default -> valor;
+            };
+            case "parte" -> switch (valor.toLowerCase()) {
+                case "left foot" -> "Pie izquierdo";
+                case "right foot" -> "Pie derecho";
+                case "head" -> "Cabeza";
+                case "other" -> "Otro";
+                default -> valor;
+            };
+            case "jugada" -> switch (valor.toLowerCase()) {
+                case "normal" -> "Normal";
+                case "lob" -> "Lob";
+                case "half volley" -> "Media volea";
+                case "volley" -> "Volea";
+                case "penalty" -> "Penalty";
+                default -> valor;
+            };
+            case "zona" -> switch (valor.toLowerCase()) {
+                case "centre of the box" -> "Área central";
+                case "right side of the box" -> "Área derecha";
+                case "left side of the box" -> "Área izquierda";
+                case "outside the box" -> "Fuera del área";
+                case "deep free kick" -> "Tiro libre lejano";
+                default -> "Sin zona";
+            };
+            default -> valor;
+        };
+    }
+
 }

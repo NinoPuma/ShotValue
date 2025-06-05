@@ -1,6 +1,5 @@
 C:\Users\hugor\IdeaProjects\ShotValue\analizador-frontend\src\main\java\com\shotvalue\analizador_xgot\controller\InicioController.java
 C:\Users\hugor\IdeaProjects\ShotValue\analizador-frontend\src\main\java\com\shotvalue\analizador_xgot\controller\PerfilController.java
-C:\Users\hugor\IdeaProjects\ShotValue\analizador-frontend\src\main\java\com\shotvalue\analizador_xgot\api\TiroCreacionApiClient.java
 C:\Users\hugor\IdeaProjects\ShotValue\analizador-frontend\src\main\java\com\shotvalue\analizador_xgot\controller\AppController.java
 C:\Users\hugor\IdeaProjects\ShotValue\analizador-frontend\src\main\java\com\shotvalue\analizador_xgot\model\Jugador.java
 C:\Users\hugor\IdeaProjects\ShotValue\analizador-frontend\src\main\java\com\shotvalue\analizador_xgot\Launcher.java
@@ -23,6 +22,7 @@ C:\Users\hugor\IdeaProjects\ShotValue\analizador-frontend\src\main\java\com\shot
 C:\Users\hugor\IdeaProjects\ShotValue\analizador-frontend\src\main\java\com\shotvalue\analizador_xgot\api\TiroApiClient.java
 C:\Users\hugor\IdeaProjects\ShotValue\analizador-frontend\src\main\java\com\shotvalue\analizador_xgot\controller\AyudaController.java
 C:\Users\hugor\IdeaProjects\ShotValue\analizador-frontend\src\main\java\com\shotvalue\analizador_xgot\api\EquiposApiClient.java
+C:\Users\hugor\IdeaProjects\ShotValue\analizador-frontend\src\main\java\com\shotvalue\analizador_xgot\api\AuthApiClient.java
 C:\Users\hugor\IdeaProjects\ShotValue\analizador-frontend\src\main\java\com\shotvalue\analizador_xgot\controller\LoginController.java
 C:\Users\hugor\IdeaProjects\ShotValue\analizador-frontend\src\main\java\com\shotvalue\analizador_xgot\model\Partido.java
 C:\Users\hugor\IdeaProjects\ShotValue\analizador-frontend\src\main\java\com\shotvalue\analizador_xgot\session\UserSession.java
