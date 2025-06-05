@@ -240,6 +240,9 @@ public class RegistrarTiroController implements ViewLifecycle {
     /* **********************************************************************
      *   GUARDAR EL TIRO
      * ******************************************************************* */
+    /* ******************************************************************
+     *  GUARDAR EL TIRO
+     * ******************************************************************/
     private void guardarTiro() {
         try {
             Equipo equipoSel   = equipoBox.getValue();
@@ -251,17 +254,29 @@ public class RegistrarTiroController implements ViewLifecycle {
                 alerta("Falta Minuto", "Ingresa el minuto del tiro", Alert.AlertType.WARNING); return;
             }
 
-            int minuto = Integer.parseInt(minuteField.getText());
-
+            /* ─── 1) Construimos el DTO Tiro ─────────────────────────────── */
             Tiro tiro = new Tiro();
+
             tiro.setEquipoId(equipoSel.getTeamId());
             tiro.setEquipoNombre(equipoSel.getName());
             tiro.setJugadorId(jugadorSel.getPlayerId());
             tiro.setJugadorNombre(jugadorSel.getPlayerName());
 
-            tiro.setPeriodo(periodBox.getValue());
-            tiro.setMinuto(minuto);
+            // 1.a  Período → número 1-5
+            int periodNumber = switch (periodBox.getValue()) {
+                case "1° Tiempo"      -> 1;
+                case "2° Tiempo"      -> 2;
+                case "ET - 1° Tiempo" -> 3;
+                case "ET - 2° Tiempo" -> 4;
+                case "Penales"        -> 5;
+                default               -> 0;      // “Todos los períodos”
+            };
+            tiro.setPeriod(periodNumber);
 
+            // 1.b  Minuto
+            tiro.setMinuto(Integer.parseInt(minuteField.getText()));
+
+            // 1.c  Demás combos
             tiro.setThird(thirdBox.getValue());
             tiro.setLane(laneBox.getValue());
             tiro.setArea(areaBox.getValue());
@@ -270,16 +285,23 @@ public class RegistrarTiroController implements ViewLifecycle {
             tiro.setPreAction(preActionBox.getValue());
             tiro.setResult(resultBox.getValue());
 
+            // 1.d  Coordenadas de disparo / destino
             tiro.setX(ultimoFormulario.getX());
             tiro.setY(ultimoFormulario.getY());
             tiro.setDestinoX(ultimoFormulario.getDestinoX());
             tiro.setDestinoY(ultimoFormulario.getDestinoY());
+            tiro.setDestinoZ(ultimoFormulario.getDestinoZ());   // por si capturas altura
 
+            // 1.e  No enviamos xg/xgot: los calcula el back
+            tiro.setXg(0);      // opcional; el back ignorará 0
+            tiro.setXgot(0);    // opcional; el back lo sobrescribe
+
+            /* ─── 2) Llamamos al API (el back calcula xGOT) ──────────────── */
             TiroApiClient.saveTiroAsync(tiro)
                     .thenAccept(saved -> Platform.runLater(() -> {
                         alerta("Éxito",
                                 "Tiro guardado con ID: " + saved.getId() +
-                                        "\nxGOT calculado: " + saved.getXgot(),
+                                        "\nxGOT calculado: " + String.format("%.3f", saved.getXgot()),
                                 Alert.AlertType.INFORMATION);
                         limpiarFormulario();
                     }))
@@ -288,10 +310,13 @@ public class RegistrarTiroController implements ViewLifecycle {
                                 alerta("Error al guardar", ex.getMessage(), Alert.AlertType.ERROR));
                         return null;
                     });
+
         } catch (Exception ex) {
-            alerta("Error de validación", "Revisa los campos:\n" + ex.getMessage(), Alert.AlertType.WARNING);
+            alerta("Error de validación", "Revisa los campos:\n" + ex.getMessage(),
+                    Alert.AlertType.WARNING);
         }
     }
+
 
     /* **********************************************************************
      *   LIMPIAR EL FORMULARIO
@@ -346,8 +371,8 @@ public class RegistrarTiroController implements ViewLifecycle {
                     .ifPresent(jugadorBox::setValue));
         }
 
-        periodBox.setValue(ultimoFormulario.getPeriodo() == null
-                ? "Todos los períodos" : ultimoFormulario.getPeriodo());
+        periodBox.setValue(ultimoFormulario.getPeriod() == null
+                ? "Todos los períodos" : ultimoFormulario.getPeriod());
         minuteField.setText(ultimoFormulario.getMinuto() == 0
                 ? "" : String.valueOf(ultimoFormulario.getMinuto()));
         updateMinuteRange();
@@ -376,7 +401,7 @@ public class RegistrarTiroController implements ViewLifecycle {
         if (!minuteField.getText().isBlank())
             ultimoFormulario.setMinuto(Integer.parseInt(minuteField.getText()));
 
-        ultimoFormulario.setPeriodo(periodBox.getValue());
+        ultimoFormulario.setPeriod(periodBox.getValue());
         ultimoFormulario.setArea(areaBox.getValue());
         ultimoFormulario.setBodyPart(bodyPartBox.getValue());
         ultimoFormulario.setPreAction(preActionBox.getValue());

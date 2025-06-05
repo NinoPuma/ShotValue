@@ -8,7 +8,7 @@ public class Tiro {
     private int equipoId;           // ID del equipo
     private String equipoNombre;    // Nombre del equipo (opcional para mostrar)
     private int minuto;
-    private String periodo;
+    private String period;
 
     private double destinoX;        // Coordenada X del tiro
     private double destinoY;        // Coordenada Y del tiro
@@ -217,12 +217,12 @@ public class Tiro {
         this.situation = situation;
     }
 
-    public String getPeriodo() {
-        return periodo;
+    public String getPeriod() {
+        return period;
     }
 
-    public void setPeriodo(String periodo) {
-        this.periodo = periodo;
+    public void setPeriod(String period) {
+        this.period = period;
     }
 
     @Override
