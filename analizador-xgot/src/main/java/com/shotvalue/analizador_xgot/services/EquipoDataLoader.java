@@ -50,8 +50,8 @@ public class EquipoDataLoader {
 
                 Document equipoDoc = new Document("teamId", teamId)
                         .append("nombre", nombreEquipo)
-                        .append("entrenador", "Desconocido")  // Opcional: completar si se tiene
-                        .append("color", "Blanco")             // Valor por defecto
+                        .append("entrenador", "Desconocido")
+                        .append("color", "Blanco")
                         .append("jugadores", jugadores);
 
                 equiposCollection.updateOne(

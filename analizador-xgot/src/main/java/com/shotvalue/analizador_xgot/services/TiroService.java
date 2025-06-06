@@ -10,11 +10,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/**
- * Servicio de dominio para la entidad {@link Tiro}.
- * – Calcula xGOT antes de guardar.
- * – Proporciona filtros en memoria para consultas rápidas.
- */
 @Service
 public class TiroService {
 
@@ -22,17 +17,14 @@ public class TiroService {
     private TiroRepository repo;
 
     @Autowired
-    private XgotService xgotService;          // NUEVO
-
-    /* ─────────────────────────── CRUD ────────────────────────── */
+    private XgotService xgotService;
 
     public List<Tiro> getAll() {
         return repo.findAll();
     }
 
-    /** Guarda un tiro calculando xGOT previamente. */
     public Tiro save(Tiro t) {
-        double xgot = xgotService.calcularXgot(t);   // ← cálculo central
+        double xgot = xgotService.calcularXgot(t);
         t.setXgot(xgot);
         return repo.save(t);
     }
@@ -49,12 +41,6 @@ public class TiroService {
         repo.deleteById(id);
     }
 
-    /* ────────────────────────── FILTROS ───────────────────────── */
-
-    /**
-     * Filtra tiros en memoria según los criterios del usuario.
-     * @param xgotStr si es numérico ⇒ xGOT mínimo; si vacío se ignora.
-     */
     public List<Tiro> filtrarTiros(
             int minutoDesde, int minutoHasta,
             String parteDelCuerpo, String tipoDeJugada,
@@ -62,7 +48,6 @@ public class TiroService {
             String xgotStr, String nombreJugador,
             Integer period
     ) {
-        // ─── 1) convertir el string ─────────────────────────────────────────
         double xgotTmp = -1.0;
         if (xgotStr != null && !xgotStr.isBlank()) {
             try {
@@ -71,13 +56,12 @@ public class TiroService {
                 System.err.println("⚠️ xGOT no numérico: " + xgotStr);
             }
         }
-        final double xgotFiltro = xgotTmp;          // ← variable final
+        final double xgotFiltro = xgotTmp;
 
         final String nombreLower = (nombreJugador == null)
                 ? ""
                 : nombreJugador.toLowerCase();
 
-        // ─── 2) streaming con la variable final ─────────────────────────────
         Stream<Tiro> stream = repo.findAll().stream()
                 .filter(t -> t.getMinuto() >= minutoDesde && t.getMinuto() <= minutoHasta)
                 .filter(t -> parteDelCuerpo.equals("Cualquier parte")

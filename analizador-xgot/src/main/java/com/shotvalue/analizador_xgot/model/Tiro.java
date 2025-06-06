@@ -26,10 +26,8 @@ public class Tiro {
     @SerializedName("period")
     private int period;
 
-    // Aquí va nuestro nuevo atributo xgot
     private double xgot;
 
-    // Condiciones y metadatos adicionales
     private boolean porteroNoSeMueve;
     private boolean brazosExtendidos;
     private int piesEnSuelo;
@@ -51,7 +49,6 @@ public class Tiro {
 
     public Tiro() { }
 
-    // Constructor simplificado (puedes dejarlo o eliminarlo)
     public Tiro(double x, double y, String parteDelCuerpo, String tipoDeJugada, String resultado, double xgot) {
         this.x = x;
         this.y = y;
@@ -60,8 +57,6 @@ public class Tiro {
         this.resultado = resultado;
         this.xgot = xgot;
     }
-
-    // — getters y setters — (los de xgot, destinoX, destinoY, etc. ya los tenías)
 
     public String getId() {
         return id;

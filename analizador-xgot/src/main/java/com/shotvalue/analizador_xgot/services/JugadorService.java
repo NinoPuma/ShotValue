@@ -14,8 +14,6 @@ public class JugadorService {
     @Autowired
     private JugadorRepository repo;
 
-    /* ---------- CRUD básico ---------- */
-
     public List<Jugador> getAll() {
         return repo.findAll();
     }
@@ -32,19 +30,15 @@ public class JugadorService {
         repo.deleteById(id);
     }
 
-    /* ---------- consultas ---------- */
 
     public List<Jugador> getByTeamId(int teamId) {
         return repo.findByTeamId(teamId);
     }
 
-    /**
-     * Lista de nombres (sin duplicados, ni nulos/vacíos)
-     */
     public List<String> obtenerNombresCompletos() {
         return repo.findAll()
                 .stream()
-                .map(Jugador::getPlayerName)      // ← ¡getter correcto!
+                .map(Jugador::getPlayerName)
                 .filter(n -> n != null && !n.isBlank())
                 .distinct()
                 .toList();

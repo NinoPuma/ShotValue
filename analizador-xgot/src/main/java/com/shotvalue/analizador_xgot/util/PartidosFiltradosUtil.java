@@ -16,7 +16,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class PartidosFiltradosUtil {
 
-    /** ▸ Ligas TOP-5 + Copa América + Eurocopa 2024 (en minúsculas) */
     private static final Set<String> ALLOWED_COMPETITIONS = Set.of(
             "premier league", "la liga", "serie a", "bundesliga", "ligue 1",
             "copa america", "copa américa",
@@ -25,9 +24,6 @@ public class PartidosFiltradosUtil {
 
     private static final Gson gson = new GsonBuilder().create();
 
-    /**
-     * Devuelve los matchIds 2024 que pertenecen a las competiciones definidas arriba.
-     */
     public static Set<String> obtenerMatchIdsValidos(String carpetaMatches) {
 
         Set<String> matchIdsValidos     = new HashSet<>();
@@ -51,11 +47,9 @@ public class PartidosFiltradosUtil {
                             for (Partido partido : partidos) {
                                 totalPartidos.incrementAndGet();
 
-                                // 1️⃣  Fecha (yyyy-MM-dd)
                                 String fecha = partido.getMatchDate();
 
-                                // 2️⃣  Nombre de la competición (plano o anidado)
-                                String liga = partido.getCompetitionName();  // campo plano
+                                String liga = partido.getCompetitionName();
                                 if (liga == null && partido.getCompetition() != null) {
                                     liga = partido.getCompetition().getCompetitionName();
                                 }
@@ -75,22 +69,20 @@ public class PartidosFiltradosUtil {
                                 }
                             }
                         } catch (Exception e) {
-                            System.err.println("❌ Error leyendo " + path.getFileName() + " → " + e.getMessage());
+                            System.err.println("Error leyendo " + path.getFileName() + " → " + e.getMessage());
                         }
                     });
 
         } catch (Exception e) {
-            System.err.println("❌ Error recorriendo carpeta: " + e.getMessage());
+            System.err.println("Error recorriendo carpeta: " + e.getMessage());
         }
 
-        // ---------- RESUMEN ----------
-        System.out.println("\n📊 RESUMEN DE FILTRADO:");
+        System.out.println("\n RESUMEN DE FILTRADO:");
         System.out.println("- Archivos escaneados:         " + totalArchivos.get());
         System.out.println("- Partidos totales procesados: " + totalPartidos.get());
         System.out.println("- Partidos sin fecha/comp.:    " + partidosSinDatos.get());
         System.out.println("- Partidos descartados:        " + partidosDescartes.get());
         System.out.println("- Partidos válidos 2024:       " + partidosValidos.get());
-
         return matchIdsValidos;
     }
 }

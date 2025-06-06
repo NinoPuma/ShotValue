@@ -25,7 +25,6 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Email y contraseña requeridos.");
         }
 
-        // ✅ Normalizamos el email para evitar problemas de mayúsculas/espacios
         email = email.toLowerCase().trim();
 
         Optional<Usuario> optionalUser = usuarioRepository.findByEmail(email);
@@ -35,12 +34,10 @@ public class AuthController {
 
         Usuario usuario = optionalUser.get();
 
-        // ✅ Comparación directa (sin hash por ahora)
         if (!usuario.getPassword().equals(password)) {
             return ResponseEntity.status(401).body("Contraseña incorrecta.");
         }
 
-        // ✅ Si todo está bien, devolvemos el usuario
         return ResponseEntity.ok(usuario);
     }
 }

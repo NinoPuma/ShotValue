@@ -8,7 +8,8 @@ public class Tiro {
     private int equipoId;           // ID del equipo
     private String equipoNombre;    // Nombre del equipo (opcional para mostrar)
     private int minuto;
-    private String period;
+    private int period;
+    private double xg;
 
     private double destinoX;        // Coordenada X del tiro
     private double destinoY;        // Coordenada Y del tiro
@@ -19,10 +20,9 @@ public class Tiro {
     private String result;          // Resultado del tiro (ej. "Gol", "Atajado", etc.)
     private String area;            // Zona del campo
 
-    // ────────── CAMPOS AÑADIDOS ──────────
-    private String third;           // ← “Tercio” (Defensivo, Medio, Ofensivo, Todos)
-    private String lane;            // ← “Carril” (Izquierdo, Central, Derecho, Todos)
-    private String situation;       // ← “Situación” (Juego abierto, Balón parado, etc.)
+    private String third;
+    private String lane;
+    private String situation;
     // ─────────────────────────────────────
 
     private double xgot;            // Expected Goals On Target
@@ -213,15 +213,24 @@ public class Tiro {
         return situation;
     }
 
+
     public void setSituation(String situation) {
         this.situation = situation;
     }
 
-    public String getPeriod() {
+    public double getXg() {
+        return xg;
+    }
+
+    public void setXg(double xg) {
+        this.xg = xg;
+    }
+
+    public int getPeriod() {
         return period;
     }
 
-    public void setPeriod(String period) {
+    public void setPeriod(int period) {
         this.period = period;
     }
 

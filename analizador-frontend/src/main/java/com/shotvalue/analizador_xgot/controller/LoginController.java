@@ -65,22 +65,23 @@ public class LoginController {
 
     private void cargarApp(ActionEvent evt, String nombreUsuario) {
         try {
-            FXMLLoader fx = new FXMLLoader(getClass().getResource("/tfcc/app-layout.fxml"));
-            Parent root   = fx.load();
+            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/tfcc/app-layout.fxml"));
+            Parent root = fxml.load();
+            fxml.<AppController>getController().setUserName(nombreUsuario);
 
-            fx.<AppController>getController().setUserName(nombreUsuario);
-
-            Stage st;
-            if (evt != null) {
-                st = (Stage) ((Node) evt.getSource()).getScene().getWindow();
+        /* ► Siempre tomamos el Stage actual de cualquier nodo ya “en escena”.
+           Si aún no existe (auto-login en initialize), creamos uno.           */
+            Stage stage;
+            if (usernameField.getScene() != null) {
+                stage = (Stage) usernameField.getScene().getWindow();
             } else {
-                st = new Stage();
+                stage = new Stage();                 // primera apertura automática
             }
-            st.setScene(new Scene(root));
-            st.setTitle("Inicio");
-            st.centerOnScreen();
-            st.setMaximized(false);
-            st.show();
+
+            stage.setScene(new Scene(root));
+            stage.setTitle("Inicio");
+            stage.centerOnScreen();
+            stage.show();
         } catch (IOException ex) {
             ex.printStackTrace();
             showAlert("No se pudo cargar la aplicación.");
