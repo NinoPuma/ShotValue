@@ -8,7 +8,7 @@ public class Tiro {
     private int equipoId;           // ID del equipo
     private String equipoNombre;    // Nombre del equipo (opcional para mostrar)
     private String teamSide;
-
+    private int period;
     private double destinoX;        // Coordenada X del tiro
     private double destinoY;        // Coordenada Y del tiro
     private Double destinoZ;        // Coordenada Z del tiro (opcional, si se usa en el modelo)
@@ -32,7 +32,8 @@ public class Tiro {
 
     public Tiro(String id, int jugadorId, String jugadorNombre, int equipoId, String equipoNombre,
                 int minuto, String bodyPart, String preAction, String result, String area,
-                double xgot, double x, double y) {
+                double xgot, double x, double y
+            /* si quisieras, también podrías ampliar este constructor para recibir third, lane, situation */) {
         this.id = id;
         this.jugadorId = jugadorId;
         this.jugadorNombre = jugadorNombre;
@@ -183,6 +184,51 @@ public class Tiro {
 
     public void setY(double y) {
         this.y = y;
+    }
+
+    public void setDestinoX(double destinoX) {
+        this.destinoX = destinoX;
+    }
+
+    public void setDestinoY(double destinoY) {
+        this.destinoY = destinoY;
+    }
+
+    public void setResultado(String resultado) {
+        this.resultado = resultado;
+    }
+    // ────────── GETTERS / SETTERS PARA LOS CAMPOS AÑADIDOS ──────────
+
+    public String getThird() {
+        return third;
+    }
+
+    public void setThird(String third) {
+        this.third = third;
+    }
+
+    public String getLane() {
+        return lane;
+    }
+
+    public void setLane(String lane) {
+        this.lane = lane;
+    }
+
+    public String getSituation() {
+        return situation;
+    }
+
+    public void setSituation(String situation) {
+        this.situation = situation;
+    }
+
+    public int getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(int period) {
+        this.period = period;
     }
 
     @Override

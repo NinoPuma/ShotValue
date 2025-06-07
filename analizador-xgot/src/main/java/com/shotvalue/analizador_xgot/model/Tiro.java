@@ -8,20 +8,28 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Tiro {
     @Id
     private String id;
+
+
     private double x;
     private double y;
     private Double destinoX;
     private Double destinoY;
     private Double destinoZ;
+    private double xg;
     private String parteDelCuerpo;
     private String tipoDeJugada;
     private String resultado;
     private String jugadorNombre;
     private String equipoNombre;
     private String equipoId;
+
     @SerializedName("period")
     private int period;
+
+    // Aquí va nuestro nuevo atributo xgot
     private double xgot;
+
+    // Condiciones y metadatos adicionales
     private boolean porteroNoSeMueve;
     private boolean brazosExtendidos;
     private int piesEnSuelo;
@@ -36,6 +44,7 @@ public class Tiro {
     private boolean jugadaElaborada;
     private boolean tiroConBote;
     private boolean porteroTapado;
+
     private String jugadorId;
     private String partidoId;
     private int minuto;
@@ -48,9 +57,9 @@ public class Tiro {
     private String situation; // Situación de juego
 
 
-    public Tiro() {
-    }
+    public Tiro() { }
 
+    // Constructor simplificado (puedes dejarlo o eliminarlo)
     public Tiro(double x, double y, String parteDelCuerpo, String tipoDeJugada, String resultado, double xgot) {
         this.x = x;
         this.y = y;
@@ -60,7 +69,9 @@ public class Tiro {
         this.xgot = xgot;
     }
 
-    // --- Getters y Setters completos ---
+    // — getters y setters — (los de xgot, destinoX, destinoY, etc. ya los tenías)
+
+
     public String getId() {
         return id;
     }
@@ -83,6 +94,38 @@ public class Tiro {
 
     public void setY(double y) {
         this.y = y;
+    }
+
+    public Double getDestinoX() {
+        return destinoX;
+    }
+
+    public void setDestinoX(Double destinoX) {
+        this.destinoX = destinoX;
+    }
+
+    public Double getDestinoY() {
+        return destinoY;
+    }
+
+    public void setDestinoY(Double destinoY) {
+        this.destinoY = destinoY;
+    }
+
+    public Double getDestinoZ() {
+        return destinoZ;
+    }
+
+    public void setDestinoZ(Double destinoZ) {
+        this.destinoZ = destinoZ;
+    }
+
+    public double getXg() {
+        return xg;
+    }
+
+    public void setXg(double xg) {
+        this.xg = xg;
     }
 
     public String getParteDelCuerpo() {
@@ -109,36 +152,44 @@ public class Tiro {
         this.resultado = resultado;
     }
 
+    public String getJugadorNombre() {
+        return jugadorNombre;
+    }
+
+    public void setJugadorNombre(String jugadorNombre) {
+        this.jugadorNombre = jugadorNombre;
+    }
+
+    public String getEquipoNombre() {
+        return equipoNombre;
+    }
+
+    public void setEquipoNombre(String equipoNombre) {
+        this.equipoNombre = equipoNombre;
+    }
+
+    public String getEquipoId() {
+        return equipoId;
+    }
+
+    public void setEquipoId(String equipoId) {
+        this.equipoId = equipoId;
+    }
+
+    public int getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(int period) {
+        this.period = period;
+    }
+
     public double getXgot() {
         return xgot;
     }
 
     public void setXgot(double xgot) {
         this.xgot = xgot;
-    }
-
-    public Double getDestinoX() {
-        return destinoX;
-    }
-
-    public void setDestinoX(Double destinoX) {
-        this.destinoX = destinoX;
-    }
-
-    public Double getDestinoY() {
-        return destinoY;
-    }
-
-    public void setDestinoY(Double destinoY) {
-        this.destinoY = destinoY;
-    }
-
-    public Double getDestinoZ() {
-        return destinoZ;
-    }
-
-    public void setDestinoZ(Double destinoZ) {
-        this.destinoZ = destinoZ;
     }
 
     public boolean isPorteroNoSeMueve() {
@@ -277,38 +328,6 @@ public class Tiro {
         this.minuto = minuto;
     }
 
-    public String getJugadorNombre() {
-        return jugadorNombre;
-    }
-
-    public void setJugadorNombre(String jugadorNombre) {
-        this.jugadorNombre = jugadorNombre;
-    }
-
-    public String getEquipoNombre() {
-        return equipoNombre;
-    }
-
-    public void setEquipoNombre(String equipoNombre) {
-        this.equipoNombre = equipoNombre;
-    }
-
-    public String getEquipoId() {
-        return equipoId;
-    }
-
-    public void setEquipoId(String equipoId) {
-        this.equipoId = equipoId;
-    }
-
-    public int getPeriod() {
-        return period;
-    }
-
-    public void setPeriod(int period) {
-        this.period = period;
-    }
-
     public String getTercio() {
         return tercio;
     }
@@ -328,6 +347,7 @@ public class Tiro {
     public String getTeamSide() {
         return teamSide;
     }
+
     public void setTeamSide(String teamSide) {
         this.teamSide = teamSide;
     }
@@ -335,6 +355,7 @@ public class Tiro {
     public String getThird() {
         return third;
     }
+
     public void setThird(String third) {
         this.third = third;
     }
@@ -342,6 +363,7 @@ public class Tiro {
     public String getLane() {
         return lane;
     }
+
     public void setLane(String lane) {
         this.lane = lane;
     }
@@ -349,6 +371,7 @@ public class Tiro {
     public String getSituation() {
         return situation;
     }
+
     public void setSituation(String situation) {
         this.situation = situation;
     }
@@ -358,7 +381,7 @@ public class Tiro {
         return "Tiro{" +
                 "x=" + x +
                 ", y=" + y +
-                ", xGOT=" + xgot +
+                ", xgot=" + xgot +
                 ", resultado='" + resultado + '\'' +
                 '}';
     }
