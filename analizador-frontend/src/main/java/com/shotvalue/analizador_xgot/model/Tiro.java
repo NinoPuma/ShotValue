@@ -32,7 +32,8 @@ public class Tiro {
 
     public Tiro(String id, int jugadorId, String jugadorNombre, int equipoId, String equipoNombre,
                 int minuto, String bodyPart, String preAction, String result, String area,
-                double xgot, double x, double y) {
+                double xgot, double x, double y
+            /* si quisieras, también podrías ampliar este constructor para recibir third, lane, situation */) {
         this.id = id;
         this.jugadorId = jugadorId;
         this.jugadorNombre = jugadorNombre;
@@ -183,6 +184,40 @@ public class Tiro {
 
     public void setY(double y) {
         this.y = y;
+    }
+
+    // ────────── GETTERS / SETTERS PARA LOS CAMPOS AÑADIDOS ──────────
+
+    public String getThird() {
+        return third;
+    }
+
+    public void setThird(String third) {
+        this.third = third;
+    }
+
+    public String getLane() {
+        return lane;
+    }
+
+    public void setLane(String lane) {
+        this.lane = lane;
+    }
+
+    public String getSituation() {
+        return situation;
+    }
+
+    public void setSituation(String situation) {
+        this.situation = situation;
+    }
+
+    public String getPeriodo() {
+        return periodo;
+    }
+
+    public void setPeriodo(String periodo) {
+        this.periodo = periodo;
     }
 
     @Override
