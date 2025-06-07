@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.shotvalue.analizador_xgot.model.Usuario;
 import com.shotvalue.analizador_xgot.util.LocalDateAdapter;
+import com.shotvalue.analizador_xgot.util.VentanaHelper;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -277,11 +278,8 @@ public class LoginController {
     @FXML
     private void goToRegister() {
         try {
-            FXMLLoader fx = new FXMLLoader(getClass().getResource("/tfcc/registro.fxml"));
-            Parent root = fx.load();
             Stage stage = (Stage) usernameField.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
+            VentanaHelper.cargarEscena(stage, "/tfcc/registro.fxml", "Registro");
         } catch (IOException e) {
             e.printStackTrace();
         }

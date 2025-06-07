@@ -17,8 +17,12 @@ public class VentanaHelper {
         FXMLLoader loader = new FXMLLoader(VentanaHelper.class.getResource(rutaFXML));
         Parent root = loader.load();
 
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
+        if (stage.getScene() == null) {
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+        } else {
+            stage.getScene().setRoot(root);
+        }
         stage.setTitle(tituloVentana);
 
         if (root instanceof Region region) {
@@ -28,8 +32,15 @@ public class VentanaHelper {
 
         stage.setMinWidth(900);
         stage.setMinHeight(600);
-        stage.show();
-        stage.setMaximized(true);
+
+        if (!stage.isShowing()) {
+            stage.setMaximized(true);
+            stage.show();
+        } else {
+            stage.setMaximized(true);
+        }
+        stage.centerOnScreen();
+
 
         return root;
     }
