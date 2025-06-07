@@ -29,48 +29,33 @@ public class XgotService {
 
     /* ==================================================================== */
     public double calcularXgot(Tiro tiro) {
-
-        /* 1) xG base: usa el que venga (>0) o cálculalo */
-        double baseXg = tiro.getXg() > 0 ? tiro.getXg()
-                : calcularXgBasico(tiro);
-
-        /* 2) Ajuste por colocación: sólo tiros a portería */
-        if (tiro.getDestinoX() == null || tiro.getDestinoY() == null) {
-            return baseXg;                      // fuera/bloqueado
-        }
+        double baseXg = tiro.getXg()>0 ? tiro.getXg() : calcularXgBasico(tiro);
+        if (tiro.getDestinoX()==null||tiro.getDestinoY()==null) return baseXg;
 
         double dY = tiro.getDestinoY() - 40.0;
-        double dZ = tiro.getDestinoZ() == null ? 0.0 : tiro.getDestinoZ();
-        double distImpacto = Math.hypot(dY, dZ);
-        distImpacto = Math.min(distImpacto, HALF_GOAL);
+        double dZ = tiro.getDestinoZ()==null ? 0.0 : tiro.getDestinoZ();
+        double distImpacto = Math.min(Math.hypot(dY,dZ), HALF_GOAL);
 
-        double placement = 0.4 + 0.6 * (1 - distImpacto / HALF_GOAL);
-
+        // menos caída por colocación
+        double placement = 0.6 + 0.4*(1 - distImpacto/HALF_GOAL);
         return baseXg * placement;
     }
 
-    /* ──────────────────────────────────────────────────────────────────── */
     private double calcularXgBasico(Tiro t) {
-
-        /* Distancia y ángulo */
         double dx = 120.0 - t.getX();
         double dy =  40.0 - t.getY();
-        double dist = Math.hypot(dx, dy);
+        double dist = Math.hypot(dx,dy);
 
         double angIzq  = Math.atan2(36.34 - t.getY(), dx);
         double angDcho = Math.atan2(43.66 - t.getY(), dx);
         double angVis  = Math.abs(angDcho - angIzq);
 
-        /* Dummies: se leen de tipoDeJugada / parteDelCuerpo */
         int counter  = "From Counter".equalsIgnoreCase(t.getTipoDeJugada()) ? 1 : 0;
         int setPiece = "From Set Piece".equalsIgnoreCase(t.getTipoDeJugada()) ? 1 : 0;
         int header   = "Head".equalsIgnoreCase(t.getParteDelCuerpo()) ? 1 : 0;
         int leftFoot = "Left Foot".equalsIgnoreCase(t.getParteDelCuerpo()) ? 1 : 0;
+        double altura = t.getDestinoZ()==null ? 0.0 : t.getDestinoZ();
 
-        /* Altura (z puede ser null) */
-        double altura = t.getDestinoZ() == null ? 0.0 : t.getDestinoZ();
-
-        /* Regresión logística */
         double z = b0
                 + bDist * Math.log(dist)
                 + bAng  * angVis
