@@ -52,13 +52,13 @@ public class VisualizarController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         areaBox.getItems().addAll("Cualquier zona", "Área chica", "Área grande", "Fuera del área");
-        situationBox.getItems().addAll("Cualquier situación", "Juego abierto", "Balón parado", "Contraataque");
+        situationBox.getItems().addAll("Cualquier situación", "Juego abierto", "Balón parado");
         bodyPartBox.getItems().addAll("Cualquier parte", "Pie izquierdo", "Pie derecho", "Cabeza", "Otro");
         preActionBox.getItems().addAll("Todas las acciones", "Pase", "Regate", "Rebote", "Centro", "Penal", "No definido");
         resultBox.getItems().addAll("Todos los resultados", "Gol", "Atajado", "Fuera", "Bloqueado");
 
         minuteFromSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 120, 0));
-        minuteToSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 120, 90));
+        minuteToSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 120, 120));
 
         periodBox.getItems().setAll("Todos los períodos", "1° Tiempo", "2° Tiempo", "ET - 1° Tiempo", "ET - 2° Tiempo", "Penales");
         periodBox.setValue("Todos los períodos");

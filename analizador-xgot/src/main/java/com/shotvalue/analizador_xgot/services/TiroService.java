@@ -62,7 +62,8 @@ public class TiroService {
                 .filter(t -> zonaDelDisparo.equals("Cualquier zona") || obtenerArea(t).equalsIgnoreCase(zonaDelDisparo))
                 .filter(t -> finalXgotFiltro < 0 || t.getXgot() >= finalXgotFiltro)
                 .filter(t -> nombre.isEmpty() || (t.getJugadorNombre() != null && t.getJugadorNombre().toLowerCase().contains(nombre)))
-                .filter(t -> preAction.equals("Todas las acciones") || preAction.equalsIgnoreCase(t.getPreAction()))
+                .filter(t -> preAction.equals("Todas las acciones") ||
+                        obtenerPreAction(t).equalsIgnoreCase(preAction))
                 .filter(t -> teamSide.equals("Ambos equipos") ||
                         obtenerTeamSide(t).equalsIgnoreCase(teamSide))
                 .filter(t -> third.equals("Todos") ||
@@ -109,7 +110,22 @@ public class TiroService {
      * Devuelve la situación de juego. Si no existe se asume "Juego abierto".
      */
     private String obtenerSituation(Tiro t) {
-        return t.getSituation() != null ? t.getSituation() : "Juego abierto";
+        String situacion = t.getSituation();
+        if (situacion != null && !situacion.isBlank()) {
+            return situacion;
+        }
+
+        String pre = t.getPreAction();
+        String jugada = t.getTipoDeJugada();
+
+        if (pre != null && pre.equalsIgnoreCase("Penal")) {
+            return "Balón parado";
+        }
+        if (jugada != null && jugada.equalsIgnoreCase("Penalty")) {
+            return "Balón parado";
+        }
+
+        return "Juego abierto";
     }
 
     /**
@@ -147,14 +163,29 @@ public class TiroService {
      */
     private String obtenerArea(Tiro t) {
         String zona = t.getZonaDelDisparo();
-        if (zona == null || zona.isBlank()) {
-            zona = t.isDentroDelArea() ? "Área grande" : "Fuera del área";
+        if (zona == null || zona.isBlank() || zona.equalsIgnoreCase("Sin zona")) {
+            double x = t.getX();
+            double y = t.getY();
+
+            // Área chica: zona rectangular cerca del arco
+            if (x >= 114 && y >= 30.3 && y <= 49.7) {
+                return "Área chica";
+            }
+
+            if (t.isDentroDelArea() || x >= 104) {
+                return "Área grande";
+            }
+
+            return "Fuera del área";
         }
+
 
         zona = zona.toLowerCase();
         if (zona.contains("chica")) return "Área chica";
-        if (zona.contains("fuera")) return "Fuera del área";
-        if (zona.contains("libre")) return "Fuera del área";
-        return "Área grande";
+        if (zona.contains("fuera") || zona.contains("libre")) return "Fuera del área";
+        if (zona.contains("grande") || zona.contains("central") || zona.contains("derecha") || zona.contains("izquierda") || zona.contains("penal"))
+            return "Área grande";
+
+        return t.isDentroDelArea() ? "Área grande" : "Fuera del área";
     }
 }

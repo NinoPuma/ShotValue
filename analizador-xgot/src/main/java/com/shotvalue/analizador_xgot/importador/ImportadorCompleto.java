@@ -8,6 +8,7 @@ import com.shotvalue.analizador_xgot.model.Evento;
 import com.shotvalue.analizador_xgot.model.Jugador;
 import com.shotvalue.analizador_xgot.model.PlayPattern;
 import com.shotvalue.analizador_xgot.model.Tiro;
+import com.shotvalue.analizador_xgot.model.Shot;
 import com.shotvalue.analizador_xgot.util.HeightDeserializer;
 import com.shotvalue.analizador_xgot.util.PartidosFiltradosUtil;
 import com.shotvalue.analizador_xgot.util.PlayPatternDeserializer;
@@ -188,6 +189,8 @@ public class ImportadorCompleto {
                                 tiro.setTipoDeJugada(tipoJugada != null ? tipoJugada : "Sin definir");
                                 tiro.setZonaDelDisparo(traducir(ev.getShot().getZone() != null ? ev.getShot().getZone().getName() : "Sin zona", "zona"));
 
+                                tiro.setSituation(inferirSituacion(ev.getPlay_pattern(), ev.getShot()));
+
                                 if (ev.getShot().getType() != null && "Penalty".equalsIgnoreCase(ev.getShot().getType().getName())) {
                                     tiro.setPreAction("Penal");
                                 } else {
@@ -357,5 +360,28 @@ public class ImportadorCompleto {
             };
             default -> valor;
         };
+    }
+
+    private static String inferirSituacion(PlayPattern pattern, Shot shot) {
+        String base = "Juego abierto";
+
+        if (shot != null && shot.getType() != null && shot.getType().getName() != null) {
+            String nombreTipo = shot.getType().getName();
+            if (nombreTipo.equalsIgnoreCase("Penalty") || nombreTipo.equalsIgnoreCase("Free Kick")) {
+                return "Balón parado";
+            }
+        }
+
+        if (pattern == null || pattern.getName() == null) {
+            return base;
+        }
+
+        String nombre = pattern.getName().toLowerCase();
+
+        if (nombre.contains("free kick") || nombre.contains("set piece") || nombre.contains("corner")) {
+            return "Balón parado";
+        }
+
+        return base;
     }
 }
