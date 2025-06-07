@@ -12,7 +12,6 @@ import java.util.Properties;
 
 public class VentanaHelper {
 
-    private static final String CONFIG_FILE = "window.properties";
 
     public static Parent cargarEscena(Stage stage, String rutaFXML, String tituloVentana) throws IOException {
         FXMLLoader loader = new FXMLLoader(VentanaHelper.class.getResource(rutaFXML));
@@ -29,21 +28,8 @@ public class VentanaHelper {
 
         stage.setMinWidth(900);
         stage.setMinHeight(600);
-
-        // Leer propiedades previas
-        boolean maximized = true;
-
-        try (FileInputStream fis = new FileInputStream(CONFIG_FILE)) {
-            Properties props = new Properties();
-            props.load(fis);
-            maximized = Boolean.parseBoolean(props.getProperty("maximized", "true"));
-        } catch (IOException ignored) {}
-
-        // Mostrar primero
         stage.show();
-
-        // Solo maximizar si corresponde
-        stage.setMaximized(maximized);
+        stage.setMaximized(true);
 
         return root;
     }
