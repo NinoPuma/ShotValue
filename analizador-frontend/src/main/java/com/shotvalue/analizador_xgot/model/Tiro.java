@@ -7,23 +7,21 @@ public class Tiro {
     private String jugadorNombre;   // Nombre del jugador (opcional para mostrar)
     private int equipoId;           // ID del equipo
     private String equipoNombre;    // Nombre del equipo (opcional para mostrar)
-    private int minuto;
-    private String periodo;
-
+    private String teamSide;
+    private int period;
     private double destinoX;        // Coordenada X del tiro
     private double destinoY;        // Coordenada Y del tiro
     private Double destinoZ;        // Coordenada Z del tiro (opcional, si se usa en el modelo)
-    private String resultado;       // Resultado genérico (ej. "gol", "parada", etc.)
+    private String resultado;       // Resultado del tiro (ej. "gol", "parada", etc.)
+    private int minuto;             // Minuto del tiro
     private String bodyPart;        // Parte del cuerpo
     private String preAction;       // Acción previa
-    private String result;          // Resultado del tiro (ej. "Gol", "Atajado", etc.)
+    private String result;          // Resultado del tiro
     private String area;            // Zona del campo
 
-    // ────────── CAMPOS AÑADIDOS ──────────
     private String third;           // ← “Tercio” (Defensivo, Medio, Ofensivo, Todos)
     private String lane;            // ← “Carril” (Izquierdo, Central, Derecho, Todos)
     private String situation;       // ← “Situación” (Juego abierto, Balón parado, etc.)
-    // ─────────────────────────────────────
 
     private double xgot;            // Expected Goals On Target
     private double x;               // Coordenada X
@@ -41,6 +39,7 @@ public class Tiro {
         this.jugadorNombre = jugadorNombre;
         this.equipoId = equipoId;
         this.equipoNombre = equipoNombre;
+        this.teamSide = null;
         this.minuto = minuto;
         this.bodyPart = bodyPart;
         this.preAction = preAction;
@@ -49,7 +48,6 @@ public class Tiro {
         this.xgot = xgot;
         this.x = x;
         this.y = y;
-        // estos tres los dejaríamos nulos a menos que los reciben por parámetros:
         this.third = null;
         this.lane = null;
         this.situation = null;
@@ -75,6 +73,26 @@ public class Tiro {
         return jugadorNombre;
     }
 
+    public Double getDestinoX() {
+        return destinoX;
+    }
+
+    public Double getDestinoY() {
+        return destinoY;
+    }
+
+    public Double getDestinoZ() {
+        return destinoZ;
+    }
+
+    public void setDestinoZ(Double destinoZ) {
+        this.destinoZ = destinoZ;
+    }
+
+    public String getResultado() {
+        return resultado;
+    }
+
     public void setJugadorNombre(String jugadorNombre) {
         this.jugadorNombre = jugadorNombre;
     }
@@ -95,38 +113,6 @@ public class Tiro {
         this.equipoNombre = equipoNombre;
     }
 
-    public Double getDestinoX() {
-        return destinoX;
-    }
-
-    public void setDestinoX(double destinoX) {
-        this.destinoX = destinoX;
-    }
-
-    public Double getDestinoY() {
-        return destinoY;
-    }
-
-    public void setDestinoY(double destinoY) {
-        this.destinoY = destinoY;
-    }
-
-    public Double getDestinoZ() {
-        return destinoZ;
-    }
-
-    public void setDestinoZ(Double destinoZ) {
-        this.destinoZ = destinoZ;
-    }
-
-    public String getResultado() {
-        return resultado;
-    }
-
-    public void setResultado(String resultado) {
-        this.resultado = resultado;
-    }
-
     public int getMinuto() {
         return minuto;
     }
@@ -142,6 +128,7 @@ public class Tiro {
     public void setBodyPart(String bodyPart) {
         this.bodyPart = bodyPart;
     }
+
 
     public String getPreAction() {
         return preAction;
@@ -165,6 +152,14 @@ public class Tiro {
 
     public void setArea(String area) {
         this.area = area;
+    }
+
+    public String getTeamSide() {
+        return teamSide;
+    }
+
+    public void setTeamSide(String teamSide) {
+        this.teamSide = teamSide;
     }
 
     public double getXgot() {
@@ -191,6 +186,17 @@ public class Tiro {
         this.y = y;
     }
 
+    public void setDestinoX(double destinoX) {
+        this.destinoX = destinoX;
+    }
+
+    public void setDestinoY(double destinoY) {
+        this.destinoY = destinoY;
+    }
+
+    public void setResultado(String resultado) {
+        this.resultado = resultado;
+    }
     // ────────── GETTERS / SETTERS PARA LOS CAMPOS AÑADIDOS ──────────
 
     public String getThird() {
@@ -217,12 +223,12 @@ public class Tiro {
         this.situation = situation;
     }
 
-    public String getPeriodo() {
-        return periodo;
+    public int getPeriod() {
+        return period;
     }
 
-    public void setPeriodo(String periodo) {
-        this.periodo = periodo;
+    public void setPeriod(int period) {
+        this.period = period;
     }
 
     @Override

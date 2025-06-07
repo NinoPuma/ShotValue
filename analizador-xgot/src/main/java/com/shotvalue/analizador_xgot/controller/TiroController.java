@@ -15,90 +15,57 @@ public class TiroController {
     @Autowired
     private TiroService service;
 
-    /**
-     * GET /api/tiros
-     * Devuelve todos los tiros almacenados.
-     */
     @GetMapping
     public List<Tiro> getAll() {
         return service.getAll();
     }
 
-    /**
-     * POST /api/tiros
-     * Recibe un objeto Tiro en el body (JSON), calcula el xgot en el servicio y lo persiste.
-     */
     @PostMapping
     public Tiro save(@RequestBody Tiro t) {
         return service.save(t);
     }
 
-    /**
-     * GET /api/tiros/jugador/{jugadorId}
-     * Devuelve la lista de tiros asociados a un jugador (por su ID).
-     */
     @GetMapping("/jugador/{jugadorId}")
     public List<Tiro> getByJugador(@PathVariable String jugadorId) {
         return service.getByJugadorId(jugadorId);
     }
 
-    /**
-     * GET /api/tiros/partido/{partidoId}
-     * Devuelve la lista de tiros asociados a un partido (por su ID).
-     */
     @GetMapping("/partido/{partidoId}")
     public List<Tiro> getByPartido(@PathVariable String partidoId) {
         return service.getByPartidoId(partidoId);
     }
 
-    /**
-     * DELETE /api/tiros/{id}
-     * Elimina un tiro por su ID.
-     */
     @DeleteMapping("/{id}")
     public void delete(@PathVariable String id) {
         service.delete(id);
     }
 
-    // ==================================================================================
-    //                                      FILTROS
-    // ==================================================================================
-
-    /**
-     * POST /api/tiros/filtrar
-     *   Recibe un JSON en el body con las claves y valores de filtro:
-     *   {
-     *     "minutoDesde": "0",
-     *     "minutoHasta": "90",
-     *     "bodyPart": "Pie derecho",
-     *     "tipoJugada": "Tiro",
-     *     "result": "Gol",
-     *     "area": "Área chica",
-     *     "xg": "0.2",
-     *     "jugador": "Messi",
-     *     "period": "2"
-     *   }
-     *
-     *   Se mapean dichos valores a los parámetros del servicio y se devuelve la lista filtrada.
-     */
+    // ✅ Filtro extendido
     @PostMapping("/filtrar")
     public List<Tiro> filtrarTiros(@RequestBody Map<String, String> filtros) {
         int minutoDesde = parseInt(filtros.getOrDefault("minutoDesde", "0"));
         int minutoHasta = parseInt(filtros.getOrDefault("minutoHasta", "120"));
-        String parte    = filtros.getOrDefault("bodyPart",        "Cualquier parte");
-        String tipo     = filtros.getOrDefault("tipoJugada",      "Todas las acciones");
-        String result   = filtros.getOrDefault("result",          "Todos los resultados");
-        String area     = filtros.getOrDefault("area",            "Cualquier zona");
-        String xg       = filtros.getOrDefault("xg",              "");
-        String jugador  = filtros.getOrDefault("jugador",         "");
-        String periodStr= filtros.getOrDefault("period",          null);
+        String parte = filtros.getOrDefault("bodyPart", "Cualquier parte");
+        String tipo = filtros.getOrDefault("tipoJugada", "Todas las acciones");
+        String result = filtros.getOrDefault("result", "Todos los resultados");
+        String area = filtros.getOrDefault("area", "Cualquier zona");
+        String teamSide = filtros.getOrDefault("teamSide", "Ambos equipos");
+        String third = filtros.getOrDefault("third", "Todos");
+        String lane = filtros.getOrDefault("lane", "Todos");
+        String situation = filtros.getOrDefault("situation", "Cualquier situación");
+        String xg = filtros.getOrDefault("xg", "");
+        String jugador = filtros.getOrDefault("jugador", "");
+        String preAction = filtros.getOrDefault("preAction", "Todas las acciones");
 
+        String periodStr = filtros.getOrDefault("period", null);
         Integer period = null;
         if (periodStr != null && !periodStr.isBlank()) {
             try {
                 period = Integer.parseInt(periodStr);
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException ignored) {
+            }
         }
+
 
         return service.filtrarTiros(
                 minutoDesde,
@@ -109,42 +76,55 @@ public class TiroController {
                 area,
                 xg,
                 jugador,
-                period
+                period,
+                preAction,
+                third,
+                lane,
+                situation
         );
     }
 
     /**
      * GET /api/tiros/filtrar
-     *   Alternativa mediante query params, para que puedas usar:
-     *   /api/tiros/filtrar?minutoDesde=0&minutoHasta=90&bodyPart=Pie%20derecho
-     *                 &tipoJugada=Tiro&result=Gol&area=Área%20chica
-     *                 &xg=0.2&jugador=Messi&period=2
-     *   (Todos los parámetros son opcionales; si faltan, toman los valores por defecto.)
+     * Alternativa mediante query params, para que puedas usar:
+     * /api/tiros/filtrar?minutoDesde=0&minutoHasta=90&bodyPart=Pie%20derecho
+     * &tipoJugada=Tiro&result=Gol&area=Área%20chica
+     * &xg=0.2&jugador=Messi&period=2
+     * (Todos los parámetros son opcionales; si faltan, toman los valores por defecto.)
      */
     @GetMapping("/filtrar")
     public List<Tiro> filtrarTirosGet(
-            @RequestParam(defaultValue = "0")           int minutoDesde,
-            @RequestParam(defaultValue = "120")         int minutoHasta,
-            @RequestParam(defaultValue = "Cualquier parte")     String bodyPart,
-            @RequestParam(defaultValue = "Todas las acciones") String tipoJugada,
-            @RequestParam(defaultValue = "Todos los resultados")String result,
-            @RequestParam(defaultValue = "Cualquier zona")     String area,
-            @RequestParam(defaultValue = "")                    String xg,
-            @RequestParam(defaultValue = "")                    String jugador,
-            @RequestParam(required = false)                     Integer period
+            @RequestParam(defaultValue = "0")                 int    minutoDesde,
+            @RequestParam(defaultValue = "120")               int    minutoHasta,
+            @RequestParam(defaultValue = "Cualquier parte")   String parteDelCuerpo,
+            @RequestParam(defaultValue = "Todas las acciones")String tipoDeJugada,
+            @RequestParam(defaultValue = "Todos los resultados")String resultado,
+            @RequestParam(defaultValue = "Cualquier zona")    String zonaDelDisparo,
+            @RequestParam(defaultValue = "")                  String xg,
+            @RequestParam(defaultValue = "")                  String nombreJugador,
+            @RequestParam(required = false)                   Integer period,
+            @RequestParam(defaultValue = "Todas las acciones")String preAction,
+            @RequestParam(defaultValue = "Todos")             String third,
+            @RequestParam(defaultValue = "Todos")             String lane,
+            @RequestParam(defaultValue = "Cualquier situación")String situation
     ) {
         return service.filtrarTiros(
                 minutoDesde,
                 minutoHasta,
-                bodyPart,
-                tipoJugada,
-                result,
-                area,
+                parteDelCuerpo,
+                tipoDeJugada,
+                resultado,
+                zonaDelDisparo,
                 xg,
-                jugador,
-                period
+                nombreJugador,
+                period,
+                preAction,
+                third,
+                lane,
+                situation
         );
     }
+
 
     /**
      * Pequeño helper para parsear enteros desde cadenas. Si no se convierte, devuelve 0.
