@@ -15,6 +15,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import org.controlsfx.control.textfield.TextFields;
 
@@ -102,11 +103,18 @@ public class LoginController {
             app.setUserName(nombreUsuario);
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+
+            if (root instanceof Region region) {
+                region.prefWidthProperty().bind(stage.widthProperty());
+                region.prefHeightProperty().bind(stage.heightProperty());
+            }
+
+            stage.setScene(scene);
             stage.setTitle("Inicio");
-            stage.centerOnScreen();
-            stage.setMaximized(false);
+
             stage.show();
+            stage.setMaximized(true);
 
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -123,11 +131,17 @@ public class LoginController {
             app.setUserName(nombreUsuario);
 
             Stage stage = new Stage();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+
+            if (root instanceof Region region) {
+                region.prefWidthProperty().bind(stage.widthProperty());
+                region.prefHeightProperty().bind(stage.heightProperty());
+            }
+
+            stage.setScene(scene);
             stage.setTitle("Inicio");
-            stage.centerOnScreen();
-            stage.setMaximized(false);
             stage.show();
+            stage.setMaximized(true);
 
             if (usernameField.getScene() != null) {
                 ((Stage) usernameField.getScene().getWindow()).close();

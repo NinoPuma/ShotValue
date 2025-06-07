@@ -9,11 +9,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 public class AppController {
 
@@ -133,21 +136,13 @@ public class AppController {
         btnAyuda.setStyle(defaultStyle);
     }
 
-    /* ────────── logout ────────── */
     private void cerrarSesion() {
         try {
-            // 🔁 Desactivar auto-login para la próxima vez
             LoginController.desactivarRecordarSesion();
 
-            // Volver al login
             Stage stage = (Stage) contenidoCentro.getScene().getWindow();
-            Parent login = FXMLLoader.load(getClass().getResource("/tfcc/login.fxml"));
-            stage.setScene(new Scene(login));
-            stage.setTitle("Login");
-            stage.setMaximized(false);
-            stage.centerOnScreen();
+            com.shotvalue.analizador_xgot.util.VentanaHelper.cargarEscena(stage, "/tfcc/login.fxml", "Login");
 
-            // Reset interno
             viewCache.clear();
             ctlCache.clear();
             controladorVisible = null;
@@ -156,4 +151,5 @@ public class AppController {
             e.printStackTrace();
         }
     }
+
 }

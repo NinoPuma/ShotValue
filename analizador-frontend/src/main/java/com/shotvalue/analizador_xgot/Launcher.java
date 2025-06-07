@@ -1,24 +1,35 @@
 package com.shotvalue.analizador_xgot;
 
+import com.shotvalue.analizador_xgot.util.VentanaHelper;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Properties;
 
 public class Launcher extends Application {
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/tfcc/login.fxml"));
-        Parent root = loader.load();
+    private static final String CONFIG_FILE = "window.properties";
 
-        Scene scene = new Scene(root);
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("ShotValue");
-        primaryStage.centerOnScreen();
-        primaryStage.setMaximized(false);
-        primaryStage.show();
+    @Override
+    public void start(Stage stage) throws Exception {
+        VentanaHelper.cargarEscena(stage, "/tfcc/login.fxml", "ShotValue - Análisis xGOT");
+
+        stage.setOnCloseRequest(event -> {
+            Properties outProps = new Properties();
+            outProps.setProperty("maximized", String.valueOf(stage.isMaximized()));
+            if (!stage.isMaximized()) {
+                outProps.setProperty("width", String.valueOf(stage.getWidth()));
+                outProps.setProperty("height", String.valueOf(stage.getHeight()));
+            }
+
+            try (FileOutputStream fos = new FileOutputStream(CONFIG_FILE)) {
+                outProps.store(fos, "Tamaño de ventana");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public static void main(String[] args) {
