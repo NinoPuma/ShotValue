@@ -76,7 +76,6 @@ public class TiroController {
                 jugador,
                 period,
                 preAction,
-                teamSide,
                 third,
                 lane,
                 situation

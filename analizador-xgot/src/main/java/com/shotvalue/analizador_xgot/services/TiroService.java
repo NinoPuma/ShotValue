@@ -39,7 +39,7 @@ public class TiroService {
             String parteDelCuerpo, String tipoDeJugada,
             String resultado, String zonaDelDisparo,
             String xgotStr, String nombreJugador,
-            Integer period, String preAction, String teamSide,
+            Integer period, String preAction,
             String third, String lane, String situation
     ) {
         double xgotFiltro = -1.0;
@@ -64,8 +64,6 @@ public class TiroService {
                 .filter(t -> nombre.isEmpty() || (t.getJugadorNombre() != null && t.getJugadorNombre().toLowerCase().contains(nombre)))
                 .filter(t -> preAction.equals("Todas las acciones") ||
                         obtenerPreAction(t).equalsIgnoreCase(preAction))
-                .filter(t -> teamSide.equals("Ambos equipos") ||
-                        obtenerTeamSide(t).equalsIgnoreCase(teamSide))
                 .filter(t -> third.equals("Todos") ||
                         obtenerThird(t).equalsIgnoreCase(third))
                 .filter(t -> lane.equals("Todos") ||
@@ -85,7 +83,13 @@ public class TiroService {
      * datos se respeta, de lo contrario se calcula a partir de la coordenada X.
      */
     private String obtenerThird(Tiro t) {
-        if (t.getThird() != null) return t.getThird();
+        if (t.getThird() != null && !t.getThird().isBlank()) {
+            return t.getThird();
+        }
+
+        if (t.getTercio() != null && !t.getTercio().isBlank()) {
+            return t.getTercio();
+        }
 
         double x = t.getX();
         if (x <= 40) return "Defensivo";
@@ -126,14 +130,6 @@ public class TiroService {
         }
 
         return "Juego abierto";
-    }
-
-    /**
-     * Obtiene el lado del equipo (local/visitante). Si no se dispone de la
-     * información se devuelve "Ambos equipos" para no filtrar por este campo.
-     */
-    private String obtenerTeamSide(Tiro t) {
-        return t.getTeamSide() != null ? t.getTeamSide() : "Ambos equipos";
     }
 
     private String obtenerParteDelCuerpo(Tiro t) {
