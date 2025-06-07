@@ -1,5 +1,7 @@
 package com.shotvalue.analizador_xgot.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDate;
 
 public class Usuario {
@@ -7,6 +9,7 @@ public class Usuario {
     private String id;
     private String username;
     private String email;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private String nombreCompleto;
     private String rol;
