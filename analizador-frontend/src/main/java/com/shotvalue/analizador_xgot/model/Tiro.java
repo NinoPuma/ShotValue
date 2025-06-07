@@ -7,13 +7,13 @@ public class Tiro {
     private String jugadorNombre;   // Nombre del jugador (opcional para mostrar)
     private int equipoId;           // ID del equipo
     private String equipoNombre;    // Nombre del equipo (opcional para mostrar)
+    private int minuto;
+    private String periodo;
 
     private double destinoX;        // Coordenada X del tiro
     private double destinoY;        // Coordenada Y del tiro
     private Double destinoZ;        // Coordenada Z del tiro (opcional, si se usa en el modelo)
     private String resultado;       // Resultado genérico (ej. "gol", "parada", etc.)
-
-    private int minuto;             // Minuto del tiro
     private String bodyPart;        // Parte del cuerpo
     private String preAction;       // Acción previa
     private String result;          // Resultado del tiro (ej. "Gol", "Atajado", etc.)
@@ -216,7 +216,14 @@ public class Tiro {
     public void setSituation(String situation) {
         this.situation = situation;
     }
-    // ────────────────────────────────────────────────────────────────
+
+    public String getPeriodo() {
+        return periodo;
+    }
+
+    public void setPeriodo(String periodo) {
+        this.periodo = periodo;
+    }
 
     @Override
     public String toString() {
