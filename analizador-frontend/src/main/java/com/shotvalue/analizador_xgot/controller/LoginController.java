@@ -12,10 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import org.controlsfx.control.textfield.TextFields;
@@ -38,12 +35,15 @@ public class LoginController {
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
     @FXML private CheckBox rememberMeCheckBox;
+    @FXML private TextField passwordTextField;
+    @FXML private Button togglePasswordBtn;
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final Gson gson = new GsonBuilder()
             .registerTypeAdapter(java.time.LocalDate.class, new LocalDateAdapter())
             .create();
 
+    private boolean passwordVisible = false;
     private static final String ARCHIVO_SESION = System.getProperty("user.home") + "/.shotvalue/session.dat";
     private static final String ARCHIVO_EMAILS = System.getProperty("user.home") + "/.shotvalue/emails-usados.json";
     private static final String CLAVE_SECRETA = "1234567890123456";
@@ -57,7 +57,7 @@ public class LoginController {
     @FXML
     private void handleLogin(ActionEvent event) {
         String email = usernameField.getText().trim();
-        String password = passwordField.getText().trim();
+        String password = passwordVisible ? passwordTextField.getText().trim() : passwordField.getText().trim();
 
         if (email.isEmpty() || password.isEmpty()) {
             showAlert("Completa todos los campos.");
@@ -272,6 +272,26 @@ public class LoginController {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    @FXML
+    private void togglePasswordVisibility() {
+        passwordVisible = !passwordVisible;
+        if (passwordVisible) {
+            passwordTextField.setText(passwordField.getText());
+            passwordTextField.setVisible(true);
+            passwordTextField.setManaged(true);
+            passwordField.setVisible(false);
+            passwordField.setManaged(false);
+            togglePasswordBtn.setText("🙈");
+        } else {
+            passwordField.setText(passwordTextField.getText());
+            passwordField.setVisible(true);
+            passwordField.setManaged(true);
+            passwordTextField.setVisible(false);
+            passwordTextField.setManaged(false);
+            togglePasswordBtn.setText("👁");
         }
     }
 
