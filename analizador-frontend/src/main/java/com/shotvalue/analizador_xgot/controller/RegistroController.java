@@ -42,10 +42,20 @@ public class RegistroController {
     @FXML
     private CheckBox termsCheckBox;
     @FXML
+    private TextField passwordTextField;
+    @FXML
+    private TextField repeatPasswordTextField;
+    @FXML
+    private Button togglePasswordBtn;
+    @FXML
+    private Button toggleRepeatPasswordBtn;
+    @FXML
     private Label messageLabel;
     @FXML
     private Button registrarBtn;
 
+    private boolean passwordVisible = false;
+    private boolean repeatPasswordVisible = false;
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
@@ -61,8 +71,8 @@ public class RegistroController {
     private void handleRegister() {
         String username = usernameField.getText().trim();
         String email = emailField.getText().trim();
-        String password = passwordField.getText();
-        String repeatPassword = repeatPasswordField.getText();
+        String password = passwordVisible ? passwordTextField.getText() : passwordField.getText();
+        String repeatPassword = repeatPasswordVisible ? repeatPasswordTextField.getText() : repeatPasswordField.getText();
         boolean acceptedTerms = termsCheckBox.isSelected();
 
         if (username.isEmpty() || email.isEmpty() || password.isEmpty() || repeatPassword.isEmpty()) {
@@ -134,6 +144,46 @@ public class RegistroController {
             messageLabel.setStyle("-fx-text-fill: red;");
             messageLabel.setText(msg);
         });
+    }
+
+    @FXML
+    private void togglePasswordVisibility() {
+        passwordVisible = !passwordVisible;
+        if (passwordVisible) {
+            passwordTextField.setText(passwordField.getText());
+            passwordTextField.setVisible(true);
+            passwordTextField.setManaged(true);
+            passwordField.setVisible(false);
+            passwordField.setManaged(false);
+            togglePasswordBtn.setText("🙈");
+        } else {
+            passwordField.setText(passwordTextField.getText());
+            passwordField.setVisible(true);
+            passwordField.setManaged(true);
+            passwordTextField.setVisible(false);
+            passwordTextField.setManaged(false);
+            togglePasswordBtn.setText("👁");
+        }
+    }
+
+    @FXML
+    private void toggleRepeatPasswordVisibility() {
+        repeatPasswordVisible = !repeatPasswordVisible;
+        if (repeatPasswordVisible) {
+            repeatPasswordTextField.setText(repeatPasswordField.getText());
+            repeatPasswordTextField.setVisible(true);
+            repeatPasswordTextField.setManaged(true);
+            repeatPasswordField.setVisible(false);
+            repeatPasswordField.setManaged(false);
+            toggleRepeatPasswordBtn.setText("🙈");
+        } else {
+            repeatPasswordField.setText(repeatPasswordTextField.getText());
+            repeatPasswordField.setVisible(true);
+            repeatPasswordField.setManaged(true);
+            repeatPasswordTextField.setVisible(false);
+            repeatPasswordTextField.setManaged(false);
+            toggleRepeatPasswordBtn.setText("👁");
+        }
     }
 
     @FXML
