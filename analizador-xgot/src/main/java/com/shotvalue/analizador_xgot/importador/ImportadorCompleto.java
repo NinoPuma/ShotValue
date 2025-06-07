@@ -4,11 +4,7 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.mongodb.client.*;
 import com.mongodb.client.model.*;
-import com.shotvalue.analizador_xgot.model.Evento;
-import com.shotvalue.analizador_xgot.model.Jugador;
-import com.shotvalue.analizador_xgot.model.PlayPattern;
-import com.shotvalue.analizador_xgot.model.Tiro;
-import com.shotvalue.analizador_xgot.model.Shot;
+import com.shotvalue.analizador_xgot.model.*;
 import com.shotvalue.analizador_xgot.util.HeightDeserializer;
 import com.shotvalue.analizador_xgot.util.PartidosFiltradosUtil;
 import com.shotvalue.analizador_xgot.util.PlayPatternDeserializer;
@@ -143,7 +139,8 @@ public class ImportadorCompleto {
                             List<InsertOneModel<Document>> bulkEvents = new ArrayList<>();
                             List<InsertOneModel<Document>> tirosList = new ArrayList<>();
 
-                            for (Evento ev : eventos) {
+                            for (int idx = 0; idx < eventos.size(); idx++) {
+                                Evento ev = eventos.get(idx);
                                 if (ev.getType() == null || ev.getType().getName() == null) continue;
                                 if (!"Shot".equals(ev.getType().getName())) continue;
                                 if (ev.getShot() == null || ev.getLocation() == null || ev.getLocation().size() < 2)
@@ -191,11 +188,45 @@ public class ImportadorCompleto {
 
                                 tiro.setSituation(inferirSituacion(ev.getPlay_pattern(), ev.getShot()));
 
-                                if (ev.getShot().getType() != null && "Penalty".equalsIgnoreCase(ev.getShot().getType().getName())) {
-                                    tiro.setPreAction("Penal");
+                                String preAccion = "No definido";
+                                if (ev.getShot().getType() != null &&
+                                        "Penalty".equalsIgnoreCase(ev.getShot().getType().getName())) {
+                                    preAccion = "Penal";
                                 } else {
-                                    tiro.setPreAction("Otra");
+                                    for (int j = idx - 1; j >= 0; j--) {
+                                        Evento previo = eventos.get(j);
+                                        if (previo.getType() == null || previo.getType().getName() == null) continue;
+
+                                        boolean mismoEquipo = previo.getTeam() != null && ev.getTeam() != null &&
+                                                previo.getTeam().getTeamId() == ev.getTeam().getTeamId();
+
+                                        if (!mismoEquipo) {
+                                            break;
+                                        }
+
+                                        String tipoPrevio = previo.getType().getName();
+
+                                        if ("Pass".equalsIgnoreCase(tipoPrevio)) {
+                                            boolean esCentro = previo.getPass() != null &&
+                                                    previo.getPass().getType() != null &&
+                                                    previo.getPass().getType().equalsIgnoreCase("Cross");
+                                            preAccion = esCentro ? "Centro" : "Pase";
+                                            break;
+                                        } else if ("Carry".equalsIgnoreCase(tipoPrevio) ||
+                                                "Dribble".equalsIgnoreCase(tipoPrevio)) {
+                                            preAccion = "Regate";
+                                            break;
+                                        } else if ("Shot".equalsIgnoreCase(tipoPrevio)) {
+                                            preAccion = "Rebote";
+                                            break;
+                                        } else if ("Ball Receipt".equalsIgnoreCase(tipoPrevio)) {
+                                            continue;
+                                        } else {
+                                            continue;
+                                        }
+                                    }
                                 }
+                                tiro.setPreAction(preAccion);
 
                                 tiro.setXgot(ev.getShot().getStatsbombXg());
                                 tiro.setMinuto(ev.getMinute());
