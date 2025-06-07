@@ -8,7 +8,7 @@ public class Tiro {
     private int equipoId;           // ID del equipo
     private String equipoNombre;    // Nombre del equipo (opcional para mostrar)
     private String teamSide;
-
+    private int period;
     private double destinoX;        // Coordenada X del tiro
     private double destinoY;        // Coordenada Y del tiro
     private Double destinoZ;        // Coordenada Z del tiro (opcional, si se usa en el modelo)
@@ -186,6 +186,17 @@ public class Tiro {
         this.y = y;
     }
 
+    public void setDestinoX(double destinoX) {
+        this.destinoX = destinoX;
+    }
+
+    public void setDestinoY(double destinoY) {
+        this.destinoY = destinoY;
+    }
+
+    public void setResultado(String resultado) {
+        this.resultado = resultado;
+    }
     // ────────── GETTERS / SETTERS PARA LOS CAMPOS AÑADIDOS ──────────
 
     public String getThird() {
@@ -212,12 +223,12 @@ public class Tiro {
         this.situation = situation;
     }
 
-    public String getPeriodo() {
-        return periodo;
+    public int getPeriod() {
+        return period;
     }
 
-    public void setPeriodo(String periodo) {
-        this.periodo = periodo;
+    public void setPeriod(int period) {
+        this.period = period;
     }
 
     @Override

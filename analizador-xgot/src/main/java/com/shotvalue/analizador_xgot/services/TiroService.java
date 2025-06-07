@@ -2,7 +2,6 @@ package com.shotvalue.analizador_xgot.services;
 
 import com.shotvalue.analizador_xgot.model.Tiro;
 import com.shotvalue.analizador_xgot.repositories.TiroRepository;
-import com.shotvalue.analizador_xgot.services.XgotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,18 +14,11 @@ public class TiroService {
     @Autowired
     private TiroRepository repo;
 
-    @Autowired
-    private XgotService xgotService;          // NUEVO
-
-    /* ─────────────────────────── CRUD ────────────────────────── */
-
     public List<Tiro> getAll() {
         return repo.findAll();
     }
 
     public Tiro save(Tiro t) {
-        double xgot = xgotService.calcularXgot(t);   // ← cálculo central
-        t.setXgot(xgot);
         return repo.save(t);
     }
 
@@ -53,16 +45,14 @@ public class TiroService {
         double xgotFiltro = -1.0;
         if (xgotStr != null && !xgotStr.isEmpty()) {
             try {
-                xgotTmp = Double.parseDouble(xgotStr);
+                xgotFiltro = Double.parseDouble(xgotStr);
             } catch (NumberFormatException e) {
-                System.err.println("⚠️ xGOT no numérico: " + xgotStr);
+                System.err.println("⚠️ Error al convertir xGOT a double: " + xgotStr);
             }
         }
-        final double xgotFiltro = xgotTmp;          // ← variable final
 
-        final String nombreLower = (nombreJugador == null)
-                ? ""
-                : nombreJugador.toLowerCase();
+        double finalXgotFiltro = xgotFiltro;
+        String nombre = nombreJugador != null ? nombreJugador.toLowerCase() : "";
 
         Stream<Tiro> stream = repo.findAll().stream()
                 .filter(t -> t.getMinuto() >= minutoDesde && t.getMinuto() <= minutoHasta)
