@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @Service
 public class JugadorService {
+
     @Autowired
     private JugadorRepository repo;
 
@@ -25,22 +26,21 @@ public class JugadorService {
         return repo.findById(id);
     }
 
-    public List<Jugador> getByTeamId(int teamId) {
-        return repo.findByTeamId(teamId);
-    }
-
     public void delete(String id) {
         repo.deleteById(id);
+    }
+
+
+    public List<Jugador> getByTeamId(int teamId) {
+        return repo.findByTeamId(teamId);
     }
 
     public List<String> obtenerNombresCompletos() {
         return repo.findAll()
                 .stream()
-                .map(Jugador::getPlayer_name) // o getPlayerName()
-                .filter(nombre -> nombre != null && !nombre.isBlank())
+                .map(Jugador::getPlayerName)
+                .filter(n -> n != null && !n.isBlank())
                 .distinct()
                 .toList();
     }
-
-
 }

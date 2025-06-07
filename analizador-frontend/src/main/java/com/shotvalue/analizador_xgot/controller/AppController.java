@@ -1,5 +1,6 @@
 package com.shotvalue.analizador_xgot.controller;
 
+import com.shotvalue.analizador_xgot.view.ViewLifecycle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -11,57 +12,99 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AppController {
 
-    @FXML
-    private BorderPane mainPane;
+    @FXML private BorderPane  mainPane;
+    @FXML private AnchorPane  contenidoCentro;
 
-    @FXML
-    private AnchorPane contenidoCentro;
-
-    @FXML
-    private Button btnInicio, btnEquipos, btnRegistrar, btnVisualizar, btnInformes, btnPerfil, btnAyuda, btnSalir;
+    @FXML private Button btnInicio, btnEquipos, btnRegistrar, btnVisualizar,
+            btnInformes, btnPerfil, btnAyuda, btnSalir,
+            btnCrearJugador, btnCrearEquipo;
 
     private final String defaultStyle = "-fx-background-color: transparent; -fx-text-fill: white;";
-    private final String activeStyle = "-fx-background-color: #0F7F7F; -fx-text-fill: white; -fx-font-weight: bold;";
+    private final String activeStyle  = "-fx-background-color: #0F7F7F; -fx-text-fill: white; -fx-font-weight: bold;";
 
-    // ✅ Este método ahora funciona como corresponde con contenidoCentro
-    public void setContenido(Node contenido) {
-        contenidoCentro.getChildren().setAll(contenido);
+    private final Map<String, Parent>        viewCache = new HashMap<>();
+    private final Map<String, ViewLifecycle> ctlCache  = new HashMap<>();
+    private       ViewLifecycle              controladorVisible;
 
-        AnchorPane.setTopAnchor(contenido, 0.0);
-        AnchorPane.setRightAnchor(contenido, 0.0);
-        AnchorPane.setBottomAnchor(contenido, 0.0);
-        AnchorPane.setLeftAnchor(contenido, 0.0);
+    private String userName;
+
+    public void setUserName(String name) {
+        this.userName = name;
+        /* si ahora mismo se muestra Inicio lo actualizamos */
+        if (controladorVisible instanceof InicioController ini) {
+            ini.setNombreUsuario(name);
+        }
+    }
+
+    public void openCrearEquipo() {
+        cargarVista("/tfcc/crear-equipo-view.fxml", null);
     }
 
     @FXML
-    public void initialize() {
-        btnInicio.setOnAction(e -> cargarVista("/tfcc/inicio-view.fxml", btnInicio));
-        btnEquipos.setOnAction(e -> cargarVista("/tfcc/equipos-controller.fxml", btnEquipos));
-        btnRegistrar.setOnAction(e -> cargarVista("/tfcc/registrar-view.fxml", btnRegistrar));
-        btnVisualizar.setOnAction(e -> cargarVista("/tfcc/visualizar-view.fxml", btnVisualizar));
-        btnInformes.setOnAction(e -> cargarVista("/tfcc/informes-view.fxml", btnInformes));
-        btnPerfil.setOnAction(e -> cargarVista("/tfcc/perfil-view.fxml", btnPerfil));
-        btnAyuda.setOnAction(e -> cargarVista("/tfcc/ayuda-view.fxml", btnAyuda));
-        btnSalir.setOnAction(e -> cerrarSesion());
+    private void initialize() {
+        btnInicio        .setOnAction(e -> cargarVista("/tfcc/inicio-view.fxml",        btnInicio));
+        btnEquipos       .setOnAction(e -> cargarVista("/tfcc/equipos-view.fxml",       btnEquipos));
+        btnRegistrar     .setOnAction(e -> cargarVista("/tfcc/registrar-view.fxml",     btnRegistrar));
+        btnCrearEquipo  .setOnAction(e -> cargarVista("/tfcc/crear-equipo-view.fxml",  btnCrearEquipo));
+        btnCrearJugador  .setOnAction(e -> cargarVista("/tfcc/crear-jugador-view.fxml", btnCrearJugador));
+        btnVisualizar    .setOnAction(e -> cargarVista("/tfcc/visualizar-view.fxml",    btnVisualizar));
+        btnInformes      .setOnAction(e -> cargarVista("/tfcc/informes-view.fxml",      btnInformes));
+        btnPerfil        .setOnAction(e -> cargarVista("/tfcc/perfil-view.fxml",        btnPerfil));
+        btnAyuda         .setOnAction(e -> cargarVista("/tfcc/ayuda-view.fxml",         btnAyuda));
+        btnSalir         .setOnAction(e -> cerrarSesion());
 
-        // Vista inicial por defecto
         cargarVista("/tfcc/inicio-view.fxml", btnInicio);
+    }
+
+    private void setContenido(Node n) {
+        contenidoCentro.getChildren().setAll(n);
+        AnchorPane.setTopAnchor   (n, 0.0);
+        AnchorPane.setRightAnchor (n, 0.0);
+        AnchorPane.setBottomAnchor(n, 0.0);
+        AnchorPane.setLeftAnchor  (n, 0.0);
     }
 
     private void cargarVista(String rutaFXML, Button botonActivo) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
-            Parent vista = loader.load();
-            setContenido(vista); // usamos el método nuevo
-
-            resetearEstilosMenu();
-            if (botonActivo != null) {
-                botonActivo.setStyle(activeStyle);
+            if (rutaFXML.equals("/tfcc/inicio-view.fxml")) {
+                viewCache.remove(rutaFXML);
+                ctlCache .remove(rutaFXML);
             }
-        } catch (IOException ex) {
+
+            Parent root = viewCache.computeIfAbsent(rutaFXML, ruta -> {
+                try {
+                    FXMLLoader fx = new FXMLLoader(getClass().getResource(ruta));
+                    Parent nodo  = fx.load();
+                    Object ctl   = fx.getController();
+
+                    if (ctl instanceof ViewLifecycle life) ctlCache.put(ruta, life);
+
+                    if (ctl instanceof InicioController ini) {
+                        ini.setAppController(this);
+                        if (userName != null) ini.setNombreUsuario(userName);
+                    }
+                    return nodo;
+
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            });
+
+            ViewLifecycle nuevo = ctlCache.get(rutaFXML);
+            if (controladorVisible != null && controladorVisible != nuevo) controladorVisible.onHide();
+            controladorVisible = nuevo;
+            if (controladorVisible != null) controladorVisible.onShow();
+
+            setContenido(root);
+            resetearEstilosMenu();
+            if (botonActivo != null) botonActivo.setStyle(activeStyle);
+
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -70,6 +113,8 @@ public class AppController {
         btnInicio.setStyle(defaultStyle);
         btnEquipos.setStyle(defaultStyle);
         btnRegistrar.setStyle(defaultStyle);
+        btnCrearEquipo .setStyle(defaultStyle);
+        btnCrearJugador.setStyle(defaultStyle);
         btnVisualizar.setStyle(defaultStyle);
         btnInformes.setStyle(defaultStyle);
         btnPerfil.setStyle(defaultStyle);
@@ -78,16 +123,21 @@ public class AppController {
 
     private void cerrarSesion() {
         try {
+            LoginController.desactivarRecordarSesion();
+
             Stage stage = (Stage) contenidoCentro.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/tfcc/login.fxml"));
-            Parent login = loader.load();
+            Parent login = FXMLLoader.load(getClass().getResource("/tfcc/login.fxml"));
             stage.setScene(new Scene(login));
             stage.setTitle("Login");
             stage.setMaximized(false);
             stage.centerOnScreen();
-            stage.show();
-        } catch (IOException ex) {
-            ex.printStackTrace();
+
+            viewCache.clear();
+            ctlCache.clear();
+            controladorVisible = null;
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

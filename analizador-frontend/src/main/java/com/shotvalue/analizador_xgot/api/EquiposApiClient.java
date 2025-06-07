@@ -8,6 +8,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -53,6 +54,24 @@ public class EquiposApiClient {
                         );
                     } else {
                         throw new RuntimeException("Error cargando equipos: " + resp.statusCode());
+                    }
+                });
+    }
+    public static CompletableFuture<Equipo> saveEquipoAsync(Equipo nuevo) {
+        String json = gson.toJson(nuevo);
+
+        HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL))
+                .header("Content-Type","application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json, StandardCharsets.UTF_8))
+                .build();
+
+        return client.sendAsync(req, HttpResponse.BodyHandlers.ofString())
+                .thenApply(resp -> {
+                    if (resp.statusCode() >= 200 && resp.statusCode() < 300) {
+                        return gson.fromJson(resp.body(), Equipo.class);
+                    } else {
+                        throw new RuntimeException("Error ("+resp.statusCode()+"): "+resp.body());
                     }
                 });
     }

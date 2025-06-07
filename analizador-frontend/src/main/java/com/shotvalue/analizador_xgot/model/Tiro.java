@@ -7,15 +7,23 @@ public class Tiro {
     private String jugadorNombre;   // Nombre del jugador (opcional para mostrar)
     private int equipoId;           // ID del equipo
     private String equipoNombre;    // Nombre del equipo (opcional para mostrar)
+    private int minuto;
+    private int period;
+    private double xg;
 
     private double destinoX;        // Coordenada X del tiro
     private double destinoY;        // Coordenada Y del tiro
-    private String resultado;       // Resultado del tiro (ej. "gol", "parada", etc.)
-    private int minuto;             // Minuto del tiro
+    private Double destinoZ;        // Coordenada Z del tiro (opcional, si se usa en el modelo)
+    private String resultado;       // Resultado genérico (ej. "gol", "parada", etc.)
     private String bodyPart;        // Parte del cuerpo
     private String preAction;       // Acción previa
-    private String result;          // Resultado del tiro
+    private String result;          // Resultado del tiro (ej. "Gol", "Atajado", etc.)
     private String area;            // Zona del campo
+
+    private String third;
+    private String lane;
+    private String situation;
+    // ─────────────────────────────────────
 
     private double xgot;            // Expected Goals On Target
     private double x;               // Coordenada X
@@ -26,7 +34,8 @@ public class Tiro {
 
     public Tiro(String id, int jugadorId, String jugadorNombre, int equipoId, String equipoNombre,
                 int minuto, String bodyPart, String preAction, String result, String area,
-                double xgot, double x, double y) {
+                double xgot, double x, double y
+            /* si quisieras, también podrías ampliar este constructor para recibir third, lane, situation */) {
         this.id = id;
         this.jugadorId = jugadorId;
         this.jugadorNombre = jugadorNombre;
@@ -40,6 +49,10 @@ public class Tiro {
         this.xgot = xgot;
         this.x = x;
         this.y = y;
+        // estos tres los dejaríamos nulos a menos que los reciben por parámetros:
+        this.third = null;
+        this.lane = null;
+        this.situation = null;
     }
 
     public String getId() {
@@ -62,18 +75,6 @@ public class Tiro {
         return jugadorNombre;
     }
 
-    public Double getDestinoX() {
-        return destinoX;
-    }
-
-    public Double getDestinoY() {
-        return destinoY;
-    }
-
-    public String getResultado() {
-        return resultado;
-    }
-
     public void setJugadorNombre(String jugadorNombre) {
         this.jugadorNombre = jugadorNombre;
     }
@@ -94,6 +95,38 @@ public class Tiro {
         this.equipoNombre = equipoNombre;
     }
 
+    public Double getDestinoX() {
+        return destinoX;
+    }
+
+    public void setDestinoX(double destinoX) {
+        this.destinoX = destinoX;
+    }
+
+    public Double getDestinoY() {
+        return destinoY;
+    }
+
+    public void setDestinoY(double destinoY) {
+        this.destinoY = destinoY;
+    }
+
+    public Double getDestinoZ() {
+        return destinoZ;
+    }
+
+    public void setDestinoZ(Double destinoZ) {
+        this.destinoZ = destinoZ;
+    }
+
+    public String getResultado() {
+        return resultado;
+    }
+
+    public void setResultado(String resultado) {
+        this.resultado = resultado;
+    }
+
     public int getMinuto() {
         return minuto;
     }
@@ -109,7 +142,6 @@ public class Tiro {
     public void setBodyPart(String bodyPart) {
         this.bodyPart = bodyPart;
     }
-
 
     public String getPreAction() {
         return preAction;
@@ -157,6 +189,49 @@ public class Tiro {
 
     public void setY(double y) {
         this.y = y;
+    }
+
+    // ────────── GETTERS / SETTERS PARA LOS CAMPOS AÑADIDOS ──────────
+
+    public String getThird() {
+        return third;
+    }
+
+    public void setThird(String third) {
+        this.third = third;
+    }
+
+    public String getLane() {
+        return lane;
+    }
+
+    public void setLane(String lane) {
+        this.lane = lane;
+    }
+
+    public String getSituation() {
+        return situation;
+    }
+
+
+    public void setSituation(String situation) {
+        this.situation = situation;
+    }
+
+    public double getXg() {
+        return xg;
+    }
+
+    public void setXg(double xg) {
+        this.xg = xg;
+    }
+
+    public int getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(int period) {
+        this.period = period;
     }
 
     @Override

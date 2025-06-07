@@ -1,4 +1,4 @@
-package com.shotvalue.analizador_xgot.api;
+package com.shotvalue.analizador_xgot.controller;
 
 import com.shotvalue.analizador_xgot.model.Usuario;
 import com.shotvalue.analizador_xgot.repositories.UsuarioRepository;

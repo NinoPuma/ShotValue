@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EquipoRepository extends MongoRepository<Equipo, String> {
-    // No es necesario redeclarar métodos
 }

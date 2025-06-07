@@ -78,7 +78,14 @@ public class ImportadorCompleto {
                             if (!jugadoresInsertados.add(playerId)) continue;
 
                             String playerName = jugadorObj.get("player_name").getAsString();
-                            String position = jugadorObj.has("position") ? jugadorObj.get("position").getAsString() : null;
+                            JsonArray positionsArray = jugadorObj.getAsJsonArray("positions");
+                            String position = null;
+                            if (positionsArray != null && positionsArray.size() > 0) {
+                                JsonObject firstPosition = positionsArray.get(0).getAsJsonObject();
+                                String posEnIngles = firstPosition.get("position").getAsString();
+                                position = traducirPosicion(posEnIngles);
+                            }
+
                             String jersey = jugadorObj.has("jersey_number") ? jugadorObj.get("jersey_number").getAsString() : null;
 
                             Document nuevoJugador = new Document("_id", playerId)
@@ -122,6 +129,12 @@ public class ImportadorCompleto {
                         continue;
                     }
 
+                    if (tirosCol.countDocuments(Filters.eq("partidoId", matchId)) > 0) {
+                        System.out.println("⏩ Tiros ya importados para " + matchId);
+                        continue;
+                    }
+
+
                     futures.add(pool.submit(() -> {
                         try (FileReader reader = new FileReader(eventoFile.toFile())) {
                             Type listType = new TypeToken<List<Evento>>() {
@@ -164,14 +177,23 @@ public class ImportadorCompleto {
                                 if (ev.getShot().getEndLocation() != null && ev.getShot().getEndLocation().size() >= 2) {
                                     tiro.setDestinoX(ev.getShot().getEndLocation().get(0));
                                     tiro.setDestinoY(ev.getShot().getEndLocation().get(1));
+                                    if (ev.getShot().getEndLocation().size() >= 3) {
+                                        tiro.setDestinoZ(ev.getShot().getEndLocation().get(2));
+                                    }
                                 }
 
-                                tiro.setResultado(ev.getShot().getOutcome() != null ? ev.getShot().getOutcome().getName() : "Desconocido");
-                                tiro.setParteDelCuerpo(ev.getShot().getBodyPart() != null ? ev.getShot().getBodyPart().getName() : "Desconocida");
-                                tiro.setTipoDeJugada(ev.getShot().getTechnique() != null ? ev.getShot().getTechnique().getName() : "Desconocida");
-                                tiro.setZonaDelDisparo(ev.getShot().getZone() != null ? ev.getShot().getZone().getName() : "Sin zona");
+                                tiro.setResultado(traducir(ev.getShot().getOutcome() != null ? ev.getShot().getOutcome().getName() : "Desconocido", "resultado"));
+                                tiro.setParteDelCuerpo(traducir(ev.getShot().getBodyPart() != null ? ev.getShot().getBodyPart().getName() : "Desconocida", "parte"));
+                                tiro.setTipoDeJugada(traducir(ev.getShot().getTechnique() != null ? ev.getShot().getTechnique().getName() : "Desconocida", "jugada"));
+                                tiro.setZonaDelDisparo(traducir(ev.getShot().getZone() != null ? ev.getShot().getZone().getName() : "Sin zona", "zona"));
+
+                                if (ev.getShot().getType() != null && "Penalty".equalsIgnoreCase(ev.getShot().getType().getName())) {
+                                    tiro.setTipoDeJugada("Penalty");
+                                }
+
                                 tiro.setXgot(ev.getShot().getStatsbombXg());
                                 tiro.setMinuto(ev.getMinute());
+                                tiro.setPeriod(ev.getPeriod());
 
                                 // Jugador y equipo
                                 String jugadorNombre = jugador.getPlayerName();
@@ -228,6 +250,7 @@ public class ImportadorCompleto {
                 }
             }
 
+
             pool.shutdown();
 
             System.out.println("🎯 RESUMEN FINAL:");
@@ -239,4 +262,96 @@ public class ImportadorCompleto {
             System.out.println("🏁 Importación completa");
         }
     }
+
+    private static String traducirPosicion(String posicionIngles) {
+        Map<String, String> traducciones = new HashMap<>();
+        traducciones.put("Goalkeeper", "Arquero");
+        traducciones.put("Right Back", "Lateral Derecho");
+        traducciones.put("Left Back", "Lateral Izquierdo");
+        traducciones.put("Center Back", "Defensor Central");
+        traducciones.put("Right Wing Back", "Carrilero Derecho");
+        traducciones.put("Left Wing Back", "Carrilero Izquierdo");
+
+        // Nuevas combinaciones centrales
+        traducciones.put("Defensive Midfield", "Mediocentro Defensivo");
+        traducciones.put("Center Midfield", "Mediocampista Central");
+        traducciones.put("Left Center Midfield", "Mediocampista Izquierdo");
+        traducciones.put("Right Center Midfield", "Mediocampista Derecho");
+        traducciones.put("Attacking Midfield", "Mediapunta");
+        traducciones.put("Center Attacking Midfield", "Mediapunta Central");
+        traducciones.put("Center Defensive Midfield", "Mediocentro Defensivo Central");
+
+        // Nuevos laterales centrales
+        traducciones.put("Left Center Back", "Defensor Central Izquierdo");
+        traducciones.put("Right Center Back", "Defensor Central Derecho");
+
+        // Nuevos delanteros centrales
+        traducciones.put("Center Forward", "Delantero Centro");
+        traducciones.put("Right Center Forward", "Delantero Derecho");
+        traducciones.put("Left Center Forward", "Delantero Izquierdo");
+
+        // Delanteros y extremos
+        traducciones.put("Right Wing", "Extremo Derecho");
+        traducciones.put("Left Wing", "Extremo Izquierdo");
+        traducciones.put("Striker", "Delantero");
+        traducciones.put("Second Striker", "Segundo Delantero");
+
+        // 🚨 Nuevas posiciones detectadas
+        traducciones.put("Left Defensive Midfield", "Mediocentro Defensivo Izquierdo");
+        traducciones.put("Right Defensive Midfield", "Mediocentro Defensivo Derecho");
+        traducciones.put("Right Midfield", "Mediocampista Derecho");
+        traducciones.put("Left Midfield", "Mediocampista Izquierdo");
+
+        traducciones.put("Attacking Midfield", "Mediapunta");
+        traducciones.put("Center Attacking Midfield", "Mediapunta Central");
+        traducciones.put("Left Attacking Midfield", "Mediapunta Izquierdo");
+        traducciones.put("Right Attacking Midfield", "Mediapunta Derecho");
+
+
+        if (!traducciones.containsKey(posicionIngles)) {
+            System.out.println("⚠️ Posición sin traducir: " + posicionIngles);
+        }
+
+        return traducciones.getOrDefault(posicionIngles, posicionIngles);
+    }
+
+    private static String traducir(String valor, String tipo) {
+        if (valor == null) return "Desconocido";
+
+        return switch (tipo) {
+            case "resultado" -> switch (valor.toLowerCase()) {
+                case "goal" -> "Gol";
+                case "saved" -> "Atajado";
+                case "off t" -> "Fuera";
+                case "blocked" -> "Bloqueado";
+                case "post" -> "Poste";
+                default -> valor;
+            };
+            case "parte" -> switch (valor.toLowerCase()) {
+                case "left foot" -> "Pie izquierdo";
+                case "right foot" -> "Pie derecho";
+                case "head" -> "Cabeza";
+                case "other" -> "Otro";
+                default -> valor;
+            };
+            case "jugada" -> switch (valor.toLowerCase()) {
+                case "normal" -> "Normal";
+                case "lob" -> "Lob";
+                case "half volley" -> "Media volea";
+                case "volley" -> "Volea";
+                case "penalty" -> "Penalty";
+                default -> valor;
+            };
+            case "zona" -> switch (valor.toLowerCase()) {
+                case "centre of the box" -> "Área central";
+                case "right side of the box" -> "Área derecha";
+                case "left side of the box" -> "Área izquierda";
+                case "outside the box" -> "Fuera del área";
+                case "deep free kick" -> "Tiro libre lejano";
+                default -> "Sin zona";
+            };
+            default -> valor;
+        };
+    }
+
 }

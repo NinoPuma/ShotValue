@@ -37,7 +37,6 @@ public class PartidoService {
     }
 
 
-    // --- Método para obtener matchIds de partidos en 2024 ---
     public Set<String> obtenerMatchIds2024() {
         LocalDate inicio = LocalDate.of(2024, 1, 1);
         LocalDate fin = LocalDate.of(2024, 12, 31);

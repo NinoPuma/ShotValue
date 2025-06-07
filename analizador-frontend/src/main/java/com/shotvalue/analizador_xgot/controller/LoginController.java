@@ -2,127 +2,198 @@ package com.shotvalue.analizador_xgot.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.shotvalue.analizador_xgot.api.AuthApiClient;
 import com.shotvalue.analizador_xgot.model.Usuario;
 import com.shotvalue.analizador_xgot.util.LocalDateAdapter;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import javafx.event.ActionEvent;
-import javafx.scene.Node;
+import org.controlsfx.control.textfield.TextFields;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.Key;
+import java.time.LocalDate;
+import java.util.*;
 
 public class LoginController {
 
-    @FXML
-    private TextField usernameField; // usamos esto como emailField
-    @FXML
-    private PasswordField passwordField;
+    @FXML private TextField      usernameField;
+    @FXML private PasswordField  passwordField;
+    @FXML private CheckBox       rememberMeCheckBox;
 
-    private final HttpClient httpClient = HttpClient.newHttpClient();
-    private final Gson gson = new GsonBuilder()
-            .registerTypeAdapter(java.time.LocalDate.class, new LocalDateAdapter())
+    private static final Gson GSON = new GsonBuilder()
+            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
             .create();
 
+    private static final String ARCHIVO_SESION = System.getProperty("user.home") + "/.shotvalue/session.dat";
+    private static final String ARCHIVO_EMAILS = System.getProperty("user.home") + "/.shotvalue/emails-usados.json";
+    private static final String CLAVE_SECRETA  = "1234567890123456";
+
     @FXML
-    private void handleLogin(ActionEvent event) {
-        String email = usernameField.getText();
-        String password = passwordField.getText();
-
-        if (email.isEmpty() || password.isEmpty()) {
-            showAlert("Completa todos los campos.");
-            return;
-        }
-
-        Map<String, String> loginData = new HashMap<>();
-        loginData.put("email", email);
-        loginData.put("password", password);
-
-        String json = gson.toJson(loginData);
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/login"))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(json, StandardCharsets.UTF_8))
-                .build();
-
-        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenAccept(response -> {
-                    if (response.statusCode() == 200) {
-                        String responseBody = response.body();
-                        Usuario usuario = gson.fromJson(responseBody, Usuario.class);
-                        String nombre = usuario.getUsername(); // o usuario.getNombreCompleto() si lo preferís
-
-                        Platform.runLater(() -> {
-                            try {
-                                FXMLLoader layoutLoader = new FXMLLoader(getClass().getResource("/tfcc/app-layout.fxml"));
-                                Parent layoutRoot = layoutLoader.load();
-
-                                AppController appController = layoutLoader.getController();
-
-                                FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/tfcc/inicio-view.fxml"));
-                                Parent inicioView = contentLoader.load();
-
-                                InicioController inicioController = contentLoader.getController();
-                                inicioController.setNombreUsuario(nombre);
-
-                                appController.setContenido(inicioView); // ✅ Ahora funciona
-
-                                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                                stage.setScene(new Scene(layoutRoot));
-                                stage.setTitle("Inicio");
-                                stage.centerOnScreen();
-                                stage.setMaximized(false);
-                                stage.show();
-
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        });
-                    } else {
-                        showError("Login fallido: " + response.body());
-                    }
-                })
-                .exceptionally(e -> {
-                    e.printStackTrace();
-                    showError("No se pudo conectar al servidor.");
-                    return null;
-                });
+    private void initialize() {
+        TextFields.bindAutoCompletion(usernameField, cargarCorreosUsados());
+        Platform.runLater(this::intentarRestaurarSesion);
     }
 
+    @FXML
+    private void handleLogin(ActionEvent evt) {
+
+        String email = usernameField.getText().trim();
+        String pass  = passwordField.getText().trim();
+
+        if (email.isBlank() || pass.isBlank()) { showAlert("Completa todos los campos."); return; }
+
+        AuthApiClient.loginAsync(email, pass)
+                .thenAccept(user -> {
+                    guardarCorreoUsado(email);
+                    guardarSesion(email, user.getUsername(), rememberMeCheckBox.isSelected());
+                    Platform.runLater(() -> cargarApp(evt, user.getUsername()));
+                })
+                .exceptionally(ex -> { showAlert(ex.getMessage()); return null; });
+    }
+
+    private void cargarApp(ActionEvent evt, String nombreUsuario) {
+        try {
+            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/tfcc/app-layout.fxml"));
+            Parent root = fxml.load();
+            fxml.<AppController>getController().setUserName(nombreUsuario);
+
+        /* ► Siempre tomamos el Stage actual de cualquier nodo ya “en escena”.
+           Si aún no existe (auto-login en initialize), creamos uno.           */
+            Stage stage;
+            if (usernameField.getScene() != null) {
+                stage = (Stage) usernameField.getScene().getWindow();
+            } else {
+                stage = new Stage();                 // primera apertura automática
+            }
+
+            stage.setScene(new Scene(root));
+            stage.setTitle("Inicio");
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            showAlert("No se pudo cargar la aplicación.");
+        }
+    }
+
+    private void intentarRestaurarSesion() {
+        try {
+            Path p = Path.of(ARCHIVO_SESION);
+            if (!Files.exists(p)) return;
+
+            String json = descifrar(Files.readString(p));
+            if (json == null || json.isBlank()) return;
+
+            Map<?,?> data   = GSON.fromJson(json, Map.class);
+            String email    = (String) data.get("email");
+            String usuario  = (String) data.get("usuario");
+            boolean recordar = Boolean.TRUE.equals(data.get("recordar"));
+
+            if (email != null) usernameField.setText(email);
+            if (recordar) cargarApp(null, usuario);
+        } catch (Exception ex) { ex.printStackTrace(); }
+    }
+
+    private void guardarSesion(String email, String usuario, boolean recordar) {
+        try {
+            Map<String,Object> m = Map.of("email", email, "usuario", usuario, "recordar", recordar);
+            String cifrado = cifrar(GSON.toJson(m));
+
+            Files.createDirectories(Path.of(ARCHIVO_SESION).getParent());
+            Files.writeString(Path.of(ARCHIVO_SESION), cifrado);
+        } catch (IOException ex) { ex.printStackTrace(); }
+    }
+
+    public static void desactivarRecordarSesion() {
+        try {
+            Path p = Path.of(ARCHIVO_SESION);
+            if (!Files.exists(p)) return;
+
+            String json = descifrar(Files.readString(p));
+            if (json == null || json.isBlank()) return;
+
+            Map<String,Object> data = GSON.fromJson(json, Map.class);
+            data.put("recordar", false);                      // ✅ desactivamos
+            String nuevoCifrado = cifrar(GSON.toJson(data));
+            Files.writeString(p, nuevoCifrado);
+        } catch (Exception ex) { ex.printStackTrace(); }
+    }
+
+    private List<String> cargarCorreosUsados() {
+        try {
+            Path p = Path.of(ARCHIVO_EMAILS);
+            if (!Files.exists(p)) return List.of();
+
+            List<Map<String,String>> lista =
+                    GSON.fromJson(Files.readString(p), List.class);
+            return lista.stream()
+                    .map(m -> m.get("email"))
+                    .filter(Objects::nonNull).toList();
+
+        } catch (IOException ex) { ex.printStackTrace(); return List.of(); }
+    }
+
+    private void guardarCorreoUsado(String email) {
+        try {
+            Path p = Path.of(ARCHIVO_EMAILS);
+            List<Map<String,String>> lista = Files.exists(p)
+                    ? GSON.fromJson(Files.readString(p), List.class)
+                    : new ArrayList<>();
+
+            if (lista.stream().noneMatch(m -> email.equals(m.get("email")))) {
+                lista.add(Map.of("email", email));
+                Files.createDirectories(p.getParent());
+                Files.writeString(p, GSON.toJson(lista));
+            }
+        } catch (IOException ex) { ex.printStackTrace(); }
+    }
+
+    private static String cifrar(String txt) {
+        try {
+            Key k = new SecretKeySpec(CLAVE_SECRETA.getBytes(), "AES");
+            Cipher c = Cipher.getInstance("AES");
+            c.init(Cipher.ENCRYPT_MODE, k);
+            return Base64.getEncoder().encodeToString(c.doFinal(txt.getBytes(StandardCharsets.UTF_8)));
+        } catch (Exception e) { e.printStackTrace(); return null; }
+    }
+    private static String descifrar(String enc) {
+        try {
+            Key k = new SecretKeySpec(CLAVE_SECRETA.getBytes(), "AES");
+            Cipher c = Cipher.getInstance("AES");
+            c.init(Cipher.DECRYPT_MODE, k);
+            return new String(c.doFinal(Base64.getDecoder().decode(enc)), StandardCharsets.UTF_8);
+        } catch (Exception e) { e.printStackTrace(); return null; }
+    }
+
+    /* ──────────── Ir a registro ──────────── */
     @FXML
     private void goToRegister() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/tfcc/registro.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) usernameField.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            Parent root = FXMLLoader.load(getClass().getResource("/tfcc/registro.fxml"));
+            Stage st = (Stage) usernameField.getScene().getWindow();
+            st.setScene(new Scene(root));
+            st.centerOnScreen();
+        } catch (IOException ex) { ex.printStackTrace(); }
     }
 
-    private void showAlert(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Login Fallido");
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
-    }
-
-    private void showError(String mensaje) {
-        Platform.runLater(() -> showAlert(mensaje));
+    private void showAlert(String msg) {
+        Platform.runLater(() -> {
+            Alert a = new Alert(Alert.AlertType.ERROR, msg, ButtonType.OK);
+            a.setTitle("Error");
+            a.setHeaderText(null);
+            a.showAndWait();
+        });
     }
 }
