@@ -23,8 +23,7 @@ public class AppController {
     @FXML private BorderPane  mainPane;
     @FXML private AnchorPane  contenidoCentro;
 
-    @FXML private Button btnInicio, btnEquipos, btnRegistrar, btnVisualizar,
-            btnInformes, btnPerfil, btnAyuda, btnSalir,
+    @FXML private Button btnInicio, btnEquipos, btnRegistrar, btnVisualizar, btnPerfil, btnAyuda, btnSalir,
             btnCrearJugador, btnCrearEquipo;
 
     private final String defaultStyle = "-fx-background-color: transparent; -fx-text-fill: white;";
@@ -47,6 +46,18 @@ public class AppController {
     public void openCrearEquipo() {
         cargarVista("/tfcc/crear-equipo-view.fxml", null);
     }
+    public void openVisualizar() {
+        cargarVista("/tfcc/visualizar-view.fxml", null);
+    }
+    public void openPerfil() {
+        cargarVista("/tfcc/perfil-view.fxml", null);
+    }
+    public void openCrearJugador() {
+        cargarVista("/tfcc/crear-jugador-view.fxml", null);
+    }
+    public void openCrearTiro() {
+        cargarVista("/tfcc/registrar-view.fxml", null);
+    }
 
     @FXML
     private void initialize() {
@@ -56,7 +67,6 @@ public class AppController {
         btnCrearEquipo  .setOnAction(e -> cargarVista("/tfcc/crear-equipo-view.fxml",  btnCrearEquipo));
         btnCrearJugador  .setOnAction(e -> cargarVista("/tfcc/crear-jugador-view.fxml", btnCrearJugador));
         btnVisualizar    .setOnAction(e -> cargarVista("/tfcc/visualizar-view.fxml",    btnVisualizar));
-        btnInformes      .setOnAction(e -> cargarVista("/tfcc/informes-view.fxml",      btnInformes));
         btnPerfil        .setOnAction(e -> cargarVista("/tfcc/perfil-view.fxml",        btnPerfil));
         btnAyuda         .setOnAction(e -> cargarVista("/tfcc/ayuda-view.fxml",         btnAyuda));
         btnSalir         .setOnAction(e -> cerrarSesion());
@@ -119,7 +129,6 @@ public class AppController {
         btnCrearEquipo .setStyle(defaultStyle);
         btnCrearJugador.setStyle(defaultStyle);
         btnVisualizar.setStyle(defaultStyle);
-        btnInformes.setStyle(defaultStyle);
         btnPerfil.setStyle(defaultStyle);
         btnAyuda.setStyle(defaultStyle);
     }

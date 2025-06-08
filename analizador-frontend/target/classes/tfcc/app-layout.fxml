@@ -12,12 +12,11 @@
     <left>
         <VBox spacing="15" style="-fx-background-color: #0D3B66; -fx-padding: 20;">
             <Button fx:id="btnInicio" text="Inicio" maxWidth="Infinity"/>
-            <Button fx:id="btnRegistrar" text="Registrar" maxWidth="Infinity"/>
+            <Button fx:id="btnRegistrar" text="Registrar tiros" maxWidth="Infinity"/>
             <Button fx:id="btnCrearJugador" text="Crear Jugador" maxWidth="Infinity"/>
             <Button fx:id="btnCrearEquipo" text="Crear Equipo" styleClass="side-btn"/>
             <Button fx:id="btnEquipos" text="Equipos" maxWidth="Infinity"/>
-            <Button fx:id="btnVisualizar" text="Visualizar" maxWidth="Infinity"/>
-            <Button fx:id="btnInformes" text="Informes" maxWidth="Infinity"/>
+            <Button fx:id="btnVisualizar" text="Visualizar tiros" maxWidth="Infinity"/>
             <Button fx:id="btnPerfil" text="Perfil" maxWidth="Infinity"/>
             <Button fx:id="btnAyuda" text="Ayuda" maxWidth="Infinity"/>
             <Button fx:id="btnSalir" text="Salir" maxWidth="Infinity"/>

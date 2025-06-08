@@ -13,15 +13,14 @@
     <VBox spacing="30" alignment="TOP_CENTER" maxWidth="1200"
           style="-fx-padding: 30;">
 
-        <!-- Header -->
-        <HBox alignment="CENTER_LEFT" spacing="15">
-            <ImageView fitWidth="50" preserveRatio="true">
+        <!-- Header centrado -->
+        <HBox alignment="CENTER" spacing="20">
+            <ImageView fitWidth="120" preserveRatio="true">
                 <image><Image url="@../img/logo.png"/></image>
             </ImageView>
-            <VBox>
-                <Label fx:id="bienvenidaLabel" text="¡Bienvenido!" style="-fx-text-fill: white; -fx-font-size: 18px;"/>
-                <Label fx:id="fechaLabel" style="-fx-text-fill: #aaaaaa;"/>
-            </VBox>
+            <Label fx:id="bienvenidaLabel"
+                   text="¡Bienvenido!"
+                   style="-fx-text-fill: white; -fx-font-size: 24px;"/>
         </HBox>
 
         <!-- Estadísticas rápidas -->
@@ -59,10 +58,11 @@
 
         <!-- Acciones rápidas -->
         <HBox spacing="20" alignment="CENTER">
+            <Button fx:id="btnCrearTiro" text="Registrar evento" prefWidth="140" style="-fx-background-color: #2980B9; -fx-text-fill: white;"/>
+            <Button fx:id="btnCrearJugador" text="Crear jugador" prefWidth="140" style="-fx-background-color: #D35400; -fx-text-fill: white;"/>
             <Button fx:id="btnCrearEquipo" text="Crear equipo" prefWidth="140" style="-fx-background-color: #16A085; -fx-text-fill: white;"/>
-            <Button text="Registrar evento" prefWidth="140" style="-fx-background-color: #2980B9; -fx-text-fill: white;"/>
-            <Button text="Visualizar datos" prefWidth="140" style="-fx-background-color: #8E44AD; -fx-text-fill: white;"/>
-            <Button text="Informes" prefWidth="140" style="-fx-background-color: #D35400; -fx-text-fill: white;"/>
+            <Button fx:id="btnVisualizar" text="Visualizar datos" prefWidth="140" style="-fx-background-color: #8E44AD; -fx-text-fill: white;"/>
+            <Button fx:id="btnPerfil" text="Perfil" prefWidth="140" style="-fx-background-color: #D35400; -fx-text-fill: white;"/>
         </HBox>
 
         <!-- Últimos vistos -->
