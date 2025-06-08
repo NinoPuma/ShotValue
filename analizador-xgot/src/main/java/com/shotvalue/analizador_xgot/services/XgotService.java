@@ -3,21 +3,12 @@ package com.shotvalue.analizador_xgot.services;
 import com.shotvalue.analizador_xgot.model.Tiro;
 import org.springframework.stereotype.Service;
 
-/**
- * Calcula el xGOT para un {@link Tiro}.
- *
- * <p>Si {@code xg} > 0 usa ese valor como base; de lo contrario calcula
- * un xG “básico” con distancia, ángulo y dummies.</p>
- *
- * <p>Coordenadas según StatsBomb (x 0-120 m, y 0-80 m, z 0-3.66 m).</p>
- */
+
 @Service
 public class XgotService {
 
-    /* Geometría */
-    private static final double HALF_GOAL = 3.66;   // 7.32 m / 2
+    private static final double HALF_GOAL = 3.66;
 
-    /* Coeficientes (entrenados con Open-Data) */
     private static final double b0    = -3.32;
     private static final double bDist = -1.28;
     private static final double bAng  =  2.02;
@@ -27,7 +18,6 @@ public class XgotService {
     private static final double bSet  = -0.24;
     private static final double bHgt  = -0.35;
 
-    /* ==================================================================== */
     public double calcularXgot(Tiro tiro) {
         double baseXg = tiro.getXg()>0 ? tiro.getXg() : calcularXgBasico(tiro);
         if (tiro.getDestinoX()==null||tiro.getDestinoY()==null) return baseXg;
@@ -36,7 +26,6 @@ public class XgotService {
         double dZ = tiro.getDestinoZ()==null ? 0.0 : tiro.getDestinoZ();
         double distImpacto = Math.min(Math.hypot(dY,dZ), HALF_GOAL);
 
-        // menos caída por colocación
         double placement = 0.6 + 0.4*(1 - distImpacto/HALF_GOAL);
         return baseXg * placement;
     }

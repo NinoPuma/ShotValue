@@ -66,5 +66,27 @@ public class UsuarioService {
         }
         return u;
     }
+    public Optional<Usuario> getById(String id) {
+        return usuarioRepository.findById(id);
+    }
+
+    public Usuario actualizarUsuario(String id,
+                                     String nuevoUsername,
+                                     String emailNoModificable,
+                                     String currentPassword,
+                                     String newPassword) {
+        Usuario u = usuarioRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no existe."));
+        u.setUsername(nuevoUsername);
+
+        if (newPassword != null && !newPassword.isBlank()) {
+            if (currentPassword == null || !passwordEncoder.matches(currentPassword, u.getPassword())) {
+                throw new IllegalArgumentException("Contraseña actual incorrecta.");
+            }
+            u.setPassword(passwordEncoder.encode(newPassword));
+        }
+
+        return usuarioRepository.save(u);
+    }
 
 }

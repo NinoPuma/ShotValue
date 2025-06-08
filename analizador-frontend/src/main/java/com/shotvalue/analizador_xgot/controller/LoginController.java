@@ -67,7 +67,8 @@ public class LoginController {
         future.thenAccept(usr -> {
             boolean recordar = rememberMeCheckBox.isSelected();
             guardarCorreoUsado(email);
-            guardarSesion(email, usr.getUsername(), recordar);
+            // <-- aquí pasamos también el id devuelto:
+            guardarSesion(email, usr.getUsername(), usr.getId(), recordar);
             Platform.runLater(() -> cargarApp(event, usr.getUsername()));
         }).exceptionally(ex -> {
             Platform.runLater(() -> showAlert("Login fallido: " + ex.getMessage()));
@@ -141,22 +142,25 @@ public class LoginController {
         }
     }
 
-    private void guardarSesion(String email, String nombreUsuario, boolean recordar) {
+    // Nueva firma de guardarSesion que incluye userId
+    private void guardarSesion(String email,
+                               String nombreUsuario,
+                               String userId,       // <— nuevo parámetro
+                               boolean recordar) {
         try {
-            Map<String,Object> datos = Map.of(
-                    "email", email,
-                    "usuario", nombreUsuario,
-                    "recordar", recordar
-            );
+            Map<String,Object> datos = new HashMap<>();
+            datos.put("email",   email);
+            datos.put("usuario", nombreUsuario);
+            datos.put("id",      userId);       // <— lo guardamos aquí
+            datos.put("recordar",recordar);
             String json = gson.toJson(datos);
             String cifrado = cifrar(json);
+
             Path ruta = Path.of(ARCHIVO_SESION);
             Files.createDirectories(ruta.getParent());
             Files.writeString(ruta, cifrado);
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
