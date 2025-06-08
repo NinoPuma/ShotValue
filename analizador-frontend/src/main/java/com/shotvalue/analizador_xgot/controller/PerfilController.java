@@ -72,7 +72,6 @@ public class PerfilController implements ViewLifecycle {
 
     @FXML
     public void initialize() {
-        // Cargar userId de la sesión cifrada
         try {
             Path sessionPath = Path.of(System.getProperty("user.home"), ".shotvalue", "session.dat");
             if (Files.exists(sessionPath)) {
@@ -87,7 +86,6 @@ public class PerfilController implements ViewLifecycle {
         }
         cargarPerfil();
 
-        // Asignar manejadores
         saveBtn.setOnAction(this::onSave);
         logoutBtn.setOnAction(this::onLogout);
     }
@@ -217,7 +215,6 @@ public class PerfilController implements ViewLifecycle {
     }
 
     private void onLogout(ActionEvent ev) {
-        // Guardar estado de la ventana
         Stage stage = (Stage) ((Node) ev.getSource()).getScene().getWindow();
         double w = stage.getWidth(), h = stage.getHeight();
         boolean maximized = stage.isMaximized();

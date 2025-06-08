@@ -29,11 +29,9 @@ public class InicioController implements ViewLifecycle {
     @FXML private Button           btnCrearJugador;
     @FXML private Button           btnCrearTiro;
 
-    /* ────────── refs ────────── */
-    private AppController appController;   // se inyecta desde AppController
+    private AppController appController;
     private String        nombreUsuario;
 
-    /* ============ Setters desde AppController ============ */
     public void setAppController(AppController app) {
         this.appController = app;
     }
@@ -42,7 +40,6 @@ public class InicioController implements ViewLifecycle {
         bienvenidaLabel.setText("¡Bienvenido, " + nombre + "!");
     }
 
-    /* ============ inicialización FXML ============ */
     @FXML
     private void initialize() {
         btnCrearEquipo.setOnAction(e -> {
@@ -62,14 +59,12 @@ public class InicioController implements ViewLifecycle {
         });
     }
 
-    /* ============ ViewLifecycle ============ */
     @Override
     public void onShow() {
-        cargarDatos();        // SIEMPRE que se muestra, refrescamos
+        cargarDatos();
     }
-    @Override public void onHide() { /* no-op */ }
+    @Override public void onHide() {}
 
-    /* ============ carga de datos asíncrona ============ */
     private void cargarDatos() {
         new Thread(() -> {
             try {
@@ -92,13 +87,11 @@ public class InicioController implements ViewLifecycle {
                         recentsList.getItems().add("Equipo creado: " + eq.getName());
                     }
 
-                    // Últimos jugadores creados
                     for (int i = Math.max(0, jugadores.size() - 3); i < jugadores.size(); i++) {
                         Jugador j = jugadores.get(i);
                         recentsList.getItems().add("Jugador creado: " + j.getPlayerName());
                     }
 
-                    // Últimos tiros registrados
                     for (int i = 0; i < Math.min(3, tiros.size()); i++) {
                         Tiro t = tiros.get(i);
                         String nombreJ = jugadores.stream()

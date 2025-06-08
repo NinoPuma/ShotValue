@@ -12,9 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * Cliente para llamar al endpoint /api/equipos
- */
+
 public class EquiposApiClient {
     private static final String BASE_URL = "http://localhost:8080/api/equipos";
     private static final HttpClient client = HttpClient.newHttpClient();

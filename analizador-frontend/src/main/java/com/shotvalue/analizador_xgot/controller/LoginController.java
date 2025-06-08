@@ -178,7 +178,6 @@ public class LoginController {
         }
     }
 
-    // Nueva firma de guardarSesion que incluye userId
     private void guardarSesion(String email,
                                String password,
                                String nombreUsuario,

@@ -27,31 +27,26 @@ public class InformesController {
 
     @FXML
     private void handleGenerate() {
-        // Acá conectarías con una API para obtener los datos según el tipo de informe seleccionado
         System.out.println("Generar informe: " + reportTypeBox.getValue());
     }
 
     @FXML
     private void exportPDF() {
-        // Placeholder para exportación a PDF
         System.out.println("Exportar PDF");
     }
 
     @FXML
     private void exportCSV() {
-        // Placeholder para exportación a CSV
         System.out.println("Exportar CSV");
     }
 
     @FXML
     private void scheduleDaily() {
-        // Placeholder para programación diaria
         System.out.println("Informe diario programado");
     }
 
     @FXML
     private void scheduleWeekly() {
-        // Placeholder para programación semanal
         System.out.println("Informe semanal programado");
     }
 }

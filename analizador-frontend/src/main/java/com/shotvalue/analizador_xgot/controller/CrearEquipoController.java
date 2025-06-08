@@ -20,7 +20,6 @@ public class CrearEquipoController {
         limpiarBtn.setOnAction(e -> nameField.clear());
     }
 
-    /* ─── Guardar equipo ─────────────────────────────────────────── */
     private void guardar() {
 
         /* 1) Validación mínima */
@@ -32,14 +31,11 @@ public class CrearEquipoController {
             return;
         }
 
-        /* 2) Payload sin id (lo genera el backend) */
         Equipo equipo = new Equipo();
         equipo.setName(nombre);
 
-        /* 3) Llamada asíncrona */
         EquiposApiClient.saveEquipoAsync(equipo)
                 .thenAccept(eq -> Platform.runLater(() -> {
-                    /* ✅  Mensaje simplificado  */
                     alerta(Alert.AlertType.INFORMATION,
                             "Equipo creado",
                             "Equipo creado correctamente.");
@@ -55,13 +51,12 @@ public class CrearEquipoController {
                 });
     }
 
-    /* ─── Alert helper ───────────────────────────────────────────── */
     private void alerta(Alert.AlertType tipo, String titulo, String mensaje) {
         Window owner = nameField.getScene().getWindow();   // ventana actual
 
         Alert alert = new Alert(tipo, mensaje, ButtonType.OK);
         alert.setTitle(titulo);
-        alert.initOwner(owner);            // evita que abra una ventana maximizada
+        alert.initOwner(owner);
         alert.initModality(Modality.WINDOW_MODAL);
         alert.showAndWait();
     }
