@@ -28,8 +28,32 @@ public class CrearJugadorController implements ViewLifecycle {
     private void initialize() {
 
         posicionBox.getItems().addAll(
-                "Portero", "Defensa", "Lateral", "Pivote",
-                "Interior", "Extremo", "Delantero"
+                "Arquero",
+                "Lateral Derecho",
+                "Lateral Izquierdo",
+                "Defensor Central",
+                "Carrilero Derecho",
+                "Carrilero Izquierdo",
+                "Mediocentro Defensivo",
+                "Mediocampista Central",
+                "Mediocampista Izquierdo",
+                "Mediocampista Derecho",
+                "Mediapunta",
+                "Mediapunta Central",
+                "Mediocentro Defensivo Central",
+                "Defensor Central Izquierdo",
+                "Defensor Central Derecho",
+                "Delantero Centro",
+                "Delantero Derecho",
+                "Delantero Izquierdo",
+                "Extremo Derecho",
+                "Extremo Izquierdo",
+                "Delantero",
+                "Segundo Delantero",
+                "Mediocentro Defensivo Izquierdo",
+                "Mediocentro Defensivo Derecho",
+                "Mediapunta Izquierdo",
+                "Mediapunta Derecho"
         );
 
         guardarBtn.setOnAction(e -> guardar());
