@@ -24,6 +24,9 @@ public class Jugador {
     @SerializedName("jersey_number")
     private String jerseyNumber;
 
+    @SerializedName("avgXgot")
+    private Double avgXgot;
+
     public Jugador() {
     }
 
@@ -91,5 +94,13 @@ public class Jugador {
 
     public void setJerseyNumber(String jerseyNumber) {
         this.jerseyNumber = jerseyNumber;
+    }
+
+    public Double getAvgXgot() {
+        return avgXgot;
+    }
+
+    public void setAvgXgot(Double avgXgot) {
+        this.avgXgot = avgXgot;
     }
 }

@@ -15,6 +15,9 @@ public class Equipo {
     @JsonProperty("name")
     private String name;
 
+    @JsonProperty("avgXgotJugadores")
+    private Double avgXgotJugadores;
+
     public int getTeamId() {
         return teamId;
     }
@@ -38,6 +41,15 @@ public class Equipo {
     public void setName(String name) {
         this.name = name;
     }
+
+    public Double getAvgXgotJugadores() {
+        return avgXgotJugadores;
+    }
+
+    public void setAvgXgotJugadores(Double avgXgotJugadores) {
+        this.avgXgotJugadores = avgXgotJugadores;
+    }
+
 
     @Override
     public String toString() {

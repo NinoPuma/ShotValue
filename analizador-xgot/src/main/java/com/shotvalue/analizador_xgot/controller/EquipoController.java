@@ -34,6 +34,10 @@ public class EquipoController {
         return service.count();
     }
 
+    @PostMapping("/actualizar-promedios")
+    public void actualizarPromedios() {
+        service.actualizarPromedios();
+    }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable String id) {
