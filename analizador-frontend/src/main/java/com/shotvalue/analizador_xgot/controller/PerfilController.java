@@ -27,7 +27,7 @@ import java.util.Map;
 public class PerfilController {
 
     @FXML private TextField usernameField;
-    @FXML private TextField emailField;
+    @FXML private Label emailLabel;
     @FXML private PasswordField currentPasswordField;
     @FXML private PasswordField newPasswordField;
     @FXML private PasswordField confirmPasswordField;
@@ -57,7 +57,7 @@ public class PerfilController {
         PerfilApiClient.fetchProfile(userId)
                 .thenAccept(u -> Platform.runLater(() -> {
                     usernameField.setText(u.getUsername());
-                    emailField.setText(u.getEmail());
+                    emailLabel.setText(u.getEmail());
                 }))
                 .exceptionally(ex -> {
                     Platform.runLater(() -> showAlert("No se pudo cargar perfil"));
