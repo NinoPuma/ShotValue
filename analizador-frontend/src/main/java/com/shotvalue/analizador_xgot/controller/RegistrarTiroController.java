@@ -215,9 +215,25 @@ public class RegistrarTiroController implements ViewLifecycle {
     private void configurarCanvas() {
         // 4.a) campo 120×80 m
         canvasTiros.setOnMouseClicked(e -> {
-            double px = e.getX(), py = e.getY();
-            double sbX = px / canvasTiros.getWidth() * 120.0;
-            double sbY = py / canvasTiros.getHeight() * 80.0;
+            // Usar mismas constantes que VisualizarController
+            final double ESCALA_X = 354.4 / 120.0;
+            final double ESCALA_Y = 244.0 / 80.0;
+            final double OFFSET_X = 73.6;
+            final double OFFSET_Y = 4.0;
+
+// Coordenadas del click en píxeles
+            double px = e.getX();
+            double py = e.getY();
+
+// Convertir desde px canvas → metros StatsBomb
+            double sbX = (px - OFFSET_X) / ESCALA_X;
+            double sbY = (py - OFFSET_Y) / ESCALA_Y;
+
+// Dibujar el punto en la misma posición visual
+            double drawX = OFFSET_X + sbX * ESCALA_X;
+            double drawY = OFFSET_Y + sbY * ESCALA_Y;
+            dibujarPunto(canvasTiros, drawX, drawY, Color.YELLOW);
+
 
             // Calcular tercio según X
             String tercio = (sbX <= 40) ? "Defensivo" : (sbX <= 80 ? "Medio" : "Ofensivo");
@@ -253,8 +269,7 @@ public class RegistrarTiroController implements ViewLifecycle {
             double gx = e.getX(), gy = e.getY();
             // lateral: de -3.66 a +3.66
             double lateral = (gx / canvasArco.getWidth() * 7.32) - 3.66;
-            // altura: de 0 a 3.66
-            double altura = (canvasArco.getHeight() - gy) / canvasArco.getHeight() * 3.66;
+            double altura = (canvasArco.getHeight() - gy) / canvasArco.getHeight() * 2.44;
 
             // guardamos destino en StatsBomb
             ultimoFormulario.setDestinoX(120.0);

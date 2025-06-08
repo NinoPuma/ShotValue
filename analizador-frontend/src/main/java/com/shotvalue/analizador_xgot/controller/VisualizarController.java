@@ -212,7 +212,7 @@ public class VisualizarController implements Initializable {
             double x2 = offsetX + tiro.getDestinoX() * escalaX;
             double y2 = offsetY + tiro.getDestinoY() * escalaY;
 
-            String resultado = tiro.getResultado() != null ? tiro.getResultado().trim().toLowerCase() : "";
+            String resultado = tiro.getResult() != null ? tiro.getResult().trim().toLowerCase() : "";
 
             Color color = switch (resultado) {
                 case "gol" -> Color.LIMEGREEN;
@@ -247,7 +247,7 @@ public class VisualizarController implements Initializable {
         double arcoZMax = 2.44;
 
         for (Tiro tiro : ultimoTiros) {
-            String resultado = tiro.getResultado() != null ? tiro.getResultado().trim().toLowerCase() : "";
+            String resultado = tiro.getResult() != null ? tiro.getResult().trim().toLowerCase() : "";
             if (!(resultado.equals("gol") || resultado.equals("atajadoo") || resultado.equals("atajado") || resultado.equals("poste")))
                 continue;
 
@@ -314,7 +314,7 @@ public class VisualizarController implements Initializable {
         double arcoZMax = 2.44;
 
         for (Tiro tiro : tiros) {
-            String resultado = tiro.getResultado() != null ? tiro.getResultado().trim().toLowerCase() : "";
+            String resultado = tiro.getResult() != null ? tiro.getResult().trim().toLowerCase() : "";
             if (!(resultado.equals("gol") || resultado.equals("atajadoo") || resultado.equals("atajado") || resultado.equals("poste")))
                 continue;
 

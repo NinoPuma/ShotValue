@@ -66,10 +66,10 @@
                       style="-fx-background-color:#1F1F1F;-fx-padding:20;-fx-border-color:#444;">
                     <Label text="Campo de juego" textFill="white" style="-fx-font-weight:bold;"/>
                     <StackPane>
-                        <ImageView fx:id="fieldMap" fitWidth="480" fitHeight="300" preserveRatio="true">
+                        <ImageView fx:id="fieldMap" fitWidth="500" fitHeight="250" preserveRatio="true">
                             <image><Image url="@/img/field_placeholder.png"/></image>
                         </ImageView>
-                        <Canvas fx:id="canvasTiros" width="480" height="300"/>
+                        <Canvas fx:id="canvasTiros" width="502" height="252"/>
                     </StackPane>
                     <HBox spacing="8" alignment="CENTER">
                         <Label text="Ángulo X:" textFill="white"/>
@@ -84,7 +84,7 @@
                       style="-fx-background-color:#1F1F1F;-fx-padding:20;-fx-border-color:#444;">
                     <Label text="Vista frontal del arco" textFill="white" style="-fx-font-weight:bold;"/>
                     <StackPane>
-                        <ImageView fx:id="goalView" fitWidth="480" fitHeight="150" preserveRatio="true">
+                        <ImageView fx:id="goalView" fitWidth="500" fitHeight="150" preserveRatio="true">
                             <image><Image url="@/img/goal_placeholder.png"/></image>
                         </ImageView>
                         <Canvas fx:id="canvasArco" width="480" height="150"/>
