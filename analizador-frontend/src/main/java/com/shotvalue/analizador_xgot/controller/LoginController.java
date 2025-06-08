@@ -317,6 +317,16 @@ public class LoginController {
         }
     }
 
+    @FXML
+    private void goToForgotPassword() {
+        try {
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            VentanaHelper.cargarEscena(stage, "/tfcc/olvido-contraseña.fxml", "Recuperar contraseña");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void showAlert(String msg) {
         Platform.runLater(() -> {
             Alert a = new Alert(Alert.AlertType.ERROR);

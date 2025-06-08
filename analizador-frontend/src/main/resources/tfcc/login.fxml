@@ -59,6 +59,9 @@
 
       <Label fx:id="messageLabel" textFill="red" style="-fx-font-size: 12px;" />
 
+      <Hyperlink text="¿Olvidaste tu contraseña?" onAction="#goToForgotPassword"
+                 style="-fx-font-size: 13px; -fx-text-fill: #2980b9;" />
+
       <Hyperlink text="¿No tenés cuenta? Registrate"
                  onAction="#goToRegister"
                  style="-fx-font-size: 13px; -fx-text-fill: #2980b9;" />
