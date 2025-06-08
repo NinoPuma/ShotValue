@@ -8,6 +8,8 @@ import com.shotvalue.analizador_xgot.model.Jugador;
 import com.shotvalue.analizador_xgot.model.Tiro;
 import com.shotvalue.analizador_xgot.view.ViewLifecycle;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -55,6 +57,19 @@ public class RegistrarTiroController implements ViewLifecycle {
     private int minAllowed = 0, maxAllowed = 120;
     private final Tiro ultimoFormulario = new Tiro();     // “borrador” persistente
 
+    private final ObservableList<String> bodyPartDefault = FXCollections.observableArrayList(
+            "Pie izquierdo", "Pie derecho", "Cabeza", "Otro"
+    );
+    private final ObservableList<String> bodyPartParado = FXCollections.observableArrayList(
+            "Pie izquierdo", "Pie derecho"
+    );
+    private final ObservableList<String> preActionDefault = FXCollections.observableArrayList(
+            "Pase", "Regate", "Rebote", "Centro", "Penal", "Tiro libre"
+    );
+    private final ObservableList<String> preActionParado = FXCollections.observableArrayList(
+            "Penal", "Tiro libre"
+    );
+
     // ────────────────────────────────────────────────────────────────────
     @FXML
     public void initialize() {
@@ -62,6 +77,7 @@ public class RegistrarTiroController implements ViewLifecycle {
         configurarPeriodos();
         configurarMinuteField();
         configurarCombosEstaticos();
+        aplicarFiltros();
         configurarCanvas();
         guardarBtn.setOnAction(e -> guardarTiro());
     }
@@ -201,12 +217,38 @@ public class RegistrarTiroController implements ViewLifecycle {
     private void configurarCombosEstaticos() {
         situationBox.getItems().setAll("Juego abierto", "Balón parado");
         situationBox.setPromptText("Situación");
-        bodyPartBox.getItems().setAll("Pie izquierdo", "Pie derecho", "Cabeza", "Otro");
+        bodyPartBox.setItems(bodyPartDefault);
         bodyPartBox.setPromptText("Parte del cuerpo");
-        preActionBox.getItems().setAll("Pase", "Regate", "Rebote", "Centro", "Penal");
+        preActionBox.setItems(preActionDefault);
         preActionBox.setPromptText("Jugada previa");
         resultBox.getItems().setAll("Gol", "Atajado", "Fuera", "Bloqueado", "Poste");
         resultBox.setPromptText("Resultado");
+
+        situationBox.valueProperty().addListener((obs, oldV, newV) -> aplicarFiltros());
+    }
+
+    private void aplicarFiltros() {
+        boolean balonParado = "Balón parado".equals(situationBox.getValue());
+
+        if (balonParado) {
+            preActionBox.setItems(preActionParado);
+            if (!preActionParado.contains(preActionBox.getValue())) {
+                preActionBox.setValue(null);
+            }
+            bodyPartBox.setItems(bodyPartParado);
+            if (!bodyPartParado.contains(bodyPartBox.getValue())) {
+                bodyPartBox.setValue(null);
+            }
+        } else {
+            preActionBox.setItems(preActionDefault);
+            if (!preActionDefault.contains(preActionBox.getValue())) {
+                preActionBox.setValue(null);
+            }
+            bodyPartBox.setItems(bodyPartDefault);
+            if (!bodyPartDefault.contains(bodyPartBox.getValue())) {
+                bodyPartBox.setValue(null);
+            }
+        }
     }
 
     /* *******************************************************************
@@ -377,6 +419,7 @@ public class RegistrarTiroController implements ViewLifecycle {
         bodyPartBox.setValue(null);
         preActionBox.setValue(null);
         resultBox.setValue(null);
+        aplicarFiltros();
         canvasTiros.getGraphicsContext2D().clearRect(0, 0, canvasTiros.getWidth(), canvasTiros.getHeight());
         canvasArco.getGraphicsContext2D().clearRect(0, 0, canvasArco.getWidth(), canvasArco.getHeight());
         angleXFieldCampo.clear();
