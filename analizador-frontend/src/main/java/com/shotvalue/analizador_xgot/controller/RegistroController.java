@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.shotvalue.analizador_xgot.model.Usuario;
 import com.shotvalue.analizador_xgot.util.LocalDateAdapter;
+import com.shotvalue.analizador_xgot.util.VentanaHelper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -41,10 +42,20 @@ public class RegistroController {
     @FXML
     private CheckBox termsCheckBox;
     @FXML
+    private TextField passwordTextField;
+    @FXML
+    private TextField repeatPasswordTextField;
+    @FXML
+    private Button togglePasswordBtn;
+    @FXML
+    private Button toggleRepeatPasswordBtn;
+    @FXML
     private Label messageLabel;
     @FXML
     private Button registrarBtn;
 
+    private boolean passwordVisible = false;
+    private boolean repeatPasswordVisible = false;
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
@@ -60,29 +71,25 @@ public class RegistroController {
     private void handleRegister() {
         String username = usernameField.getText().trim();
         String email = emailField.getText().trim();
-        String password = passwordField.getText();
-        String repeatPassword = repeatPasswordField.getText();
+        String password = passwordVisible ? passwordTextField.getText() : passwordField.getText();
+        String repeatPassword = repeatPasswordVisible ? repeatPasswordTextField.getText() : repeatPasswordField.getText();
         boolean acceptedTerms = termsCheckBox.isSelected();
 
-        // Validación campos vacíos
         if (username.isEmpty() || email.isEmpty() || password.isEmpty() || repeatPassword.isEmpty()) {
             showError("Todos los campos son obligatorios.");
             return;
         }
 
-        // Validación usuario
         if (username.length() < 3 || username.contains(" ")) {
             showError("El nombre de usuario debe tener al menos 3 caracteres y sin espacios.");
             return;
         }
 
-        // Validación email simple
         if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
             showError("El correo electrónico no es válido.");
             return;
         }
 
-        // Validación contraseña
         if (password.length() < 6) {
             showError("La contraseña debe tener al menos 6 caracteres.");
             return;
@@ -93,14 +100,12 @@ public class RegistroController {
             return;
         }
 
-        // Validación términos
         if (!acceptedTerms) {
             showError("Debes aceptar los términos y condiciones.");
             return;
         }
 
-        // Si todo está bien, crear el usuario
-        Usuario nuevoUsuario = new Usuario(null, username, email, password, null, null, null, null);
+        Usuario nuevoUsuario = new Usuario(null, username, email, password);
         sendRegistration(nuevoUsuario);
     }
 
@@ -127,13 +132,7 @@ public class RegistroController {
         Platform.runLater(() -> {
             try {
                 Stage stage = (Stage) usernameField.getScene().getWindow();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/tfcc/login.fxml"));
-                Parent root = loader.load();
-                stage.setScene(new Scene(root));
-                stage.setTitle("Login");
-                stage.centerOnScreen();
-                stage.setMaximized(false);
-                stage.show();
+                VentanaHelper.cargarEscena(stage, "/tfcc/login.fxml", "Login");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -148,16 +147,50 @@ public class RegistroController {
     }
 
     @FXML
+    private void togglePasswordVisibility() {
+        passwordVisible = !passwordVisible;
+        if (passwordVisible) {
+            passwordTextField.setText(passwordField.getText());
+            passwordTextField.setVisible(true);
+            passwordTextField.setManaged(true);
+            passwordField.setVisible(false);
+            passwordField.setManaged(false);
+            togglePasswordBtn.setText("🙈");
+        } else {
+            passwordField.setText(passwordTextField.getText());
+            passwordField.setVisible(true);
+            passwordField.setManaged(true);
+            passwordTextField.setVisible(false);
+            passwordTextField.setManaged(false);
+            togglePasswordBtn.setText("👁");
+        }
+    }
+
+    @FXML
+    private void toggleRepeatPasswordVisibility() {
+        repeatPasswordVisible = !repeatPasswordVisible;
+        if (repeatPasswordVisible) {
+            repeatPasswordTextField.setText(repeatPasswordField.getText());
+            repeatPasswordTextField.setVisible(true);
+            repeatPasswordTextField.setManaged(true);
+            repeatPasswordField.setVisible(false);
+            repeatPasswordField.setManaged(false);
+            toggleRepeatPasswordBtn.setText("🙈");
+        } else {
+            repeatPasswordField.setText(repeatPasswordTextField.getText());
+            repeatPasswordField.setVisible(true);
+            repeatPasswordField.setManaged(true);
+            repeatPasswordTextField.setVisible(false);
+            repeatPasswordTextField.setManaged(false);
+            toggleRepeatPasswordBtn.setText("👁");
+        }
+    }
+
+    @FXML
     private void goToLogin() {
         try {
             Stage stage = (Stage) usernameField.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/tfcc/login.fxml"));
-            Parent root = loader.load();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Login");
-            stage.centerOnScreen();
-            stage.setMaximized(false);
-            stage.show();
+            VentanaHelper.cargarEscena(stage, "/tfcc/login.fxml", "Login");
         } catch (IOException e) {
             e.printStackTrace();
         }

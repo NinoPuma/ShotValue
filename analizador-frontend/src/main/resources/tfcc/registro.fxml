@@ -34,13 +34,30 @@
                    maxWidth="320"
                    style="-fx-font-size: 14px; -fx-padding: 10; -fx-background-radius: 8;" />
 
-        <PasswordField fx:id="passwordField" promptText="Contraseña"
-                       maxWidth="320"
+        <StackPane alignment="CENTER_RIGHT" maxWidth="320">
+            <PasswordField fx:id="passwordField" promptText="Contraseña"
+                           maxWidth="Infinity"
+                           style="-fx-font-size: 14px; -fx-padding: 10; -fx-background-radius: 8;" />
+            <TextField fx:id="passwordTextField" promptText="Contraseña"
+                       visible="false" managed="false" maxWidth="Infinity"
                        style="-fx-font-size: 14px; -fx-padding: 10; -fx-background-radius: 8;" />
+            <Button fx:id="togglePasswordBtn" text="👁" onAction="#togglePasswordVisibility"
+                    StackPane.alignment="CENTER_RIGHT"
+                    style="-fx-background-color: transparent; -fx-font-size: 14px; -fx-padding: 0 5 0 0;" />
+        </StackPane>
 
-        <PasswordField fx:id="repeatPasswordField" promptText="Repetir contraseña"
-                       maxWidth="320"
+        <StackPane alignment="CENTER_RIGHT" maxWidth="320">
+            <PasswordField fx:id="repeatPasswordField" promptText="Repetir contraseña"
+                           maxWidth="Infinity"
+                           style="-fx-font-size: 14px; -fx-padding: 10; -fx-background-radius: 8;" />
+            <TextField fx:id="repeatPasswordTextField" promptText="Repetir contraseña"
+                       visible="false" managed="false" maxWidth="Infinity"
                        style="-fx-font-size: 14px; -fx-padding: 10; -fx-background-radius: 8;" />
+            <Button fx:id="toggleRepeatPasswordBtn" text="👁" onAction="#toggleRepeatPasswordVisibility"
+                    StackPane.alignment="CENTER_RIGHT"
+                    style="-fx-background-color: transparent; -fx-font-size: 14px; -fx-padding: 0 5 0 0;" />
+        </StackPane>
+
 
         <CheckBox fx:id="termsCheckBox" text="Acepto los términos y condiciones" />
 

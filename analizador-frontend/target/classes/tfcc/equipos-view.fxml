@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
 <VBox xmlns="http://javafx.com/javafx/21.0.7"
       xmlns:fx="http://javafx.com/fxml/1"
@@ -8,37 +13,21 @@
       spacing="20"
       style="-fx-background-color: #2E2E2E; -fx-padding: 20;">
 
+    <!-- Selección de equipo y búsqueda -->
+    <HBox spacing="15">
+        <Label text="Equipo" textFill="white"/>
+        <ComboBox fx:id="equipoSelector" prefWidth="200"/>
+        <Label text="Buscar jugador" textFill="white"/>
+        <TextField fx:id="jugadorSearchField"
+                   promptText="Buscar por nombre o apellido"
+                   prefWidth="200"/>
+    </HBox>
 
-    <children>
-        <!-- Selección de equipo -->
-        <HBox spacing="15">
-            <children>
-                <VBox spacing="10">
-                    <children>
-                        <Label text="Equipo" textFill="white"/>
-                        <ComboBox fx:id="equipoSelector" prefWidth="200"/>
-                    </children>
-                </VBox>
-                <VBox spacing="10">
-                    <children>
-                        <Label text="Buscar jugador" textFill="white"/>
-                        <TextField fx:id="jugadorSearchField" promptText="Buscar por nombre o apellido"/>
-                    </children>
-                </VBox>
-            </children>
-        </HBox>
+    <!-- Tabla de jugadores, bajada 20px -->
+    <TableView fx:id="playerTable" prefHeight="350">
+        <VBox.margin>
+            <Insets top="20"/>
+        </VBox.margin>
+    </TableView>
 
-        <!-- Tabla de jugadores -->
-        <TableView fx:id="playerTable" prefHeight="350"/>
-
-        <!-- Botones de acción -->
-        <HBox spacing="15" alignment="CENTER">
-            <children>
-                <Button text="Ver tiros del jugador" style="-fx-background-color: #2980B9; -fx-text-fill: white;"/>
-                <Button text="Guardar cambios" style="-fx-background-color: #27AE60; -fx-text-fill: white;"/>
-                <Button text="Eliminar jugador" style="-fx-background-color: #C0392B; -fx-text-fill: white;"/>
-                <Button text="Modificar jugador" style="-fx-background-color: #F39C12; -fx-text-fill: white;"/>
-            </children>
-        </HBox>
-    </children>
 </VBox>

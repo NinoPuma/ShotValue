@@ -14,7 +14,7 @@ import java.util.List;
 
 public class InicioController implements ViewLifecycle {
 
-    /* ────────── FXML ────────── */
+
     @FXML private Label            equiposCount;
     @FXML private Label            partidosCount;
     @FXML private Label            shotsCount;
@@ -22,6 +22,10 @@ public class InicioController implements ViewLifecycle {
     @FXML private ListView<String> recentsList;
     @FXML private Label            bienvenidaLabel;
     @FXML private Button           btnCrearEquipo;
+    @FXML private Button           btnVisualizar;
+    @FXML private Button           btnPerfil;
+    @FXML private Button           btnCrearJugador;
+    @FXML private Button           btnCrearTiro;
 
     /* ────────── refs ────────── */
     private AppController appController;   // se inyecta desde AppController
@@ -41,6 +45,18 @@ public class InicioController implements ViewLifecycle {
     private void initialize() {
         btnCrearEquipo.setOnAction(e -> {
             if (appController != null) appController.openCrearEquipo();
+        });
+        btnCrearTiro.setOnAction(e -> {
+            if (appController != null) appController.openCrearTiro();
+        });
+        btnVisualizar.setOnAction(e -> {
+            if (appController != null) appController.openVisualizar();
+        });
+        btnCrearJugador.setOnAction(e -> {
+            if (appController != null) appController.openCrearJugador();
+        });
+        btnPerfil.setOnAction(e -> {
+            if (appController != null) appController.openPerfil();
         });
     }
 

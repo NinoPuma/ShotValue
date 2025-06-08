@@ -7,7 +7,8 @@ public class Tiro {
     private String jugadorNombre;   // Nombre del jugador (opcional para mostrar)
     private int equipoId;           // ID del equipo
     private String equipoNombre;    // Nombre del equipo (opcional para mostrar)
-
+    private String teamSide;
+    private int period;
     private double destinoX;        // Coordenada X del tiro
     private double destinoY;        // Coordenada Y del tiro
     private Double destinoZ;        // Coordenada Z del tiro (opcional, si se usa en el modelo)
@@ -18,6 +19,10 @@ public class Tiro {
     private String result;          // Resultado del tiro
     private String area;            // Zona del campo
 
+    private String third;           // ← “Tercio” (Defensivo, Medio, Ofensivo, Todos)
+    private String lane;            // ← “Carril” (Izquierdo, Central, Derecho, Todos)
+    private String situation;       // ← “Situación” (Juego abierto, Balón parado, etc.)
+
     private double xgot;            // Expected Goals On Target
     private double x;               // Coordenada X
     private double y;               // Coordenada Y
@@ -27,12 +32,14 @@ public class Tiro {
 
     public Tiro(String id, int jugadorId, String jugadorNombre, int equipoId, String equipoNombre,
                 int minuto, String bodyPart, String preAction, String result, String area,
-                double xgot, double x, double y) {
+                double xgot, double x, double y
+            /* si quisieras, también podrías ampliar este constructor para recibir third, lane, situation */) {
         this.id = id;
         this.jugadorId = jugadorId;
         this.jugadorNombre = jugadorNombre;
         this.equipoId = equipoId;
         this.equipoNombre = equipoNombre;
+        this.teamSide = null;
         this.minuto = minuto;
         this.bodyPart = bodyPart;
         this.preAction = preAction;
@@ -41,6 +48,9 @@ public class Tiro {
         this.xgot = xgot;
         this.x = x;
         this.y = y;
+        this.third = null;
+        this.lane = null;
+        this.situation = null;
     }
 
     public String getId() {
@@ -144,6 +154,14 @@ public class Tiro {
         this.area = area;
     }
 
+    public String getTeamSide() {
+        return teamSide;
+    }
+
+    public void setTeamSide(String teamSide) {
+        this.teamSide = teamSide;
+    }
+
     public double getXgot() {
         return xgot;
     }
@@ -166,6 +184,51 @@ public class Tiro {
 
     public void setY(double y) {
         this.y = y;
+    }
+
+    public void setDestinoX(double destinoX) {
+        this.destinoX = destinoX;
+    }
+
+    public void setDestinoY(double destinoY) {
+        this.destinoY = destinoY;
+    }
+
+    public void setResultado(String resultado) {
+        this.resultado = resultado;
+    }
+    // ────────── GETTERS / SETTERS PARA LOS CAMPOS AÑADIDOS ──────────
+
+    public String getThird() {
+        return third;
+    }
+
+    public void setThird(String third) {
+        this.third = third;
+    }
+
+    public String getLane() {
+        return lane;
+    }
+
+    public void setLane(String lane) {
+        this.lane = lane;
+    }
+
+    public String getSituation() {
+        return situation;
+    }
+
+    public void setSituation(String situation) {
+        this.situation = situation;
+    }
+
+    public int getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(int period) {
+        this.period = period;
     }
 
     @Override

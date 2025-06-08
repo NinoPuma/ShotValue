@@ -23,8 +23,6 @@ public class VisualizarController implements Initializable {
     @FXML
     private Spinner<Integer> minuteFromSpinner, minuteToSpinner;
     @FXML
-    private ComboBox<String> teamSideBox;
-    @FXML
     private TextField playerSearchField;
     @FXML
     private ComboBox<String> thirdBox, laneBox;
@@ -39,6 +37,8 @@ public class VisualizarController implements Initializable {
     @FXML
     private Label legendLabel;
     @FXML
+    private Label xgotInfoLabel;
+    @FXML
     private Canvas canvasTiros;
     @FXML
     private Canvas canvasArco;
@@ -49,22 +49,25 @@ public class VisualizarController implements Initializable {
 
     private List<Tiro> ultimoTiros = new ArrayList<>();
 
+    private static final double ESCALA_X = 354.4 / 120.0;
+    private static final double ESCALA_Y = 244.0 / 80.0;
+    private static final double OFFSET_X = 73.6;
+    private static final double OFFSET_Y = 4.0;
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         areaBox.getItems().addAll("Cualquier zona", "Área chica", "Área grande", "Fuera del área");
-        situationBox.getItems().addAll("Cualquier situación", "Juego abierto", "Balón parado", "Contraataque");
+        situationBox.getItems().addAll("Cualquier situación", "Juego abierto", "Balón parado");
         bodyPartBox.getItems().addAll("Cualquier parte", "Pie izquierdo", "Pie derecho", "Cabeza", "Otro");
-        preActionBox.getItems().addAll("Todas las acciones", "Pase", "Regate", "Rebote", "Centro");
+        preActionBox.getItems().addAll("Todas las acciones", "Pase", "Regate", "Rebote", "Centro", "Penal", "No definido");
         resultBox.getItems().addAll("Todos los resultados", "Gol", "Atajado", "Fuera", "Bloqueado");
 
         minuteFromSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 120, 0));
-        minuteToSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 120, 90));
+        minuteToSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 120, 120));
 
         periodBox.getItems().setAll("Todos los períodos", "1° Tiempo", "2° Tiempo", "ET - 1° Tiempo", "ET - 2° Tiempo", "Penales");
         periodBox.setValue("Todos los períodos");
-
-        teamSideBox.getItems().setAll("Ambos equipos", "Local", "Visitante");
-        teamSideBox.setValue("Ambos equipos");
 
         thirdBox.getItems().setAll("Todos", "Defensivo", "Medio", "Ofensivo");
         thirdBox.setValue("Todos");
@@ -81,9 +84,14 @@ public class VisualizarController implements Initializable {
         xgField.setTextFormatter(new TextFormatter<>(change -> change.getControlNewText().matches("\\d{0,3}(\\.\\d{0,2})?") ? change : null));
 
         canvasTiros.toFront();
-        canvasTiros.setMouseTransparent(true);
+        canvasTiros.setMouseTransparent(false);
         canvasArco.toFront();
-        canvasArco.setMouseTransparent(true);
+        canvasArco.setMouseTransparent(false);
+
+        canvasTiros.setOnMouseClicked(e -> manejarClickTiro(e.getX(), e.getY()));
+        canvasArco.setOnMouseClicked(e -> manejarClickArco(e.getX(), e.getY()));
+
+        canvasTiros.setOnMouseClicked(e -> manejarClickTiro(e.getX(), e.getY()));
 
         applyFiltersBtn.setOnAction(event -> aplicarFiltros());
 
@@ -108,19 +116,25 @@ public class VisualizarController implements Initializable {
                     minuteFromSpinner.getValueFactory().setValue(105);
                     minuteToSpinner.getValueFactory().setValue(120);
                 }
-
                 case "Penales" -> {
                     disableMinutos = true;
+                    minuteFromSpinner.getValueFactory().setValue(120);
+                    minuteToSpinner.getValueFactory().setValue(120);
+                }
+                case "Todos los períodos" -> {
+                    minuteFromSpinner.getValueFactory().setValue(0);
+                    minuteToSpinner.getValueFactory().setValue(120);
                 }
                 default -> {
-                    minuteFromSpinner.setOpacity(disableMinutos ? 0.5 : 1.0);
-                    minuteToSpinner.setOpacity(disableMinutos ? 0.5 : 1.0);
-
+                    minuteFromSpinner.setOpacity(1.0);
+                    minuteToSpinner.setOpacity(1.0);
                 }
             }
 
             minuteFromSpinner.setDisable(disableMinutos);
             minuteToSpinner.setDisable(disableMinutos);
+            minuteFromSpinner.setOpacity(disableMinutos ? 0.5 : 1.0);
+            minuteToSpinner.setOpacity(disableMinutos ? 0.5 : 1.0);
         });
 
         new Thread(() -> {
@@ -131,6 +145,7 @@ public class VisualizarController implements Initializable {
                 e.printStackTrace();
             }
         }).start();
+        xgotInfoLabel.setText("Promedio xGOT: 0.00");
     }
 
     private void aplicarFiltros() {
@@ -148,12 +163,12 @@ public class VisualizarController implements Initializable {
 
         if (!periodo.isEmpty()) filtros.put("period", periodo);
 
-        if (periodoSeleccionado.equals("Penales")) {
-            filtros.put("tipoJugada", "Penalty");
-        } else {
-            filtros.put("minutoDesde", String.valueOf(minuteFromSpinner.getValue()));
-            filtros.put("minutoHasta", String.valueOf(minuteToSpinner.getValue()));
-        }
+        filtros.put("minutoDesde", String.valueOf(minuteFromSpinner.getValue()));
+        filtros.put("minutoHasta", String.valueOf(minuteToSpinner.getValue()));
+
+        filtros.put("third", thirdBox.getValue());
+        filtros.put("lane", laneBox.getValue());
+        filtros.put("situation", situationBox.getValue());
 
         filtros.put("bodyPart", bodyPartBox.getValue());
         filtros.put("preAction", preActionBox.getValue());
@@ -169,6 +184,8 @@ public class VisualizarController implements Initializable {
                     ultimoTiros = tiros;
                     drawTirosInternal(tiros);
                     dibujarEnArco(tiros);
+                    double avg = tiros.stream().mapToDouble(Tiro::getXgot).average().orElse(0.0);
+                    xgotInfoLabel.setText(String.format("Promedio xGOT: %.2f", avg));
                 });
             } catch (Exception e) {
                 e.printStackTrace();
@@ -182,10 +199,10 @@ public class VisualizarController implements Initializable {
         double height = canvasTiros.getHeight();
         gc.clearRect(0, 0, width, height);
 
-        double escalaX = 354.4 / 120.0;
-        double escalaY = 244.0 / 80.0;
-        double offsetX = 73.6;
-        double offsetY = 4.0;
+        double escalaX = ESCALA_X;
+        double escalaY = ESCALA_Y;
+        double offsetX = OFFSET_X;
+        double offsetY = OFFSET_Y;
 
         for (Tiro tiro : tiros) {
             if (tiro.getDestinoX() == null || tiro.getDestinoY() == null) continue;
@@ -195,18 +212,16 @@ public class VisualizarController implements Initializable {
             double x2 = offsetX + tiro.getDestinoX() * escalaX;
             double y2 = offsetY + tiro.getDestinoY() * escalaY;
 
-            String resultadoRaw = tiro.getResultado();
-            String resultado = resultadoRaw != null ? resultadoRaw.toLowerCase().trim() : "";
+            String resultado = tiro.getResultado() != null ? tiro.getResultado().trim().toLowerCase() : "";
 
-            Color color;
-            switch (resultado) {
-                case "goal" -> color = Color.LIMEGREEN;
-                case "saved" -> color = Color.GOLD;
-                case "off t" -> color = Color.CRIMSON;
-                case "blocked" -> color = Color.ORANGE;
-                case "post" -> color = Color.GRAY;
-                default -> color = Color.WHITE;
-            }
+            Color color = switch (resultado) {
+                case "gol" -> Color.LIMEGREEN;
+                case "atajado" -> Color.GOLD;
+                case "fuera" -> Color.CRIMSON;
+                case "bloqueado" -> Color.ORANGE;
+                case "poste" -> Color.GRAY;
+                default -> Color.WHITE;
+            };
 
             gc.setStroke(color);
             gc.setLineWidth(2.0);
@@ -217,12 +232,76 @@ public class VisualizarController implements Initializable {
         }
     }
 
+    private void manejarClickArco(double x, double y) {
+        double canvasWidth = canvasArco.getWidth();
+        double canvasHeight = canvasArco.getHeight();
+
+        double paddingX = 8.0;
+        double paddingY = 8.0;
+        double drawWidth = canvasWidth - 2 * paddingX;
+        double drawHeight = canvasHeight - 2 * paddingY;
+
+        double arcoYMin = 30.0;
+        double arcoYMax = 50.0;
+        double arcoZMin = 0.0;
+        double arcoZMax = 2.44;
+
+        for (Tiro tiro : ultimoTiros) {
+            String resultado = tiro.getResultado() != null ? tiro.getResultado().trim().toLowerCase() : "";
+            if (!(resultado.equals("gol") || resultado.equals("atajadoo") || resultado.equals("atajado") || resultado.equals("poste")))
+                continue;
+
+            Double destinoY = tiro.getDestinoY();
+            Double destinoZ = tiro.getDestinoZ();
+            if (destinoY == null) continue;
+
+            if ("poste".equalsIgnoreCase(resultado)) {
+                destinoY = (destinoY < 40.0) ? 34.5 : 45.5;
+                if (destinoZ == null || destinoZ < 0.2) destinoZ = 0.2;
+            }
+
+            if (destinoZ == null || destinoZ < 0.2) destinoZ = 0.2;
+            if (destinoZ > arcoZMax) destinoZ = arcoZMax;
+
+            double xRel = (destinoY - arcoYMin) / (arcoYMax - arcoYMin);
+            double yRel = 1.0 - (destinoZ - arcoZMin) / (arcoZMax - arcoZMin);
+
+            double xCanvas = paddingX + xRel * drawWidth;
+            double yCanvas = paddingY + yRel * drawHeight;
+
+            if (Math.hypot(x - xCanvas, y - yCanvas) <= 6) {
+                xgotInfoLabel.setText(String.format("xGOT del tiro: %.2f", tiro.getXgot()));
+                return;
+            }
+        }
+
+        double avg = ultimoTiros.stream().mapToDouble(Tiro::getXgot).average().orElse(0.0);
+        xgotInfoLabel.setText(String.format("Promedio xGOT: %.2f", avg));
+    }
+
+    private void manejarClickTiro(double x, double y) {
+        for (Tiro tiro : ultimoTiros) {
+            if (tiro.getDestinoX() == null || tiro.getDestinoY() == null) continue;
+
+            double sx = OFFSET_X + tiro.getX() * ESCALA_X;
+            double sy = OFFSET_Y + tiro.getY() * ESCALA_Y;
+
+            if (Math.hypot(x - sx, y - sy) <= 6) {
+                xgotInfoLabel.setText(String.format("xGOT del tiro: %.2f", tiro.getXgot()));
+                return;
+            }
+        }
+
+        double avg = ultimoTiros.stream().mapToDouble(Tiro::getXgot).average().orElse(0.0);
+        xgotInfoLabel.setText(String.format("Promedio xGOT: %.2f", avg));
+    }
+
     private void dibujarEnArco(List<Tiro> tiros) {
         GraphicsContext gc = canvasArco.getGraphicsContext2D();
         gc.clearRect(0, 0, canvasArco.getWidth(), canvasArco.getHeight());
 
-        double canvasWidth = canvasArco.getWidth();   // 500
-        double canvasHeight = canvasArco.getHeight(); // 150
+        double canvasWidth = canvasArco.getWidth();
+        double canvasHeight = canvasArco.getHeight();
 
         double paddingX = 8.0;
         double paddingY = 8.0;
@@ -236,14 +315,15 @@ public class VisualizarController implements Initializable {
 
         for (Tiro tiro : tiros) {
             String resultado = tiro.getResultado() != null ? tiro.getResultado().trim().toLowerCase() : "";
-            if (!(resultado.equals("goal") || resultado.equals("saved") || resultado.equals("post"))) continue;
+            if (!(resultado.equals("gol") || resultado.equals("atajadoo") || resultado.equals("atajado") || resultado.equals("poste")))
+                continue;
 
             Double destinoY = tiro.getDestinoY();
             Double destinoZ = tiro.getDestinoZ();
 
             if (destinoY == null) continue;
 
-            if ("post".equalsIgnoreCase(resultado)) {
+            if ("poste".equalsIgnoreCase(resultado)) {
                 destinoY = (destinoY < 40.0) ? 34.5 : 45.5;
                 if (destinoZ == null || destinoZ < 0.2) destinoZ = 0.2;
             }
@@ -258,9 +338,9 @@ public class VisualizarController implements Initializable {
             double yCanvas = paddingY + yRel * drawHeight;
 
             Color color = switch (resultado) {
-                case "goal" -> Color.LIMEGREEN;
-                case "saved" -> Color.GOLD;
-                case "post" -> Color.GRAY;
+                case "gol" -> Color.LIMEGREEN;
+                case "atajado" -> Color.GOLD;
+                case "poste" -> Color.GRAY;
                 default -> Color.DARKGRAY;
             };
 

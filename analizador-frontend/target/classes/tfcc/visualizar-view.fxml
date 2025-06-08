@@ -18,12 +18,11 @@
             <!-- FILTROS SUPERIORES -->
             <GridPane hgap="15" vgap="10" alignment="CENTER">
                 <columnConstraints>
-                    <ColumnConstraints percentWidth="16.6"/>
-                    <ColumnConstraints percentWidth="16.6"/>
-                    <ColumnConstraints percentWidth="16.6"/>
-                    <ColumnConstraints percentWidth="16.6"/>
-                    <ColumnConstraints percentWidth="16.6"/>
-                    <ColumnConstraints percentWidth="16.6"/>
+                    <ColumnConstraints percentWidth="20"/>
+                    <ColumnConstraints percentWidth="20"/>
+                    <ColumnConstraints percentWidth="20"/>
+                    <ColumnConstraints percentWidth="20"/>
+                    <ColumnConstraints percentWidth="20"/>
                 </columnConstraints>
                 <children>
                     <Label text="Período" textFill="white" GridPane.columnIndex="0"/>
@@ -38,17 +37,14 @@
                         </children>
                     </HBox>
 
-                    <Label text="Equipo" textFill="white" GridPane.columnIndex="2"/>
-                    <ComboBox fx:id="teamSideBox" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                    <Label text="Jugador" textFill="white" GridPane.columnIndex="2"/>
+                    <TextField fx:id="playerSearchField" promptText="Buscar..." GridPane.columnIndex="2" GridPane.rowIndex="1"/>
 
-                    <Label text="Jugador" textFill="white" GridPane.columnIndex="3"/>
-                    <TextField fx:id="playerSearchField" promptText="Buscar..." GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+                    <Label text="Tercio" textFill="white" GridPane.columnIndex="3"/>
+                    <ComboBox fx:id="thirdBox" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
 
-                    <Label text="Tercio" textFill="white" GridPane.columnIndex="4"/>
-                    <ComboBox fx:id="thirdBox" GridPane.columnIndex="4" GridPane.rowIndex="1"/>
-
-                    <Label text="Carril" textFill="white" GridPane.columnIndex="5"/>
-                    <ComboBox fx:id="laneBox" GridPane.columnIndex="5" GridPane.rowIndex="1"/>
+                    <Label text="Carril" textFill="white" GridPane.columnIndex="4"/>
+                    <ComboBox fx:id="laneBox" GridPane.columnIndex="4" GridPane.rowIndex="1"/>
                 </children>
             </GridPane>
 
@@ -126,6 +122,8 @@
                         </ImageView>
                         <Canvas fx:id="canvasArco" width="500" height="150" />
                     </StackPane>
+
+                    <Label fx:id="xgotInfoLabel" textFill="white" />
 
                     <!-- LEYENDA POSTE -->
                     <HBox spacing="10" alignment="CENTER">
