@@ -29,10 +29,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                // ya existentes
-                                "/api/usuarios",
-                                "/api/auth/login",
-                                // rutas nuevas
+                                "/api/usuarios/**",
+                                "/api/auth/login/**",
                                 "/api/tiros/**",
                                 "/api/partidos/**",
                                 "/api/jugadores/**",

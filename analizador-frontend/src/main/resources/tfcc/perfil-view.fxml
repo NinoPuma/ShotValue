@@ -1,71 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Button?>
 
 <BorderPane xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.shotvalue.analizador_xgot.controller.PerfilController">
+            fx:controller="com.shotvalue.analizador_xgot.controller.PerfilController"
+            style="-fx-background-color: #F9FDFC;">
 
+    <!-- Encabezado con logo -->
+    <top>
+        <VBox alignment="CENTER" spacing="10" style="-fx-padding: 20 0 10 0;">
+            <ImageView fitWidth="300" preserveRatio="true" pickOnBounds="true">
+                <image>
+                    <Image url="@../img/logo.png"/>
+                </image>
+            </ImageView>
+        </VBox>
+    </top>
+
+    <!-- Cuerpo con formulario -->
     <center>
-        <VBox spacing="30" alignment="TOP_CENTER"
-              maxWidth="1000"
-              style="-fx-background-color: #F9FDFC; -fx-padding: 40;">
+        <VBox spacing="20" alignment="TOP_CENTER" style="-fx-padding: 0 40;" maxWidth="500">
+            <!-- Datos de usuario -->
+            <GridPane hgap="15" vgap="10" style="-fx-padding: 10; -fx-background-color: white; -fx-border-radius: 8; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8,0,0,2);">
+                <Label text="Nombre:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="usernameField"
+                           promptText="Introduce tu nombre"
+                           GridPane.rowIndex="0" GridPane.columnIndex="1"
+                           maxWidth="400"/>
 
-            <Label text="Mi Perfil" style="-fx-font-size: 26px; -fx-font-weight: bold;"/>
-
-            <HBox spacing="60" alignment="CENTER">
-
-                <!-- Avatar -->
-                <VBox spacing="15" alignment="CENTER">
-                    <ImageView fx:id="avatarImage" fitWidth="180" fitHeight="180" preserveRatio="true"
-                               style="-fx-effect: dropshadow(gaussian, black, 5, 0, 0, 0);">
-                        <image>
-                            <Image url="@../analizador-xgot/src/main/resources/img/avatar_placeholder.png"/>
-                        </image>
-                    </ImageView>
-                    <Button text="Cambiar Imagen" fx:id="changeImageBtn"
-                            style="-fx-background-color: #0F7F7F; -fx-text-fill: white;"/>
-                </VBox>
-
-                <!-- Datos -->
-                <GridPane hgap="30" vgap="20" alignment="CENTER">
-                    <children>
-                        <Label text="Nombre completo:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                        <TextField fx:id="nameField" promptText="Introduce tu nombre" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-
-                        <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                        <TextField fx:id="emailField" promptText="correo@ejemplo.com" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-
-                        <Label text="Rol:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                        <ComboBox fx:id="roleBox" promptText="Selecciona tu rol" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-
-                        <Label text="Teléfono:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-                        <TextField fx:id="phoneField" promptText="(XXX) XXX-XXXX" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-
-                        <Label text="Fecha de nacimiento:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
-                        <DatePicker fx:id="birthDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-                    </children>
-                </GridPane>
-            </HBox>
+                <Label text="Email:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="emailField"
+                           editable="false"
+                           style="-fx-opacity: 1;"
+                           GridPane.rowIndex="1" GridPane.columnIndex="1"
+                           maxWidth="400"/>
+            </GridPane>
 
             <!-- Cambio de contraseña -->
-            <VBox spacing="12" maxWidth="600" alignment="CENTER">
-                <Label text="Cambiar contraseña" style="-fx-font-weight: bold;"/>
-                <PasswordField fx:id="currentPasswordField" promptText="Contraseña actual"/>
-                <PasswordField fx:id="newPasswordField" promptText="Nueva contraseña"/>
-                <PasswordField fx:id="confirmPasswordField" promptText="Confirmar nueva contraseña"/>
+            <VBox spacing="8" alignment="CENTER" style="-fx-padding: 10; -fx-background-color: white; -fx-border-radius: 8; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8,0,0,2);" maxWidth="500">
+                <Label text="Cambiar contraseña" style="-fx-font-weight: bold; -fx-font-size: 14;"/>
+                <PasswordField fx:id="currentPasswordField"
+                               promptText="Contraseña actual"
+                               maxWidth="400"/>
+                <PasswordField fx:id="newPasswordField"
+                               promptText="Nueva contraseña"
+                               maxWidth="400"/>
+                <PasswordField fx:id="confirmPasswordField"
+                               promptText="Confirmar nueva contraseña"
+                               maxWidth="400"/>
             </VBox>
 
-            <!-- Botones -->
-            <HBox spacing="20" alignment="CENTER">
-                <Button text="Guardar Cambios" fx:id="saveBtn" style="-fx-background-color: #27AE60; -fx-text-fill: white;"/>
-                <Button text="Cerrar Sesión" fx:id="logoutBtn" style="-fx-background-color: #F39C12; -fx-text-fill: white;"/>
-                <Button text="Eliminar Cuenta" fx:id="deleteBtn" style="-fx-background-color: #E74C3C; -fx-text-fill: white;"/>
+            <!-- Botones debajo del formulario -->
+            <HBox spacing="12" alignment="CENTER" style="-fx-padding: 10 0 20 0;">
+                <Button text="Guardar Cambios" fx:id="saveBtn"
+                        style="-fx-background-color: #27AE60; -fx-text-fill: white; -fx-min-width: 120;"/>
+                <Button text="Cerrar Sesión" fx:id="logoutBtn"
+                        style="-fx-background-color: #F39C12; -fx-text-fill: white; -fx-min-width: 120;"/>
             </HBox>
-
         </VBox>
     </center>
+
 </BorderPane>

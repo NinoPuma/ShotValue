@@ -105,7 +105,7 @@ public class RegistroController {
             return;
         }
 
-        Usuario nuevoUsuario = new Usuario(null, username, email, password, null, null, null, null);
+        Usuario nuevoUsuario = new Usuario(null, username, email, password);
         sendRegistration(nuevoUsuario);
     }
 

@@ -30,4 +30,34 @@ public class UsuarioController {
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
+
+    // --- NUEVO: obtener perfil por ID ---
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable String id) {
+        return usuarioService.getById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // --- NUEVO: actualizar perfil ---
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updatePerfil(
+            @PathVariable String id,
+            @RequestBody Usuario cambios,
+            @RequestParam(required = false) String currentPassword,
+            @RequestParam(required = false) String newPassword
+    ) {
+        try {
+            Usuario actualizado = usuarioService.actualizarUsuario(
+                    id,
+                    cambios.getUsername(),
+                    cambios.getEmail(),
+                    currentPassword,
+                    newPassword
+            );
+            return ResponseEntity.ok(actualizado);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.status(400).body(ex.getMessage());
+        }
+    }
 }
