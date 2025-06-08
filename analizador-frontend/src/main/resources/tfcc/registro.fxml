@@ -41,9 +41,17 @@
             <TextField fx:id="passwordTextField" promptText="Contraseña"
                        visible="false" managed="false" maxWidth="Infinity"
                        style="-fx-font-size: 14px; -fx-padding: 10; -fx-background-radius: 8;" />
-            <Button fx:id="togglePasswordBtn" text="👁" onAction="#togglePasswordVisibility"
+            <Button fx:id="togglePasswordBtn" onAction="#togglePasswordVisibility"
                     StackPane.alignment="CENTER_RIGHT"
-                    style="-fx-background-color: transparent; -fx-font-size: 14px; -fx-padding: 0 5 0 0;" />
+                    style="-fx-background-color: transparent; -fx-padding: 0 5 0 0;">
+                <graphic>
+                    <ImageView fx:id="togglePasswordIcon" fitWidth="20" fitHeight="20">
+                        <image>
+                            <Image url="@../img/contraseña.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
         </StackPane>
 
         <StackPane alignment="CENTER_RIGHT" maxWidth="320">
@@ -53,11 +61,18 @@
             <TextField fx:id="repeatPasswordTextField" promptText="Repetir contraseña"
                        visible="false" managed="false" maxWidth="Infinity"
                        style="-fx-font-size: 14px; -fx-padding: 10; -fx-background-radius: 8;" />
-            <Button fx:id="toggleRepeatPasswordBtn" text="👁" onAction="#toggleRepeatPasswordVisibility"
+            <Button fx:id="toggleRepeatPasswordBtn" onAction="#toggleRepeatPasswordVisibility"
                     StackPane.alignment="CENTER_RIGHT"
-                    style="-fx-background-color: transparent; -fx-font-size: 14px; -fx-padding: 0 5 0 0;" />
+                    style="-fx-background-color: transparent; -fx-padding: 0 5 0 0;">
+                <graphic>
+                    <ImageView fx:id="toggleRepeatPasswordIcon" fitWidth="20" fitHeight="20">
+                        <image>
+                            <Image url="@../img/contraseña.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
         </StackPane>
-
 
         <CheckBox fx:id="termsCheckBox" text="Acepto los términos y condiciones" />
 

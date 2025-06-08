@@ -14,6 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import org.controlsfx.control.textfield.TextFields;
@@ -38,6 +39,8 @@ public class LoginController {
     private CheckBox rememberMeCheckBox;
     @FXML
     private TextField passwordTextField;
+    @FXML
+    private ImageView togglePasswordIcon;
     @FXML
     private Button togglePasswordBtn;
 
@@ -278,20 +281,23 @@ public class LoginController {
     @FXML
     private void togglePasswordVisibility() {
         passwordVisible = !passwordVisible;
+
         if (passwordVisible) {
             passwordTextField.setText(passwordField.getText());
             passwordTextField.setVisible(true);
             passwordTextField.setManaged(true);
             passwordField.setVisible(false);
             passwordField.setManaged(false);
-            togglePasswordBtn.setText("🙈");
+
+            if (togglePasswordIcon != null) togglePasswordIcon.setOpacity(0.4); // difumina
         } else {
             passwordField.setText(passwordTextField.getText());
             passwordField.setVisible(true);
             passwordField.setManaged(true);
             passwordTextField.setVisible(false);
             passwordTextField.setManaged(false);
-            togglePasswordBtn.setText("👁");
+
+            if (togglePasswordIcon != null) togglePasswordIcon.setOpacity(1.0); // normal
         }
     }
 

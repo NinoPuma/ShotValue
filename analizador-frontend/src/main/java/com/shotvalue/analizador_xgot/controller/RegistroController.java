@@ -7,10 +7,10 @@ import com.shotvalue.analizador_xgot.util.LocalDateAdapter;
 import com.shotvalue.analizador_xgot.util.VentanaHelper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -23,44 +23,31 @@ import java.time.LocalDate;
 
 public class RegistroController {
 
-    @FXML
-    private TextField usernameField;
-    @FXML
-    private TextField nombreCompletoField;
-    @FXML
-    private TextField emailField;
-    @FXML
-    private ComboBox<String> rolComboBox;
-    @FXML
-    private TextField telefonoField;
-    @FXML
-    private DatePicker fechaNacimientoPicker;
-    @FXML
-    private PasswordField passwordField;
-    @FXML
-    private PasswordField repeatPasswordField;
-    @FXML
-    private CheckBox termsCheckBox;
-    @FXML
-    private TextField passwordTextField;
-    @FXML
-    private TextField repeatPasswordTextField;
-    @FXML
-    private Button togglePasswordBtn;
-    @FXML
-    private Button toggleRepeatPasswordBtn;
-    @FXML
-    private Label messageLabel;
-    @FXML
-    private Button registrarBtn;
+    @FXML private TextField usernameField;
+    @FXML private TextField nombreCompletoField;
+    @FXML private TextField emailField;
+    @FXML private ComboBox<String> rolComboBox;
+    @FXML private TextField telefonoField;
+    @FXML private DatePicker fechaNacimientoPicker;
+    @FXML private PasswordField passwordField;
+    @FXML private PasswordField repeatPasswordField;
+    @FXML private CheckBox termsCheckBox;
+    @FXML private TextField passwordTextField;
+    @FXML private TextField repeatPasswordTextField;
+    @FXML private Button togglePasswordBtn;
+    @FXML private Button toggleRepeatPasswordBtn;
+    @FXML private ImageView togglePasswordIcon;
+    @FXML private ImageView toggleRepeatPasswordIcon;
+    @FXML private Label messageLabel;
+    @FXML private Button registrarBtn;
 
     private boolean passwordVisible = false;
     private boolean repeatPasswordVisible = false;
+
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
             .create();
-
 
     @FXML
     public void initialize() {
@@ -109,7 +96,6 @@ public class RegistroController {
         sendRegistration(nuevoUsuario);
     }
 
-
     private void sendRegistration(Usuario user) {
         String json = gson.toJson(user);
         HttpRequest request = HttpRequest.newBuilder()
@@ -155,14 +141,14 @@ public class RegistroController {
             passwordTextField.setManaged(true);
             passwordField.setVisible(false);
             passwordField.setManaged(false);
-            togglePasswordBtn.setText("🙈");
+            if (togglePasswordIcon != null) togglePasswordIcon.setOpacity(0.4);
         } else {
             passwordField.setText(passwordTextField.getText());
             passwordField.setVisible(true);
             passwordField.setManaged(true);
             passwordTextField.setVisible(false);
             passwordTextField.setManaged(false);
-            togglePasswordBtn.setText("👁");
+            if (togglePasswordIcon != null) togglePasswordIcon.setOpacity(1.0);
         }
     }
 
@@ -175,14 +161,14 @@ public class RegistroController {
             repeatPasswordTextField.setManaged(true);
             repeatPasswordField.setVisible(false);
             repeatPasswordField.setManaged(false);
-            toggleRepeatPasswordBtn.setText("🙈");
+            if (toggleRepeatPasswordIcon != null) toggleRepeatPasswordIcon.setOpacity(0.4);
         } else {
             repeatPasswordField.setText(repeatPasswordTextField.getText());
             repeatPasswordField.setVisible(true);
             repeatPasswordField.setManaged(true);
             repeatPasswordTextField.setVisible(false);
             repeatPasswordTextField.setManaged(false);
-            toggleRepeatPasswordBtn.setText("👁");
+            if (toggleRepeatPasswordIcon != null) toggleRepeatPasswordIcon.setOpacity(1.0);
         }
     }
 

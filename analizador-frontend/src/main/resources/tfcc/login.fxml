@@ -11,12 +11,11 @@
            fx:controller="com.shotvalue.analizador_xgot.controller.LoginController"
            style="-fx-background-color: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);">
 
-   <!-- Caja blanca centrada con sombra -->
    <VBox alignment="CENTER" spacing="20"
          maxWidth="500" maxHeight="550"
          style="-fx-background-color: white; -fx-background-radius: 16;
-                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0.3, 0, 4);
-                 -fx-padding: 40;">
+                -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0.3, 0, 4);
+                -fx-padding: 40;">
 
       <ImageView fx:id="logoImage" fitWidth="130" preserveRatio="true">
          <image>
@@ -38,9 +37,17 @@
          <TextField fx:id="passwordTextField" promptText="Contraseña"
                     visible="false" managed="false" maxWidth="Infinity"
                     style="-fx-font-size: 14px; -fx-padding: 10; -fx-background-radius: 8;" />
-         <Button fx:id="togglePasswordBtn" text="👁" onAction="#togglePasswordVisibility"
+         <Button fx:id="togglePasswordBtn" onAction="#togglePasswordVisibility"
                  StackPane.alignment="CENTER_RIGHT"
-                 style="-fx-background-color: transparent; -fx-font-size: 14px; -fx-padding: 0 5 0 0;" />
+                 style="-fx-background-color: transparent; -fx-padding: 0 5 0 0;">
+            <graphic>
+               <ImageView fx:id="togglePasswordIcon" fitWidth="20" fitHeight="20">
+                  <image>
+                     <Image url="@../img/contraseña.png" />
+                  </image>
+               </ImageView>
+            </graphic>
+         </Button>
       </StackPane>
 
       <CheckBox fx:id="rememberMeCheckBox" text="Recordar sesión"
@@ -48,7 +55,7 @@
 
       <Button text="Entrar" onAction="#handleLogin" maxWidth="180"
               style="-fx-background-color: #27ae60; -fx-text-fill: white;
-                       -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 8;" />
+                     -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 8;" />
 
       <Label fx:id="messageLabel" textFill="red" style="-fx-font-size: 12px;" />
 
