@@ -27,6 +27,7 @@ public class Jugador {
     @Field("jersey_number")
     private String jersey_number;
 
+    private Double avgXgot;
     private String position;
 
     // Getters originales
@@ -54,4 +55,7 @@ public class Jugador {
 
     public String getPosition() { return position; }
     public void setPosition(String position) { this.position = position; }
+
+    public Double getAvgXgot() { return avgXgot; }
+    public void setAvgXgot(Double avgXgot) { this.avgXgot = avgXgot; }
 }

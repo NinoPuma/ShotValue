@@ -69,7 +69,13 @@ public class EquiposController implements ViewLifecycle {
                         ? j.getValue().getPosition() : "Sin posición"));
         colPos.setPrefWidth(120);
 
-        playerTable.getColumns().setAll(colNombre, colPos, colDorsal);
+        TableColumn<Jugador,String> colXgot = new TableColumn<>("xGOT");
+        colXgot.setCellValueFactory(j ->
+                new ReadOnlyStringWrapper(String.format("%.2f",
+                        j.getValue().getAvgXgot() != null ? j.getValue().getAvgXgot() : 0.0)));
+        colXgot.setPrefWidth(80);
+
+        playerTable.getColumns().setAll(colNombre, colPos, colDorsal, colXgot);
         playerTable.setItems(jugadoresFiltrados);
         playerTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         playerTable.setRowFactory(tv -> {

@@ -9,4 +9,6 @@ public interface TiroRepository extends MongoRepository<Tiro, String> {
     List<Tiro> findByJugadorId(String jugadorId);
 
     List<Tiro> findByPartidoId(String partidoId);
+
+    List<Tiro> findByEquipoId(String equipoId);
 }
