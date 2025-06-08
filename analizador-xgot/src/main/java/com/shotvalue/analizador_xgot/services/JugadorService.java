@@ -22,6 +22,10 @@ public class JugadorService {
     /* ---------- CRUD básico ---------- */
 
     public List<Jugador> getAll() {
+        return repo.findAll();
+    }
+
+    public List<Jugador> getAllConPromedio() {
         List<Jugador> jugadores = repo.findAll();
         jugadores.forEach(j -> j.setAvgXgot(calcularPromedio(j.getPlayer_id())));
         return jugadores;

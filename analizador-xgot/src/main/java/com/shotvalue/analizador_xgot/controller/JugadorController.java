@@ -23,6 +23,11 @@ public class JugadorController {
         return service.getAll();
     }
 
+    @GetMapping("/conPromedio")
+    public List<Jugador> getAllConPromedio() {
+        return service.getAllConPromedio();
+    }
+
     @GetMapping("/porEquipo/{teamId}")
     public List<Jugador> getByTeamId(@PathVariable int teamId) {
         return service.getByTeamId(teamId);
