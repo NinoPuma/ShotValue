@@ -6,74 +6,72 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 
-<StackPane xmlns="http://javafx.com/javafx/23.0.1"
-           xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.shotvalue.analizador_xgot.controller.CrearJugadorController"
-           style="-fx-background-color: #262626;">
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.shotvalue.analizador_xgot.controller.CrearJugadorController"
+            style="-fx-background-color: #262626;">
 
-    <VBox alignment="CENTER"
-          spacing="40"
-          maxWidth="600">
+    <center>
+        <VBox alignment="CENTER"
+              spacing="20"
+              maxWidth="600"
+              BorderPane.alignment="CENTER">
+            <padding>
+                <Insets top="10" right="40" bottom="40" left="40"/>
+            </padding>
 
-        <padding>
-            <Insets top="40" right="40" bottom="40" left="40"/>
-        </padding>
+            <!-- Logo (más arriba pero con margen) -->
+            <ImageView fitWidth="200" preserveRatio="true">
+                <image>
+                    <Image url="@/img/ShotValue.png"/>
+                </image>
+            </ImageView>
 
-        <!-- Logo común: -->
-        <ImageView fitWidth="200" preserveRatio="true">
-            <image>
-                <Image url="@/img/logo.png"/>
-            </image>
-        </ImageView>
+            <!-- Título -->
+            <Label text="Crear Jugador"
+                   style="-fx-text-fill:white;
+                          -fx-font-size:32px;
+                          -fx-font-weight:bold;"/>
 
-        <!-- Título común: -->
-        <Label text="Crear Jugador"
-               style="-fx-text-fill:white;
-                      -fx-font-size:32px;
-                      -fx-font-weight:bold;"/>
+            <!-- Campos (formulario en VBox) -->
+            <VBox spacing="15" alignment="CENTER">
 
-        <!-- Campos -->
-        <GridPane hgap="20" vgap="20" alignment="CENTER">
-            <columnConstraints>
-                <ColumnConstraints halignment="RIGHT" prefWidth="150"/>
-                <ColumnConstraints halignment="LEFT"  prefWidth="350"/>
-            </columnConstraints>
+                <Label text="Equipo:" style="-fx-text-fill:white;"/>
+                <ComboBox fx:id="equipoBox"
+                          promptText="Selecciona equipo"
+                          maxWidth="300" prefWidth="300"/>
 
-            <Label text="Equipo:" style="-fx-text-fill:white;"
-                   GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-            <ComboBox fx:id="equipoBox" promptText="Selecciona equipo"
-                      GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                <Label text="Nombre Completo:" style="-fx-text-fill:white;"/>
+                <TextField fx:id="nombreField"
+                           promptText="Ej: Lionel Messi"
+                           maxWidth="300" prefWidth="300"/>
 
-            <Label text="Nombre Completo:" style="-fx-text-fill:white;"
-                   GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-            <TextField fx:id="nombreField" promptText="Ej: Lionel Messi"
-                       GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                <Label text="Número de Camiseta:" style="-fx-text-fill:white;"/>
+                <TextField fx:id="dorsalField"
+                           promptText="Ej: 10"
+                           maxWidth="300" prefWidth="300"/>
 
-            <Label text="Número de Camiseta:" style="-fx-text-fill:white;"
-                   GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-            <TextField fx:id="dorsalField" promptText="Ej: 10"
-                       GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                <Label text="Posición:" style="-fx-text-fill:white;"/>
+                <ComboBox fx:id="posicionBox"
+                          promptText="Selecciona posición"
+                          maxWidth="300" prefWidth="300"/>
+            </VBox>
 
-            <Label text="Posición:" style="-fx-text-fill:white;"
-                   GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-            <ComboBox fx:id="posicionBox" promptText="Selecciona posición"
-                      GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-        </GridPane>
-
-        <!-- Botones -->
-        <HBox spacing="20" alignment="CENTER">
-            <Button fx:id="guardarBtn" text="Guardar"
-                    style="-fx-background-color:#00C29A;
-                           -fx-text-fill:white;
-                           -fx-font-weight:bold;
-                           -fx-pref-width:140;
-                           -fx-pref-height:40;"/>
-            <Button fx:id="limpiarBtn" text="Limpiar"
-                    style="-fx-background-color:transparent;
-                           -fx-text-fill:white;
-                           -fx-border-color:white;
-                           -fx-pref-width:140;
-                           -fx-pref-height:40;"/>
-        </HBox>
-    </VBox>
-</StackPane>
+            <!-- Botones -->
+            <HBox spacing="20" alignment="CENTER">
+                <Button fx:id="guardarBtn" text="Guardar"
+                        style="-fx-background-color:#00C29A;
+                               -fx-text-fill:white;
+                               -fx-font-weight:bold;
+                               -fx-pref-width:140;
+                               -fx-pref-height:40;"/>
+                <Button fx:id="limpiarBtn" text="Limpiar"
+                        style="-fx-background-color:transparent;
+                               -fx-text-fill:white;
+                               -fx-border-color:white;
+                               -fx-pref-width:140;
+                               -fx-pref-height:40;"/>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>
