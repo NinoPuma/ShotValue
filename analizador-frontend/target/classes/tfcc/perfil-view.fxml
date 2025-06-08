@@ -15,7 +15,7 @@
             <!-- Logo aumentado y centrado -->
             <ImageView fitWidth="250" preserveRatio="true">
                 <image>
-                    <Image url="@../img/logo.png"/>
+                    <Image url="@../img/ShotValue.png"/>
                 </image>
             </ImageView>
 
@@ -53,23 +53,68 @@
                     <!-- Contraseña actual -->
                     <Label text="Contraseña actual:" GridPane.rowIndex="2" GridPane.columnIndex="0"
                            style="-fx-text-fill: #333;"/>
-                    <PasswordField fx:id="currentPasswordField"
-                                   promptText="●●●●●●"
-                                   GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                    <StackPane alignment="CENTER_RIGHT" GridPane.rowIndex="2" GridPane.columnIndex="1">
+                        <PasswordField fx:id="currentPasswordField"
+                                       promptText="●●●●●●"
+                                       maxWidth="Infinity" />
+                        <TextField fx:id="currentPasswordTextField" promptText="●●●●●●"
+                                   visible="false" managed="false" maxWidth="Infinity" />
+                        <Button fx:id="toggleCurrentPasswordBtn" onAction="#toggleCurrentPasswordVisibility"
+                                StackPane.alignment="CENTER_RIGHT"
+                                style="-fx-background-color: transparent; -fx-padding: 0 5 0 0;">
+                            <graphic>
+                                <ImageView fx:id="toggleCurrentPasswordIcon" fitWidth="20" fitHeight="20">
+                                    <image>
+                                        <Image url="@../img/contraseña.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                    </StackPane>
 
                     <!-- Nueva contraseña -->
                     <Label text="Nueva contraseña:" GridPane.rowIndex="3" GridPane.columnIndex="0"
                            style="-fx-text-fill: #333;"/>
-                    <PasswordField fx:id="newPasswordField"
-                                   promptText="●●●●●●"
-                                   GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                    <StackPane alignment="CENTER_RIGHT" GridPane.rowIndex="3" GridPane.columnIndex="1">
+                        <PasswordField fx:id="newPasswordField"
+                                       promptText="●●●●●●"
+                                       maxWidth="Infinity" />
+                        <TextField fx:id="newPasswordTextField" promptText="●●●●●●"
+                                   visible="false" managed="false" maxWidth="Infinity" />
+                        <Button fx:id="toggleNewPasswordBtn" onAction="#toggleNewPasswordVisibility"
+                                StackPane.alignment="CENTER_RIGHT"
+                                style="-fx-background-color: transparent; -fx-padding: 0 5 0 0;">
+                            <graphic>
+                                <ImageView fx:id="toggleNewPasswordIcon" fitWidth="20" fitHeight="20">
+                                    <image>
+                                        <Image url="@../img/contraseña.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                    </StackPane>
 
                     <!-- Confirmar contraseña -->
                     <Label text="Confirmar contraseña:" GridPane.rowIndex="4" GridPane.columnIndex="0"
                            style="-fx-text-fill: #333;"/>
-                    <PasswordField fx:id="confirmPasswordField"
-                                   promptText="●●●●●●"
-                                   GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                    <StackPane alignment="CENTER_RIGHT" GridPane.rowIndex="4" GridPane.columnIndex="1">
+                        <PasswordField fx:id="confirmPasswordField"
+                                       promptText="●●●●●●"
+                                       maxWidth="Infinity" />
+                        <TextField fx:id="confirmPasswordTextField" promptText="●●●●●●"
+                                   visible="false" managed="false" maxWidth="Infinity" />
+                        <Button fx:id="toggleConfirmPasswordBtn" onAction="#toggleConfirmPasswordVisibility"
+                                StackPane.alignment="CENTER_RIGHT"
+                                style="-fx-background-color: transparent; -fx-padding: 0 5 0 0;">
+                            <graphic>
+                                <ImageView fx:id="toggleConfirmPasswordIcon" fitWidth="20" fitHeight="20">
+                                    <image>
+                                        <Image url="@../img/contraseña.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                    </StackPane>
                 </GridPane>
 
                 <!-- Botones -->

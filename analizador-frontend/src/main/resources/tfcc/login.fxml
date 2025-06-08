@@ -19,7 +19,7 @@
 
       <ImageView fx:id="logoImage" fitWidth="130" preserveRatio="true">
          <image>
-            <Image url="@../img/logo.png" />
+            <Image url="@../img/ShotValue.png" />
          </image>
       </ImageView>
 

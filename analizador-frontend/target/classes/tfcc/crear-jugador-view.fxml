@@ -6,14 +6,15 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 
-<StackPane xmlns="http://javafx.com/javafx/23.0.1"
-           xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.shotvalue.analizador_xgot.controller.CrearJugadorController"
-           style="-fx-background-color: #262626;">
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.shotvalue.analizador_xgot.controller.CrearJugadorController"
+            style="-fx-background-color: #262626;">
 
-    <VBox alignment="CENTER"
-          spacing="40"
-          maxWidth="600">
+    <center>
+        <VBox alignment="CENTER"
+              spacing="40"
+              maxWidth="600">
 
         <padding>
             <Insets top="40" right="40" bottom="40" left="40"/>
@@ -22,7 +23,7 @@
         <!-- Logo común: -->
         <ImageView fitWidth="200" preserveRatio="true">
             <image>
-                <Image url="@/img/logo.png"/>
+                <Image url="@/img/ShotValue.png"/>
             </image>
         </ImageView>
 
@@ -36,25 +37,29 @@
         <GridPane hgap="20" vgap="20" alignment="CENTER">
             <columnConstraints>
                 <ColumnConstraints halignment="RIGHT" prefWidth="150"/>
-                <ColumnConstraints halignment="LEFT"  prefWidth="350"/>
+                <ColumnConstraints halignment="LEFT"  prefWidth="250"/>
             </columnConstraints>
 
             <Label text="Equipo:" style="-fx-text-fill:white;"
                    GridPane.rowIndex="0" GridPane.columnIndex="0"/>
             <ComboBox fx:id="equipoBox" promptText="Selecciona equipo"
+                      prefWidth="250"
                       GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
             <Label text="Nombre Completo:" style="-fx-text-fill:white;"
                    GridPane.rowIndex="1" GridPane.columnIndex="0"/>
             <TextField fx:id="nombreField" promptText="Ej: Lionel Messi"
+                       prefWidth="250"
                        GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
             <Label text="Número de Camiseta:" style="-fx-text-fill:white;"
+                   prefWidth="100"
                    GridPane.rowIndex="2" GridPane.columnIndex="0"/>
             <TextField fx:id="dorsalField" promptText="Ej: 10"
                        GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
             <Label text="Posición:" style="-fx-text-fill:white;"
+                   prefWidth="250"
                    GridPane.rowIndex="3" GridPane.columnIndex="0"/>
             <ComboBox fx:id="posicionBox" promptText="Selecciona posición"
                       GridPane.rowIndex="3" GridPane.columnIndex="1"/>
@@ -76,4 +81,5 @@
                            -fx-pref-height:40;"/>
         </HBox>
     </VBox>
-</StackPane>
+    </center>
+</BorderPane>
