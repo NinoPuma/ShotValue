@@ -135,7 +135,9 @@ public class LoginController {
             String usuario = (String)data.get("usuario");
             boolean recordar = Boolean.TRUE.equals(data.get("recordar"));
 
-            if (email != null) usernameField.setText(email);
+            if (recordar && email != null) {
+                usernameField.setText(email);
+            }
             if (recordar) cargarApp(usuario);
         } catch (Exception e) {
             e.printStackTrace();
