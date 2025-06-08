@@ -184,4 +184,5 @@ public class TiroService {
 
         return t.isDentroDelArea() ? "Área grande" : "Fuera del área";
     }
+
 }

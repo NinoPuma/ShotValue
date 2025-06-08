@@ -30,18 +30,26 @@ import java.util.concurrent.CompletableFuture;
 public class RegistrarTiroController implements ViewLifecycle {
 
     // ─── Controles principales ──────────────────────────────────────────
-    @FXML private ComboBox<Equipo> equipoBox;
-    @FXML private ComboBox<Jugador> jugadorBox;
-    @FXML private ComboBox<String>  periodBox;
-    @FXML private TextField         minuteField;
-    @FXML private ComboBox<String>  thirdBox, laneBox,
-            areaBox, situationBox,
+    @FXML
+    private ComboBox<Equipo> equipoBox;
+    @FXML
+    private ComboBox<Jugador> jugadorBox;
+    @FXML
+    private ComboBox<String> periodBox;
+    @FXML
+    private TextField minuteField;
+    @FXML
+    private ComboBox<String> situationBox,
             bodyPartBox, preActionBox, resultBox;
-    @FXML private ImageView         fieldMap, goalView;
-    @FXML private Canvas            canvasTiros, canvasArco;
-    @FXML private TextField         angleXFieldCampo, angleYFieldCampo,
-            angleXFieldArco,  angleYFieldArco;
-    @FXML private Button            guardarBtn;
+    @FXML
+    private ImageView fieldMap, goalView;
+    @FXML
+    private Canvas canvasTiros, canvasArco;
+    @FXML
+    private TextField angleXFieldCampo, angleYFieldCampo,
+            angleXFieldArco, angleYFieldArco;
+    @FXML
+    private Button guardarBtn;
 
     // ─── Estado dinámico ────────────────────────────────────────────────
     private int minAllowed = 0, maxAllowed = 120;
@@ -64,35 +72,57 @@ public class RegistrarTiroController implements ViewLifecycle {
     private void cargarEquipos() {
         EquiposApiClient.getEquiposAsync()
                 .thenAccept(this::llenarComboEquipos)
-                .exceptionally(ex -> { mostrarError("No se pudieron cargar equipos", ex); return null; });
+                .exceptionally(ex -> {
+                    mostrarError("No se pudieron cargar equipos", ex);
+                    return null;
+                });
 
         equipoBox.setOnAction(e -> {
             Equipo sel = equipoBox.getValue();
             if (sel != null) cargarJugadoresPorEquipo(sel.getTeamId());
         });
     }
-    private void llenarComboEquipos(List<Equipo> lista){
+
+    private void llenarComboEquipos(List<Equipo> lista) {
         Platform.runLater(() -> {
             equipoBox.getItems().setAll(lista);
             equipoBox.setConverter(new StringConverter<>() {
-                public String toString(Equipo t){ return t == null ? "" : t.getName(); }
-                public Equipo fromString(String s){ return null; }
+                public String toString(Equipo t) {
+                    return t == null ? "" : t.getName();
+                }
+
+                public Equipo fromString(String s) {
+                    return null;
+                }
             });
         });
     }
-    private void cargarJugadoresPorEquipo(int teamId){
+
+    private void cargarJugadoresPorEquipo(int teamId) {
         CompletableFuture.supplyAsync(() -> {
-                    try { return JugadorApiClient.getJugadoresPorEquipo(teamId); }
-                    catch(Exception ex){ throw new RuntimeException(ex); }
+                    try {
+                        return JugadorApiClient.getJugadoresPorEquipo(teamId);
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }).thenAccept(this::llenarComboJugadores)
-                .exceptionally(ex -> { mostrarError("No se pudieron cargar jugadores", ex); return null; });
+                .exceptionally(ex -> {
+                    mostrarError("No se pudieron cargar jugadores", ex);
+                    return null;
+                });
     }
-    private void llenarComboJugadores(List<Jugador> lista){
+
+    private void llenarComboJugadores(List<Jugador> lista) {
         Platform.runLater(() -> {
             jugadorBox.getItems().setAll(lista);
             jugadorBox.setConverter(new StringConverter<>() {
-                public String toString(Jugador j){ return j == null ? "" : j.getPlayerName(); }
-                public Jugador fromString(String s){ return null; }
+                public String toString(Jugador j) {
+                    return j == null ? "" : j.getPlayerName();
+                }
+
+                public Jugador fromString(String s) {
+                    return null;
+                }
             });
         });
     }
@@ -103,26 +133,46 @@ public class RegistrarTiroController implements ViewLifecycle {
     private void configurarPeriodos() {
         periodBox.getItems().setAll(
                 "Todos los períodos", "1° Tiempo", "2° Tiempo",
-                "ET - 1° Tiempo",    "ET - 2° Tiempo", "Penales"
+                "ET - 1° Tiempo", "ET - 2° Tiempo", "Penales"
         );
         periodBox.setValue("Todos los períodos");
-        periodBox.valueProperty().addListener((o,ov,nv) -> updateMinuteRange());
+        periodBox.valueProperty().addListener((o, ov, nv) -> updateMinuteRange());
         updateMinuteRange();
     }
+
     private void configurarMinuteField() {
         TextFormatter<Integer> tf = new TextFormatter<>(
                 new IntegerStringConverter(), null,
                 c -> c.getControlNewText().matches("\\d{0,3}") ? c : null);
         minuteField.setTextFormatter(tf);
     }
+
     private void updateMinuteRange() {
         switch (periodBox.getValue()) {
-            case "1° Tiempo"      -> { minAllowed = 0;   maxAllowed = 45;  }
-            case "2° Tiempo"      -> { minAllowed = 45;  maxAllowed = 90;  }
-            case "ET - 1° Tiempo" -> { minAllowed = 90;  maxAllowed = 105; }
-            case "ET - 2° Tiempo" -> { minAllowed = 105; maxAllowed = 120; }
-            case "Penales"        -> { minAllowed = 0;   maxAllowed = 0;   }
-            default               -> { minAllowed = 0;   maxAllowed = 120; }
+            case "1° Tiempo" -> {
+                minAllowed = 0;
+                maxAllowed = 45;
+            }
+            case "2° Tiempo" -> {
+                minAllowed = 45;
+                maxAllowed = 90;
+            }
+            case "ET - 1° Tiempo" -> {
+                minAllowed = 90;
+                maxAllowed = 105;
+            }
+            case "ET - 2° Tiempo" -> {
+                minAllowed = 105;
+                maxAllowed = 120;
+            }
+            case "Penales" -> {
+                minAllowed = 0;
+                maxAllowed = 0;
+            }
+            default -> {
+                minAllowed = 0;
+                maxAllowed = 120;
+            }
         }
         minuteField.setPromptText(minAllowed == maxAllowed
                 ? String.valueOf(minAllowed)
@@ -133,7 +183,8 @@ public class RegistrarTiroController implements ViewLifecycle {
             if (v < minAllowed || v > maxAllowed) minuteField.clear();
         }
     }
-    private boolean validarMinuto(){
+
+    private boolean validarMinuto() {
         if (minuteField.getText().isBlank()) return false;
         int v = Integer.parseInt(minuteField.getText());
         return v >= minAllowed && v <= maxAllowed;
@@ -143,13 +194,14 @@ public class RegistrarTiroController implements ViewLifecycle {
      *   3. COMBOS ESTÁTICOS
      * ******************************************************************/
     private void configurarCombosEstaticos() {
-        thirdBox.getItems().setAll("Todos","Defensivo","Medio","Ofensivo"); thirdBox.setValue("Todos");
-        laneBox .getItems().setAll("Todos","Izquierdo","Central","Derecho"); laneBox .setValue("Todos");
-        areaBox .getItems().setAll("Cualquier zona","Área chica","Área grande","Fuera del área"); areaBox.setValue("Cualquier zona");
-        situationBox.getItems().setAll("Cualquier situación","Juego abierto","Balón parado","Contraataque"); situationBox.setValue("Cualquier situación");
-        bodyPartBox.getItems().setAll("Cualquier parte","Pie izquierdo","Pie derecho","Cabeza","Otro"); bodyPartBox.setValue("Cualquier parte");
-        preActionBox.getItems().setAll("Todas las acciones","Pase","Regate","Rebote","Centro"); preActionBox.setValue("Todas las acciones");
-        resultBox   .getItems().setAll("Todos los resultados","Gol","Atajado","Fuera","Bloqueado","Poste"); resultBox.setValue("Todos los resultados");
+        situationBox.getItems().setAll("Cualquier situación", "Juego abierto", "Balón parado");
+        situationBox.setValue("Cualquier situación");
+        bodyPartBox.getItems().setAll("Cualquier parte", "Pie izquierdo", "Pie derecho", "Cabeza", "Otro");
+        bodyPartBox.setValue("Cualquier parte");
+        preActionBox.getItems().setAll("Todas las acciones", "Pase", "Regate", "Rebote", "Centro", "Penal");
+        preActionBox.setValue("Todas las acciones");
+        resultBox.getItems().setAll("Todos los resultados", "Gol", "Atajado", "Fuera", "Bloqueado", "Poste");
+        resultBox.setValue("Todos los resultados");
     }
 
     /* *******************************************************************
@@ -159,9 +211,27 @@ public class RegistrarTiroController implements ViewLifecycle {
         // 4.a) campo 120×80 m
         canvasTiros.setOnMouseClicked(e -> {
             double px = e.getX(), py = e.getY();
-            double sbX = px / canvasTiros.getWidth()  * 120.0;
+            double sbX = px / canvasTiros.getWidth() * 120.0;
+
             // invertimos Y para StatsBomb
             double sbY = (canvasTiros.getHeight() - py) / canvasTiros.getHeight() * 80.0;
+
+            // Calcular tercio según X
+            String tercio = (sbX <= 40) ? "Defensivo" : (sbX <= 80 ? "Medio" : "Ofensivo");
+
+// Calcular carril según Y
+            String carril = (sbY <= 26.6) ? "Izquierdo" : (sbY <= 53.3 ? "Central" : "Derecho");
+
+// Calcular área
+            String area;
+            if (sbX >= 102 && sbY >= 27 && sbY <= 53) {
+                area = "Área chica";
+            } else if (sbX >= 90 && sbY >= 18 && sbY <= 62) {
+                area = "Área grande";
+            } else {
+                area = "Fuera del área";
+            }
+
 
             ultimoFormulario.setX(sbX);
             ultimoFormulario.setY(sbY);
@@ -176,9 +246,9 @@ public class RegistrarTiroController implements ViewLifecycle {
         canvasArco.setOnMouseClicked(e -> {
             double gx = e.getX(), gy = e.getY();
             // lateral: de -3.66 a +3.66
-            double lateral = (gx / canvasArco.getWidth()  * 7.32) - 3.66;
+            double lateral = (gx / canvasArco.getWidth() * 7.32) - 3.66;
             // altura: de 0 a 3.66
-            double altura  = (canvasArco.getHeight() - gy) / canvasArco.getHeight() * 3.66;
+            double altura = (canvasArco.getHeight() - gy) / canvasArco.getHeight() * 3.66;
 
             // guardamos destino en StatsBomb
             ultimoFormulario.setDestinoX(120.0);
@@ -191,11 +261,12 @@ public class RegistrarTiroController implements ViewLifecycle {
             angleYFieldArco.setText(String.format("%.1f", altura));
         });
     }
-    private void dibujarPunto(Canvas c,double x,double y,Color col){
-        GraphicsContext g=c.getGraphicsContext2D();
-        g.clearRect(0,0,c.getWidth(),c.getHeight());
+
+    private void dibujarPunto(Canvas c, double x, double y, Color col) {
+        GraphicsContext g = c.getGraphicsContext2D();
+        g.clearRect(0, 0, c.getWidth(), c.getHeight());
         g.setFill(col);
-        g.fillOval(x-4,y-4,8,8);
+        g.fillOval(x - 4, y - 4, 8, 8);
     }
 
     /* *******************************************************************
@@ -203,24 +274,35 @@ public class RegistrarTiroController implements ViewLifecycle {
      * ******************************************************************/
     private void guardarTiro() {
         if (!validarMinuto()) {
-            alerta("Falta Minuto","Ingresa un minuto válido",Alert.AlertType.WARNING);
+            alerta("Falta Minuto", "Ingresa un minuto válido", Alert.AlertType.WARNING);
             return;
         }
         try {
-            Equipo  eq = equipoBox.getValue();
+            Equipo eq = equipoBox.getValue();
             Jugador ju = jugadorBox.getValue();
-            if (eq==null){ alerta("Falta Equipo","Selecciona un equipo",Alert.AlertType.WARNING); return; }
-            if (ju==null){ alerta("Falta Jugador","Selecciona un jugador",Alert.AlertType.WARNING); return; }
+            if (eq == null) {
+                alerta("Falta Equipo", "Selecciona un equipo", Alert.AlertType.WARNING);
+                return;
+            }
+            if (ju == null) {
+                alerta("Falta Jugador", "Selecciona un jugador", Alert.AlertType.WARNING);
+                return;
+            }
 
             Tiro t = new Tiro();
-            t.setEquipoId(eq.getTeamId());      t.setEquipoNombre(eq.getName());
-            t.setJugadorId(ju.getPlayerId());   t.setJugadorNombre(ju.getPlayerName());
+            t.setEquipoId(eq.getTeamId());
+            t.setEquipoNombre(eq.getName());
+            t.setJugadorId(ju.getPlayerId());
+            t.setJugadorNombre(ju.getPlayerName());
             t.setPeriod(labelToPeriod(periodBox.getValue()));
             t.setMinuto(Integer.parseInt(minuteField.getText()));
-            t.setThird(thirdBox.getValue());    t.setLane(laneBox.getValue());
-            t.setArea(areaBox.getValue());      t.setSituation(situationBox.getValue());
+            t.setThird(ultimoFormulario.getThird());
+            t.setLane(ultimoFormulario.getLane());
+            t.setArea(ultimoFormulario.getArea());
+            t.setSituation(situationBox.getValue());
             t.setBodyPart(bodyPartBox.getValue());
-            t.setPreAction(preActionBox.getValue()); t.setResult(resultBox.getValue());
+            t.setPreAction(preActionBox.getValue());
+            t.setResult(resultBox.getValue());
 
             // X/Y ya están en metros StatsBomb
             t.setX(ultimoFormulario.getX());
@@ -253,41 +335,55 @@ public class RegistrarTiroController implements ViewLifecycle {
      * ******************************************************************/
     private void limpiarFormulario() {
         periodBox.setValue("Todos los períodos");
-        minuteField.clear(); updateMinuteRange();
-        thirdBox.setValue("Todos"); laneBox.setValue("Todos");
-        areaBox.setValue("Cualquier zona"); situationBox.setValue("Cualquier situación");
+        minuteField.clear();
+        updateMinuteRange();
+        situationBox.setValue("Cualquier situación");
         bodyPartBox.setValue("Cualquier parte");
-        preActionBox.setValue("Todas las acciones"); resultBox.setValue("Todos los resultados");
-        canvasTiros.getGraphicsContext2D().clearRect(0,0,canvasTiros.getWidth(),canvasTiros.getHeight());
-        canvasArco.getGraphicsContext2D().clearRect(0,0,canvasArco.getWidth(),canvasArco.getHeight());
-        angleXFieldCampo.clear(); angleYFieldCampo.clear();
-        angleXFieldArco.clear();  angleYFieldArco.clear();
+        preActionBox.setValue("Todas las acciones");
+        resultBox.setValue("Todos los resultados");
+        canvasTiros.getGraphicsContext2D().clearRect(0, 0, canvasTiros.getWidth(), canvasTiros.getHeight());
+        canvasArco.getGraphicsContext2D().clearRect(0, 0, canvasArco.getWidth(), canvasArco.getHeight());
+        angleXFieldCampo.clear();
+        angleYFieldCampo.clear();
+        angleXFieldArco.clear();
+        angleYFieldArco.clear();
     }
 
     /* *******************************************************************
      *   7. UTILIDADES
      * ******************************************************************/
-    private int labelToPeriod(String l){
-        return switch(l){
-            case "1° Tiempo" -> 1; case "2° Tiempo" -> 2;
-            case "ET - 1° Tiempo" -> 3; case "ET - 2° Tiempo" -> 4;
-            case "Penales" -> 5; default -> 0;
+    private int labelToPeriod(String l) {
+        return switch (l) {
+            case "1° Tiempo" -> 1;
+            case "2° Tiempo" -> 2;
+            case "ET - 1° Tiempo" -> 3;
+            case "ET - 2° Tiempo" -> 4;
+            case "Penales" -> 5;
+            default -> 0;
         };
     }
-    private String periodToLabel(int p){
-        return switch(p){
-            case 1 -> "1° Tiempo"; case 2 -> "2° Tiempo";
-            case 3 -> "ET - 1° Tiempo"; case 4 -> "ET - 2° Tiempo";
-            case 5 -> "Penales"; default -> "Todos los períodos";
+
+    private String periodToLabel(int p) {
+        return switch (p) {
+            case 1 -> "1° Tiempo";
+            case 2 -> "2° Tiempo";
+            case 3 -> "ET - 1° Tiempo";
+            case 4 -> "ET - 2° Tiempo";
+            case 5 -> "Penales";
+            default -> "Todos los períodos";
         };
     }
-    private void alerta(String t,String m,Alert.AlertType tp){
+
+    private void alerta(String t, String m, Alert.AlertType tp) {
         Window w = equipoBox.getScene().getWindow();
-        Alert a = new Alert(tp,m,ButtonType.OK);
-        a.setTitle(t); a.initOwner(w); a.initModality(Modality.WINDOW_MODAL);
+        Alert a = new Alert(tp, m, ButtonType.OK);
+        a.setTitle(t);
+        a.initOwner(w);
+        a.initModality(Modality.WINDOW_MODAL);
         a.showAndWait();
     }
-    private void mostrarError(String msg,Throwable ex){
+
+    private void mostrarError(String msg, Throwable ex) {
         Platform.runLater(() ->
                 alerta("Error", msg + "\n" + ex.getMessage(), Alert.AlertType.ERROR));
     }
@@ -295,26 +391,29 @@ public class RegistrarTiroController implements ViewLifecycle {
     /* *******************************************************************
      *   8. CICLO DE VIDA
      * ******************************************************************/
-    @Override public void onShow() {
+    @Override
+    public void onShow() {
         // restaurar valores del borrador
-        if (ultimoFormulario.getEquipoId()!=0) {
+        if (ultimoFormulario.getEquipoId() != 0) {
             equipoBox.getItems().stream()
-                    .filter(e->e.getTeamId()==ultimoFormulario.getEquipoId())
+                    .filter(e -> e.getTeamId() == ultimoFormulario.getEquipoId())
                     .findFirst().ifPresent(equipoBox::setValue);
             cargarJugadoresPorEquipo(ultimoFormulario.getEquipoId());
             Platform.runLater(() -> jugadorBox.getItems().stream()
-                    .filter(j->j.getPlayerId()==ultimoFormulario.getJugadorId())
+                    .filter(j -> j.getPlayerId() == ultimoFormulario.getJugadorId())
                     .findFirst().ifPresent(jugadorBox::setValue));
         }
         periodBox.setValue(periodToLabel(ultimoFormulario.getPeriod()));
-        minuteField.setText(ultimoFormulario.getMinuto()==0 ? "" : String.valueOf(ultimoFormulario.getMinuto()));
+        minuteField.setText(ultimoFormulario.getMinuto() == 0 ? "" : String.valueOf(ultimoFormulario.getMinuto()));
         updateMinuteRange();
     }
-    @Override public void onHide() {
+
+    @Override
+    public void onHide() {
         Equipo e = equipoBox.getValue();
-        if (e!=null) ultimoFormulario.setEquipoId(e.getTeamId());
-        Jugador j= jugadorBox.getValue();
-        if (j!=null) ultimoFormulario.setJugadorId(j.getPlayerId());
+        if (e != null) ultimoFormulario.setEquipoId(e.getTeamId());
+        Jugador j = jugadorBox.getValue();
+        if (j != null) ultimoFormulario.setJugadorId(j.getPlayerId());
         if (!minuteField.getText().isBlank())
             ultimoFormulario.setMinuto(Integer.parseInt(minuteField.getText()));
         ultimoFormulario.setPeriod(labelToPeriod(periodBox.getValue()));
