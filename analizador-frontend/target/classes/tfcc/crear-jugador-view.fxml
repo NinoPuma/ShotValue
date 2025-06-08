@@ -1,35 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.shotvalue.analizador_xgot.controller.CrearJugadorController"
-            style="-fx-background-color:#262626;">
+<StackPane xmlns="http://javafx.com/javafx/23.0.1"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.shotvalue.analizador_xgot.controller.CrearJugadorController"
+           style="-fx-background-color: #262626;">
 
-    <VBox alignment="TOP_LEFT"
-          spacing="30"
-          AnchorPane.topAnchor="20"
-          AnchorPane.leftAnchor="20">
+    <VBox alignment="CENTER"
+          spacing="40"
+          maxWidth="600">
 
-        <!-- logo -->
-        <ImageView fx:id="logoImage" fitWidth="80" fitHeight="80" preserveRatio="true">
-            <image><Image url="@/img/logo.png"/></image>
+        <padding>
+            <Insets top="40" right="40" bottom="40" left="40"/>
+        </padding>
+
+        <!-- Logo común: -->
+        <ImageView fitWidth="200" preserveRatio="true">
+            <image>
+                <Image url="@/img/logo.png"/>
+            </image>
         </ImageView>
 
-        <!-- título -->
+        <!-- Título común: -->
         <Label text="Crear Jugador"
-               style="-fx-text-fill:white; -fx-font-size:26px; -fx-font-weight:bold;"/>
+               style="-fx-text-fill:white;
+                      -fx-font-size:32px;
+                      -fx-font-weight:bold;"/>
 
-        <!-- grid de campos -->
-        <GridPane hgap="15" vgap="15">
+        <!-- Campos -->
+        <GridPane hgap="20" vgap="20" alignment="CENTER">
             <columnConstraints>
-                <!-- ambas columnas alineadas a la izquierda -->
-                <ColumnConstraints halignment="LEFT" minWidth="140"/>
-                <ColumnConstraints halignment="LEFT" minWidth="260"/>
+                <ColumnConstraints halignment="RIGHT" prefWidth="150"/>
+                <ColumnConstraints halignment="LEFT"  prefWidth="350"/>
             </columnConstraints>
 
             <Label text="Equipo:" style="-fx-text-fill:white;"
@@ -53,14 +60,20 @@
                       GridPane.rowIndex="3" GridPane.columnIndex="1"/>
         </GridPane>
 
-        <!-- botones -->
-        <HBox spacing="15">
+        <!-- Botones -->
+        <HBox spacing="20" alignment="CENTER">
             <Button fx:id="guardarBtn" text="Guardar"
-                    style="-fx-background-color:#00C29A;-fx-text-fill:white;-fx-font-weight:bold;-fx-pref-width:120;"/>
+                    style="-fx-background-color:#00C29A;
+                           -fx-text-fill:white;
+                           -fx-font-weight:bold;
+                           -fx-pref-width:140;
+                           -fx-pref-height:40;"/>
             <Button fx:id="limpiarBtn" text="Limpiar"
-                    style="-fx-background-color:transparent;-fx-text-fill:white;-fx-border-color:white;-fx-pref-width:120;"/>
+                    style="-fx-background-color:transparent;
+                           -fx-text-fill:white;
+                           -fx-border-color:white;
+                           -fx-pref-width:140;
+                           -fx-pref-height:40;"/>
         </HBox>
-
-        <padding><Insets bottom="30"/></padding>
     </VBox>
-</AnchorPane>
+</StackPane>
