@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Window;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class CrearJugadorController implements ViewLifecycle {
@@ -73,7 +74,10 @@ public class CrearJugadorController implements ViewLifecycle {
     }
     private void llenarCombo(List<Equipo> lista) {
         Platform.runLater(() -> {
-            equipoBox.getItems().setAll(lista);
+            List<Equipo> ordenados = lista.stream()
+                    .sorted(Comparator.comparing(Equipo::getName, String.CASE_INSENSITIVE_ORDER))
+                    .toList();
+            equipoBox.getItems().setAll(ordenados);
             equipoBox.getSelectionModel().clearSelection();
         });
     }
