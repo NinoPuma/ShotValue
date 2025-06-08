@@ -15,9 +15,9 @@ public class AyudaController {
     private Label faqContent;
 
     private final ObservableList<String> faqItems = FXCollections.observableArrayList(
-            "📊 XG y XGot",
-            "📁 Datos",
-            "🧠 Cálculo XGot"
+            "XG y XGot",
+            "Datos",
+            "Cálculo XGot"
     );
 
     @FXML
@@ -47,8 +47,6 @@ public class AyudaController {
     private void handleFaqSelection() {
         String selected = faqList.getSelectionModel().getSelectedItem();
         if (selected == null) return;
-
-        // Quitamos el emoji para hacer el switch
         String key = selected.substring(selected.indexOf(' ') + 1);
 
         switch (key) {

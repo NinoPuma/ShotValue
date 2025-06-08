@@ -26,17 +26,14 @@ import java.util.stream.Collectors;
  */
 public class EquiposController implements ViewLifecycle {
 
-    /* ---------- FXML ---------- */
     @FXML private ComboBox<Equipo> equipoSelector;
     @FXML private TextField        jugadorSearchField;
     @FXML private TableView<Jugador> playerTable;
 
-    /* ---------- listas ---------- */
     private final ObservableList<Jugador> jugadoresOriginales = FXCollections.observableArrayList();
     private final ObservableList<Jugador> jugadoresFiltrados  = FXCollections.observableArrayList();
 
-    /* ---------- estado de UI ---------- */
-    private   Equipo equipoSeleccionado;   // se recuerda entre vistas
+    private   Equipo equipoSeleccionado;
     private   String textoBuscado;
 
     private AppController appController;
@@ -50,10 +47,9 @@ public class EquiposController implements ViewLifecycle {
     private void initialize() {
         configurarTabla();
         configurarBuscador();
-        cargarEquipos();          // primera carga
+        cargarEquipos();
     }
 
-    /* ========== TABLA ========== */
     private void configurarTabla() {
         TableColumn<Jugador,String> colNombre = new TableColumn<>("Nombre");
         colNombre.setCellValueFactory(j ->
@@ -90,7 +86,6 @@ public class EquiposController implements ViewLifecycle {
         });
     }
 
-    /* ========== EQUIPOS ========== */
     private void cargarEquipos() {
         EquiposApiClient.getEquiposAsync()
                 .thenAccept(this::poblarComboEquipos)
@@ -105,7 +100,6 @@ public class EquiposController implements ViewLifecycle {
             equipoSelector.setItems(FXCollections.observableArrayList(ordenados));
 
 
-            // listener sólo se añade una vez
             if (equipoSelector.getOnAction() == null) {
                 equipoSelector.setOnAction(evt -> {
                     Equipo sel = equipoSelector.getValue();
@@ -116,7 +110,6 @@ public class EquiposController implements ViewLifecycle {
                 });
             }
 
-            /* restaura selección previa si existe y aún está en la lista */
             if (equipoSeleccionado != null && equipos.contains(equipoSeleccionado)) {
                 equipoSelector.setValue(equipoSeleccionado);
                 cargarJugadores(equipoSeleccionado.getTeamId());
@@ -124,12 +117,11 @@ public class EquiposController implements ViewLifecycle {
         });
     }
 
-    /* ========== JUGADORES ========== */
     private void cargarJugadores(int teamId) {
         CompletableFuture
                 .supplyAsync(() -> {
                     try {
-                        return JugadorApiClient.getJugadoresPorEquipo(teamId); // llamada estática
+                        return JugadorApiClient.getJugadoresPorEquipo(teamId);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
@@ -145,7 +137,7 @@ public class EquiposController implements ViewLifecycle {
         });
     }
 
-    /* ========== BUSCADOR ========== */
+
     private void configurarBuscador() {
         jugadorSearchField.textProperty().addListener((obs, o, n) -> {
             textoBuscado = n;
@@ -162,7 +154,6 @@ public class EquiposController implements ViewLifecycle {
         );
     }
 
-    /* ========== ViewLifecycle ========== */
     @Override
     public void onShow() {
         cargarEquipos();

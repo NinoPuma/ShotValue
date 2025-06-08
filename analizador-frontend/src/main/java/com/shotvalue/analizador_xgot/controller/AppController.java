@@ -40,7 +40,6 @@ public class AppController {
 
     public void setUserName(String name) {
         this.userName = name;
-        /* si ahora mismo se muestra Inicio lo actualizamos */
         if (controladorVisible instanceof InicioController ini) {
             ini.setNombreUsuario(name);
         }

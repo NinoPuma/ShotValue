@@ -19,7 +19,7 @@
 
       <ImageView fx:id="logoImage" fitWidth="130" preserveRatio="true">
          <image>
-            <Image url="@../img/ShotValue.png" />
+            <Image url="@../img/ShotValue_loging_registro.png" />
          </image>
       </ImageView>
 
@@ -58,6 +58,9 @@
                      -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 8;" />
 
       <Label fx:id="messageLabel" textFill="red" style="-fx-font-size: 12px;" />
+
+      <Hyperlink text="¿Olvidaste tu contraseña?" onAction="#goToForgotPassword"
+                 style="-fx-font-size: 13px; -fx-text-fill: #2980b9;" />
 
       <Hyperlink text="¿No tenés cuenta? Registrate"
                  onAction="#goToRegister"

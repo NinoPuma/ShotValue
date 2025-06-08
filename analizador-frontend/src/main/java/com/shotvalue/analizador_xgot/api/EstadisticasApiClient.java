@@ -52,17 +52,17 @@ public class EstadisticasApiClient {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         String body = response.body().trim();
 
-        System.out.println("📊 Respuesta equipos/count: '" + body + "'");
+        System.out.println("Respuesta equipos/count: '" + body + "'");
 
         if (body.isEmpty()) {
-            System.out.println("⚠️ Respuesta vacía de /equipos/count, devolviendo 0");
+            System.out.println("Respuesta vacía de /equipos/count, devolviendo 0");
             return 0;
         }
 
         try {
             return Integer.parseInt(body);
         } catch (NumberFormatException e) {
-            System.out.println("❌ No se pudo parsear el número: " + body);
+            System.out.println("No se pudo parsear el número: " + body);
             return 0;
         }
     }
@@ -77,14 +77,14 @@ public class EstadisticasApiClient {
         String body = response.body().trim();
 
         if (body.isEmpty()) {
-            System.out.println("⚠️ Respuesta vacía de /partidos/count, devolviendo 0");
+            System.out.println("Respuesta vacía de /partidos/count, devolviendo 0");
             return 0;
         }
 
         try {
             return Integer.parseInt(body);
         } catch (NumberFormatException e) {
-            System.out.println("❌ No se pudo parsear el número: " + body);
+            System.out.println("No se pudo parsear el número: " + body);
             return 0;
         }
     }

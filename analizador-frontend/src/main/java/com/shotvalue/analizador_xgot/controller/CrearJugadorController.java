@@ -16,7 +16,6 @@ import java.util.List;
 
 public class CrearJugadorController implements ViewLifecycle {
 
-    /* ───────── FXML ───────── */
     @FXML private ComboBox<Equipo>  equipoBox;
     @FXML private TextField         nombreField;
     @FXML private TextField         dorsalField;
@@ -24,7 +23,6 @@ public class CrearJugadorController implements ViewLifecycle {
     @FXML private Button            guardarBtn;
     @FXML private Button            limpiarBtn;
 
-    /* ───────── init ───────── */
     @FXML
     private void initialize() {
 
@@ -61,11 +59,9 @@ public class CrearJugadorController implements ViewLifecycle {
         limpiarBtn.setOnAction(e -> limpiar());
     }
 
-    /* ───────── ViewLifecycle ───────── */
     @Override public void onShow() { cargarEquipos(); }
     @Override public void onHide() { }
 
-    /* ───────── carga de equipos ───────── */
     private void cargarEquipos() {
         EquiposApiClient.getEquiposAsync()
                 .thenAccept(this::llenarCombo)
@@ -82,7 +78,6 @@ public class CrearJugadorController implements ViewLifecycle {
         });
     }
 
-    /* ───────── guardar ───────── */
     private void guardar() {
 
         if (equipoBox.getValue() == null) {
@@ -97,7 +92,7 @@ public class CrearJugadorController implements ViewLifecycle {
         Jugador j = new Jugador();
         j.setTeamId(equipoBox.getValue().getTeamId());
         j.setPlayerName(nombreField.getText().trim());
-        j.setJerseyNumber(dorsalField.getText().trim());     // ← String, como lo define el modelo
+        j.setJerseyNumber(dorsalField.getText().trim());
         j.setPosition(posicionBox.getValue());
 
         JugadorApiClient.saveJugadorAsync(j)
@@ -109,7 +104,6 @@ public class CrearJugadorController implements ViewLifecycle {
                         alerta("Error", ex.getMessage(), Alert.AlertType.ERROR)); return null;});
     }
 
-    /* ───────── util ───────── */
     private void limpiar() {
         nombreField.clear();
         dorsalField.clear();

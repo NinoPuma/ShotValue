@@ -179,7 +179,6 @@ public class LoginController {
         }
     }
 
-    // Nueva firma de guardarSesion que incluye userId
     private void guardarSesion(String email,
                                String password,
                                String nombreUsuario,
@@ -313,6 +312,16 @@ public class LoginController {
         try {
             Stage stage = (Stage) usernameField.getScene().getWindow();
             VentanaHelper.cargarEscena(stage, "/tfcc/registro.fxml", "Registro");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void goToForgotPassword() {
+        try {
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            VentanaHelper.cargarEscena(stage, "/tfcc/olvido-contraseña.fxml", "Recuperar contraseña");
         } catch (IOException e) {
             e.printStackTrace();
         }

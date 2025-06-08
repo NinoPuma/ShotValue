@@ -58,23 +58,3 @@ jobs:
           # — Opción A — jar “fat” generado en target:
           java -jar analizador-frontend/target/analizador-frontend.jar &
           APP_PID=$!
-          
-#          # — Opción B — con el plugin JavaFX:
-#          # mvn -q -f analizador-frontend/pom.xml javafx:run &
-#          # APP_PID=$!
-#
-#          # 6.3 Esperamos 15 s…
-#          sleep 15
-#
-#          # 6.4 ¿Sigue viva la JVM?
-#          if ps -p $APP_PID > /dev/null ; then
-#            echo "🎉 La GUI se inició correctamente (PID $APP_PID)."
-#            kill $APP_PID
-#          else
-#            echo "❌ La aplicación JavaFX terminó prematuramente."
-#            kill $XVFB_PID      # limpiamos
-#            exit 1
-#          fi
-#
-#           6.5 Todo OK; cerramos Xvfb
-#          kill $XVFB_PID

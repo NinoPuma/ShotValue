@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * Cliente REST para /api/jugadores
- * – Sólo contiene métodos estáticos (no se instancia).
+ *  Sólo contiene métodos estáticos (no se instancia).
  */
 public final class JugadorApiClient {
 
@@ -22,7 +22,6 @@ public final class JugadorApiClient {
     private static final Gson       GSON     = new Gson();
     private static final String     BASE_URL = "http://localhost:8080/api/jugadores";
 
-    /* ========= LECTURA ========= */
 
     /** GET /api/jugadores/nombres */
     public static List<String> getNombresCompletos() throws Exception {
@@ -52,7 +51,6 @@ public final class JugadorApiClient {
         throw new RuntimeException("Error (" + resp.statusCode() + "): " + resp.body());
     }
 
-    /* ========= ESCRITURA ========= */
 
     /** POST /api/jugadores (asíncrono) */
     public static CompletableFuture<Void> saveJugadorAsync(Jugador jugador) {

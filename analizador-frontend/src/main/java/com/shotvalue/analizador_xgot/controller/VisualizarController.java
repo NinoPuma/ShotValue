@@ -3,6 +3,7 @@ package com.shotvalue.analizador_xgot.controller;
 import com.shotvalue.analizador_xgot.api.JugadorApiClient;
 import com.shotvalue.analizador_xgot.api.TiroApiClient;
 import com.shotvalue.analizador_xgot.model.Tiro;
+import com.shotvalue.analizador_xgot.view.ViewLifecycle;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,7 +19,7 @@ import org.controlsfx.control.textfield.TextFields;
 import java.net.URL;
 import java.util.*;
 
-public class VisualizarController implements Initializable {
+public class VisualizarController implements Initializable, ViewLifecycle {
 
     @FXML
     private ComboBox<String> periodBox;
@@ -163,14 +164,7 @@ public class VisualizarController implements Initializable {
             minuteToSpinner.setOpacity(disableMinutos ? 0.5 : 1.0);
         });
 
-        new Thread(() -> {
-            try {
-                List<String> nombres = jugadorApiClient.getNombresCompletos();
-                Platform.runLater(() -> TextFields.bindAutoCompletion(playerSearchField, nombres));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
+        cargarNombresJugadores();
         xgotInfoLabel.setText("Promedio xGOT: 0.00");
     }
 
@@ -397,5 +391,24 @@ public class VisualizarController implements Initializable {
             gc.setFill(color);
             gc.fillOval(xCanvas - 4, yCanvas - 4, 8, 8);
         }
+    }
+        private void cargarNombresJugadores() {
+            new Thread(() -> {
+                try {
+                    List<String> nombres = JugadorApiClient.getNombresCompletos();
+                    Platform.runLater(() -> TextFields.bindAutoCompletion(playerSearchField, nombres));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        }
+
+        @Override
+        public void onShow() {
+            cargarNombresJugadores();
+        }
+
+        @Override
+        public void onHide() {
     }
 }
