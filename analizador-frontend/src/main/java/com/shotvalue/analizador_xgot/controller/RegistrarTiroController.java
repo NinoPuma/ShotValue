@@ -264,11 +264,10 @@ public class RegistrarTiroController implements ViewLifecycle {
             angleYFieldCampo.setText(String.format("%.1f", 40.0 - sbY));
         });
 
-        // 4.b) arco 7.32m×3.66m centrado en y=40
         canvasArco.setOnMouseClicked(e -> {
             double gx = e.getX(), gy = e.getY();
             // lateral: de -3.66 a +3.66
-            double lateral = (gx / canvasArco.getWidth() * 7.32) - 3.66;
+            double lateral = (gx / canvasArco.getWidth() * 20.0) - 10.0;
             double altura = (canvasArco.getHeight() - gy) / canvasArco.getHeight() * 2.44;
 
             // guardamos destino en StatsBomb
@@ -351,7 +350,7 @@ public class RegistrarTiroController implements ViewLifecycle {
                     .thenAccept(saved -> Platform.runLater(() -> {
                         alerta("Éxito",
                                 "Tiro guardado con ID: " + saved.getId() +
-                                        "\nxGOT: " + String.format("%.3f", saved.getXgot()),
+                                        "\nxGOT: " + String.format("%.5f", saved.getXgot()),
                                 Alert.AlertType.INFORMATION);
                         limpiarFormulario();
                     }))
