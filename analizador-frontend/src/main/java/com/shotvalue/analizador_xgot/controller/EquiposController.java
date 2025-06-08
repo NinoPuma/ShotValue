@@ -39,6 +39,12 @@ public class EquiposController implements ViewLifecycle {
     private   Equipo equipoSeleccionado;   // se recuerda entre vistas
     private   String textoBuscado;
 
+    private AppController appController;
+
+    public void setAppController(AppController app) {
+        this.appController = app;
+    }
+
     /* ========== INIT ========== */
     @FXML
     private void initialize() {
@@ -70,6 +76,18 @@ public class EquiposController implements ViewLifecycle {
         playerTable.getColumns().setAll(colNombre, colPos, colDorsal);
         playerTable.setItems(jugadoresFiltrados);
         playerTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        playerTable.setRowFactory(tv -> {
+            TableRow<Jugador> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && !row.isEmpty()) {
+                    Jugador j = row.getItem();
+                    if (appController != null && j != null) {
+                        appController.openVisualizar(j.getPlayerName());
+                    }
+                }
+            });
+            return row;
+        });
     }
 
     /* ========== EQUIPOS ========== */

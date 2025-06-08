@@ -142,6 +142,7 @@ public class LoginController {
             stage.setScene(scene);
             stage.setTitle("Inicio");
             stage.setMaximized(true);
+            stage.show();
             if (usernameField.getScene() != null) {
                 ((Stage) usernameField.getScene().getWindow()).close();
             }

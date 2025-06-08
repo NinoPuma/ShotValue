@@ -55,7 +55,14 @@ public class AppController {
         cargarVista("/tfcc/crear-equipo-view.fxml", null);
     }
     public void openVisualizar() {
+        openVisualizar(null);
+    }
+    public void openVisualizar(String jugador) {
         cargarVista("/tfcc/visualizar-view.fxml", null);
+        Object ctl = controllerCache.get("/tfcc/visualizar-view.fxml");
+        if (ctl instanceof VisualizarController vc && jugador != null) {
+            vc.setPlayerName(jugador);
+        }
     }
     public void openPerfil() {
         cargarVista("/tfcc/perfil-view.fxml", null);
@@ -110,6 +117,9 @@ public class AppController {
                     if (ctl instanceof InicioController ini) {
                         ini.setAppController(this);
                         if (userName != null) ini.setNombreUsuario(userName);
+                    }
+                    if (ctl instanceof EquiposController ec) {
+                        ec.setAppController(this);
                     }
                     if (ctl instanceof PerfilController pc && userId != null) {
                         pc.setUserId(userId);
