@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns="http://javafx.com/javafx/23.0.1"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.shotvalue.analizador_xgot.controller.OlvidoContraseñaController"
+           style="-fx-background-color: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);">
+    <VBox alignment="CENTER" spacing="20"
+          maxWidth="500" maxHeight="400"
+          style="-fx-background-color: white; -fx-background-radius: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0.3, 0, 4); -fx-padding: 40;">
+        <ImageView fitWidth="130" preserveRatio="true">
+            <image>
+                <Image url="@../img/ShotValue_loging_registro.png" />
+            </image>
+        </ImageView>
+
+        <Label text="Recuperar contraseña"
+               style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
+
+        <TextField fx:id="emailField" promptText="Correo electrónico"
+                   maxWidth="320"
+                   style="-fx-font-size: 14px; -fx-padding: 10; -fx-background-radius: 8;" />
+
+        <Button text="Enviar enlace" onAction="#handleSendRequest" maxWidth="180"
+                style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 8;" />
+
+        <Label fx:id="messageLabel" textFill="red" style="-fx-font-size: 12px;" />
+
+        <Hyperlink text="Volver al login" onAction="#goToLogin"
+                   style="-fx-font-size: 13px; -fx-text-fill: #2980b9;" />
+    </VBox>
+</StackPane>
