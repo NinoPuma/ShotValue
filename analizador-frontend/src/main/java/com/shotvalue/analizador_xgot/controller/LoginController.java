@@ -30,11 +30,16 @@ import java.util.concurrent.CompletableFuture;
 
 public class LoginController {
 
-    @FXML private TextField usernameField;
-    @FXML private PasswordField passwordField;
-    @FXML private CheckBox rememberMeCheckBox;
-    @FXML private TextField passwordTextField;
-    @FXML private Button togglePasswordBtn;
+    @FXML
+    private TextField usernameField;
+    @FXML
+    private PasswordField passwordField;
+    @FXML
+    private CheckBox rememberMeCheckBox;
+    @FXML
+    private TextField passwordTextField;
+    @FXML
+    private Button togglePasswordBtn;
 
     private final Gson gson = new GsonBuilder()
             .registerTypeAdapter(java.time.LocalDate.class, new LocalDateAdapter())
@@ -45,9 +50,22 @@ public class LoginController {
     private static final String ARCHIVO_EMAILS = System.getProperty("user.home") + "/.shotvalue/emails-usados.json";
     private static final String CLAVE_SECRETA = "1234567890123456";
 
+    private String storedEmail;
+    private String storedPassword;
+    private boolean storedRecordar;
+
     @FXML
     public void initialize() {
         TextFields.bindAutoCompletion(usernameField, cargarCorreosUsados());
+        usernameField.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (storedEmail != null && storedEmail.equals(newVal)
+                    && storedPassword != null
+                    && passwordField.getText().isEmpty()
+                    && passwordTextField.getText().isEmpty()) {
+                passwordField.setText(storedPassword);
+                passwordTextField.setText(storedPassword);
+            }
+        });
         Platform.runLater(this::intentarRestaurarSesion);
     }
 
@@ -66,9 +84,12 @@ public class LoginController {
         CompletableFuture<Usuario> future = AuthApiClient.loginAsync(email, password);
         future.thenAccept(usr -> {
             boolean recordar = rememberMeCheckBox.isSelected();
-            guardarCorreoUsado(email);
-            // <-- aquí pasamos también el id devuelto:
-            guardarSesion(email, usr.getUsername(), usr.getId(), recordar);
+            if (recordar) {
+                guardarCorreoUsado(email);
+            } else {
+                eliminarCorreoUsado(email);
+            }
+            guardarSesion(email, password, usr.getUsername(), usr.getId(), recordar);
             Platform.runLater(() -> cargarApp(event, usr.getUsername()));
         }).exceptionally(ex -> {
             Platform.runLater(() -> showAlert("Login fallido: " + ex.getMessage()));
@@ -83,7 +104,7 @@ public class LoginController {
             AppController app = loader.getController();
             app.setUserName(nombreUsuario);
 
-            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             if (root instanceof Region region) {
                 region.prefWidthProperty().bind(stage.widthProperty());
@@ -115,7 +136,7 @@ public class LoginController {
             stage.setTitle("Inicio");
             stage.setMaximized(true);
             if (usernameField.getScene() != null) {
-                ((Stage)usernameField.getScene().getWindow()).close();
+                ((Stage) usernameField.getScene().getWindow()).close();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -130,15 +151,19 @@ public class LoginController {
             String contenido = descifrar(Files.readString(ruta));
             if (contenido == null || !contenido.trim().startsWith("{")) return;
 
-            Map<?,?> data = gson.fromJson(contenido, Map.class);
-            String email = (String)data.get("email");
-            String usuario = (String)data.get("usuario");
-            boolean recordar = Boolean.TRUE.equals(data.get("recordar"));
-
-            if (recordar && email != null) {
-                usernameField.setText(email);
+            Map<?, ?> data = gson.fromJson(contenido, Map.class);
+            storedEmail = (String) data.get("email");
+            storedPassword = (String) data.get("password");
+            String usuario = (String) data.get("usuario");
+            storedRecordar = Boolean.TRUE.equals(data.get("recordar"));
+            if (storedRecordar && storedEmail != null) {
+                usernameField.setText(storedEmail);
             }
-            if (recordar) cargarApp(usuario);
+            if (storedRecordar && storedPassword != null) {
+                passwordField.setText(storedPassword);
+                passwordTextField.setText(storedPassword);
+            }
+            if (storedRecordar) cargarApp(usuario);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -146,21 +171,36 @@ public class LoginController {
 
     // Nueva firma de guardarSesion que incluye userId
     private void guardarSesion(String email,
+                               String password,
                                String nombreUsuario,
-                               String userId,       // <— nuevo parámetro
+                               String userId,
                                boolean recordar) {
         try {
-            Map<String,Object> datos = new HashMap<>();
-            datos.put("email",   email);
-            datos.put("usuario", nombreUsuario);
-            datos.put("id",      userId);       // <— lo guardamos aquí
-            datos.put("recordar",recordar);
-            String json = gson.toJson(datos);
-            String cifrado = cifrar(json);
-
             Path ruta = Path.of(ARCHIVO_SESION);
-            Files.createDirectories(ruta.getParent());
-            Files.writeString(ruta, cifrado);
+            if (recordar) {
+                Map<String,Object> datos = new HashMap<>();
+                datos.put("email",   email);
+                datos.put("password", password);
+                datos.put("usuario", nombreUsuario);
+                datos.put("id",      userId);
+                datos.put("recordar",true);
+                String json = gson.toJson(datos);
+                String cifrado = cifrar(json);
+
+                Files.createDirectories(ruta.getParent());
+                Files.writeString(ruta, cifrado);
+
+                storedEmail = email;
+                storedPassword = password;
+                storedRecordar = true;
+            } else {
+                storedEmail = null;
+                storedPassword = null;
+                storedRecordar = false;
+                if (Files.exists(ruta)) {
+                    Files.delete(ruta);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -169,7 +209,7 @@ public class LoginController {
     private void guardarCorreoUsado(String nuevoEmail) {
         try {
             Path ruta = Path.of(ARCHIVO_EMAILS);
-            List<Map<String,String>> lista = Files.exists(ruta)
+            List<Map<String, String>> lista = Files.exists(ruta)
                     ? gson.fromJson(Files.readString(ruta), List.class)
                     : new ArrayList<>();
             if (lista.stream().noneMatch(m -> nuevoEmail.equals(m.get("email")))) {
@@ -182,13 +222,30 @@ public class LoginController {
         }
     }
 
+    private void eliminarCorreoUsado(String email) {
+        try {
+            Path ruta = Path.of(ARCHIVO_EMAILS);
+            if (!Files.exists(ruta)) return;
+            List<Map<String, String>> lista = gson.fromJson(Files.readString(ruta), List.class);
+            if (lista.removeIf(m -> email.equals(m.get("email")))) {
+                if (lista.isEmpty()) {
+                    Files.delete(ruta);
+                } else {
+                    Files.writeString(ruta, gson.toJson(lista));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private List<String> cargarCorreosUsados() {
         try {
             Path ruta = Path.of(ARCHIVO_EMAILS);
             if (!Files.exists(ruta)) return List.of();
-            List<Map<String,String>> lista = gson.fromJson(Files.readString(ruta), List.class);
+            List<Map<String, String>> lista = gson.fromJson(Files.readString(ruta), List.class);
             List<String> correos = new ArrayList<>();
-            for (Map<String,String> m : lista) correos.add(m.get("email"));
+            for (Map<String, String> m : lista) correos.add(m.get("email"));
             return correos;
         } catch (IOException e) {
             e.printStackTrace();
@@ -207,7 +264,7 @@ public class LoginController {
             String contenido = descifrar(Files.readString(ruta));
             if (contenido != null && contenido.trim().startsWith("{")) {
                 Gson tmp = new Gson();
-                Map<String,Object> data = tmp.fromJson(contenido, Map.class);
+                Map<String, Object> data = tmp.fromJson(contenido, Map.class);
                 data.put("recordar", false);
                 String nuevoJson = tmp.toJson(data);
                 String cifrado = cifrar(nuevoJson);
@@ -241,7 +298,7 @@ public class LoginController {
     @FXML
     private void goToRegister() {
         try {
-            Stage stage = (Stage)usernameField.getScene().getWindow();
+            Stage stage = (Stage) usernameField.getScene().getWindow();
             VentanaHelper.cargarEscena(stage, "/tfcc/registro.fxml", "Registro");
         } catch (IOException e) {
             e.printStackTrace();
