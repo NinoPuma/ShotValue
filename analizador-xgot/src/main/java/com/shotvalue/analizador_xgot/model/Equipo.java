@@ -7,6 +7,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "equipos")
 public class Equipo {
+    @Id
+    private String id;
     @JsonProperty("teamId")
     private int teamId;
 
@@ -19,6 +21,14 @@ public class Equipo {
 
     public String getName() {
         return name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setTeamId(int teamId) {

@@ -21,8 +21,10 @@ import javafx.stage.Window;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /**
  * Controlador para la vista “Registrar nuevo tiro”.
@@ -101,7 +103,10 @@ public class RegistrarTiroController implements ViewLifecycle {
 
     private void llenarComboEquipos(List<Equipo> lista) {
         Platform.runLater(() -> {
-            equipoBox.getItems().setAll(lista);
+            List<Equipo> ordenados = lista.stream()
+                    .sorted(Comparator.comparing(Equipo::getName, String.CASE_INSENSITIVE_ORDER))
+                    .collect(Collectors.toList());
+            equipoBox.getItems().setAll(ordenados);
             equipoBox.setConverter(new StringConverter<>() {
                 public String toString(Equipo t) {
                     return t == null ? "" : t.getName();

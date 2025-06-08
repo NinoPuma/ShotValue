@@ -1,6 +1,8 @@
 package com.shotvalue.analizador_xgot.controller;
 
+import com.shotvalue.analizador_xgot.api.EquiposApiClient;
 import com.shotvalue.analizador_xgot.api.EstadisticasApiClient;
+import com.shotvalue.analizador_xgot.model.Equipo;
 import com.shotvalue.analizador_xgot.model.Jugador;
 import com.shotvalue.analizador_xgot.model.Tiro;
 import com.shotvalue.analizador_xgot.view.ViewLifecycle;
@@ -73,8 +75,9 @@ public class InicioController implements ViewLifecycle {
             try {
                 List<Tiro>     tiros     = EstadisticasApiClient.getTiros();
                 List<Jugador>  jugadores = EstadisticasApiClient.getJugadores();
-                int equipos   = EstadisticasApiClient.getEquiposCount();
-                int partidos  = EstadisticasApiClient.getPartidosCount();
+                List<Equipo>   equiposList = EquiposApiClient.getEquiposSync();
+                int            equipos     = EstadisticasApiClient.getEquiposCount();
+                int            partidos    = EstadisticasApiClient.getPartidosCount();
 
                 Platform.runLater(() -> {
                     equiposCount  .setText(String.valueOf(equipos));
@@ -84,15 +87,26 @@ public class InicioController implements ViewLifecycle {
                             tiros.stream().mapToDouble(Tiro::getXgot).sum()));
 
                     recentsList.getItems().clear();
-                    for (int i = 0; i < Math.min(5, tiros.size()); i++) {
+                    for (int i = Math.max(0, equiposList.size() - 3); i < equiposList.size(); i++) {
+                        Equipo eq = equiposList.get(i);
+                        recentsList.getItems().add("Equipo creado: " + eq.getName());
+                    }
+
+                    // Últimos jugadores creados
+                    for (int i = Math.max(0, jugadores.size() - 3); i < jugadores.size(); i++) {
+                        Jugador j = jugadores.get(i);
+                        recentsList.getItems().add("Jugador creado: " + j.getPlayerName());
+                    }
+
+                    // Últimos tiros registrados
+                    for (int i = 0; i < Math.min(3, tiros.size()); i++) {
                         Tiro t = tiros.get(i);
                         String nombreJ = jugadores.stream()
                                 .filter(j -> j.getPlayerId() == t.getJugadorId())
                                 .map(Jugador::getPlayerName)
                                 .findFirst()
                                 .orElse("Desconocido");
-                        recentsList.getItems()
-                                .add(nombreJ + " — min " + t.getMinuto());
+                        recentsList.getItems().add("Tiro de " + nombreJ + " — min " + t.getMinuto());
                     }
                 });
 

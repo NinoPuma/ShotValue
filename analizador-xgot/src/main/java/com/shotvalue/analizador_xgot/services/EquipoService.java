@@ -22,6 +22,13 @@ public class EquipoService {
     }
 
     public Equipo save(Equipo e) {
+        if (e.getTeamId() == 0) {
+            int nextId = repo.findAll().stream()
+                    .mapToInt(Equipo::getTeamId)
+                    .max()
+                    .orElse(0) + 1;
+            e.setTeamId(nextId);
+        }
         return repo.save(e);
     }
 
