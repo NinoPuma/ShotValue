@@ -33,7 +33,7 @@ public class XgotService {
     private double calcularXgBasico(Tiro t) {
         double dx = 120.0 - t.getX();
         double dy =  40.0 - t.getY();
-        double dist = Math.hypot(dx,dy);
+        double dist = Math.hypot(dx,dy) / 100.0;
 
         double angIzq  = Math.atan2(36.34 - t.getY(), dx);
         double angDcho = Math.atan2(43.66 - t.getY(), dx);

@@ -4,6 +4,8 @@ import com.shotvalue.analizador_xgot.api.JugadorApiClient;
 import com.shotvalue.analizador_xgot.api.TiroApiClient;
 import com.shotvalue.analizador_xgot.model.Tiro;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
@@ -49,6 +51,19 @@ public class VisualizarController implements Initializable {
 
     private List<Tiro> ultimoTiros = new ArrayList<>();
 
+    private final ObservableList<String> bodyPartDefault = FXCollections.observableArrayList(
+            "Cualquier parte", "Pie izquierdo", "Pie derecho", "Cabeza", "Otro"
+    );
+    private final ObservableList<String> bodyPartParado = FXCollections.observableArrayList(
+            "Cualquier parte", "Pie izquierdo", "Pie derecho"
+    );
+    private final ObservableList<String> preActionDefault = FXCollections.observableArrayList(
+            "Todas las acciones", "Pase", "Regate", "Rebote", "Centro", "Penal", "Tiro libre", "No definido"
+    );
+    private final ObservableList<String> preActionParado = FXCollections.observableArrayList(
+            "Todas las acciones", "Penal", "Tiro libre"
+    );
+
     private static final double ESCALA_X = 354.4 / 120.0;
     private static final double ESCALA_Y = 244.0 / 80.0;
     private static final double OFFSET_X = 73.6;
@@ -77,9 +92,12 @@ public class VisualizarController implements Initializable {
 
         areaBox.setValue("Cualquier zona");
         situationBox.setValue("Cualquier situación");
-        bodyPartBox.setValue("Cualquier parte");
-        preActionBox.setValue("Todas las acciones");
+        bodyPartBox.setItems(bodyPartDefault);
+        preActionBox.setItems(preActionDefault);
         resultBox.setValue("Todos los resultados");
+
+        situationBox.valueProperty().addListener((obs, o, n) -> aplicarFiltrosCombos());
+        aplicarFiltrosCombos();
 
         xgField.setTextFormatter(new TextFormatter<>(change -> change.getControlNewText().matches("\\d{0,3}(\\.\\d{0,2})?") ? change : null));
 
@@ -212,7 +230,7 @@ public class VisualizarController implements Initializable {
             double x2 = offsetX + tiro.getDestinoX() * escalaX;
             double y2 = offsetY + tiro.getDestinoY() * escalaY;
 
-            String resultado = tiro.getResultado() != null ? tiro.getResultado().trim().toLowerCase() : "";
+            String resultado = tiro.getResult() != null ? tiro.getResult().trim().toLowerCase() : "";
 
             Color color = switch (resultado) {
                 case "gol" -> Color.LIMEGREEN;
@@ -247,7 +265,7 @@ public class VisualizarController implements Initializable {
         double arcoZMax = 2.44;
 
         for (Tiro tiro : ultimoTiros) {
-            String resultado = tiro.getResultado() != null ? tiro.getResultado().trim().toLowerCase() : "";
+            String resultado = tiro.getResult() != null ? tiro.getResult().trim().toLowerCase() : "";
             if (!(resultado.equals("gol") || resultado.equals("atajadoo") || resultado.equals("atajado") || resultado.equals("poste")))
                 continue;
 
@@ -296,6 +314,30 @@ public class VisualizarController implements Initializable {
         xgotInfoLabel.setText(String.format("Promedio xGOT: %.2f", avg));
     }
 
+    private void aplicarFiltrosCombos() {
+        boolean balonParado = "Balón parado".equals(situationBox.getValue());
+
+        if (balonParado) {
+            preActionBox.setItems(preActionParado);
+            if (!preActionParado.contains(preActionBox.getValue())) {
+                preActionBox.setValue("Todas las acciones");
+            }
+            bodyPartBox.setItems(bodyPartParado);
+            if (!bodyPartParado.contains(bodyPartBox.getValue())) {
+                bodyPartBox.setValue("Cualquier parte");
+            }
+        } else {
+            preActionBox.setItems(preActionDefault);
+            if (!preActionDefault.contains(preActionBox.getValue())) {
+                preActionBox.setValue("Todas las acciones");
+            }
+            bodyPartBox.setItems(bodyPartDefault);
+            if (!bodyPartDefault.contains(bodyPartBox.getValue())) {
+                bodyPartBox.setValue("Cualquier parte");
+            }
+        }
+    }
+
     private void dibujarEnArco(List<Tiro> tiros) {
         GraphicsContext gc = canvasArco.getGraphicsContext2D();
         gc.clearRect(0, 0, canvasArco.getWidth(), canvasArco.getHeight());
@@ -314,7 +356,7 @@ public class VisualizarController implements Initializable {
         double arcoZMax = 2.44;
 
         for (Tiro tiro : tiros) {
-            String resultado = tiro.getResultado() != null ? tiro.getResultado().trim().toLowerCase() : "";
+            String resultado = tiro.getResult() != null ? tiro.getResult().trim().toLowerCase() : "";
             if (!(resultado.equals("gol") || resultado.equals("atajadoo") || resultado.equals("atajado") || resultado.equals("poste")))
                 continue;
 

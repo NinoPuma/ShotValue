@@ -1,5 +1,6 @@
 package com.shotvalue.analizador_xgot.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,8 +17,10 @@ public class Tiro {
     private Double destinoY;
     private Double destinoZ;
     private double xg;
+    @JsonProperty("bodyPart")
     private String parteDelCuerpo;
     private String tipoDeJugada;
+    @JsonProperty("result")
     private String resultado;
     private String jugadorNombre;
     private String equipoNombre;
@@ -40,6 +43,7 @@ public class Tiro {
     private boolean rebote;
     private boolean dentroDelArea;
     private int cantidadDefensasCerca;
+    @JsonProperty("area")
     private String zonaDelDisparo;
     private boolean jugadaElaborada;
     private boolean tiroConBote;
