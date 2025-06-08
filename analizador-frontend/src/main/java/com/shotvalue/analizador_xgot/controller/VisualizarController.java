@@ -69,6 +69,14 @@ public class VisualizarController implements Initializable {
     private static final double OFFSET_X = 73.6;
     private static final double OFFSET_Y = 4.0;
 
+    public void setPlayerName(String name) {
+        if (name == null) {
+            playerSearchField.clear();
+        } else {
+            playerSearchField.setText(name);
+            aplicarFiltros();
+        }
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
