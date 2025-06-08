@@ -93,19 +93,22 @@ public class LoginController {
                 eliminarCorreoUsado(email);
             }
             guardarSesion(email, password, usr.getUsername(), usr.getId(), recordar);
-            Platform.runLater(() -> cargarApp(event, usr.getUsername()));
+            Platform.runLater(() -> cargarApp(event, usr.getUsername(), usr.getId()));
+
         }).exceptionally(ex -> {
             Platform.runLater(() -> showAlert("Login fallido: " + ex.getMessage()));
             return null;
         });
     }
 
-    private void cargarApp(ActionEvent event, String nombreUsuario) {
+    private void cargarApp(ActionEvent event, String nombreUsuario, String userId) {
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/tfcc/app-layout.fxml"));
             Parent root = loader.load();
             AppController app = loader.getController();
             app.setUserName(nombreUsuario);
+            app.setUserId(userId);
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
@@ -122,12 +125,13 @@ public class LoginController {
         }
     }
 
-    private void cargarApp(String nombreUsuario) {
+    private void cargarApp(String nombreUsuario, String userId) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/tfcc/app-layout.fxml"));
             Parent root = loader.load();
             AppController app = loader.getController();
             app.setUserName(nombreUsuario);
+            app.setUserId(userId);
 
             Stage stage = new Stage();
             Scene scene = new Scene(root);
@@ -158,6 +162,8 @@ public class LoginController {
             storedEmail = (String) data.get("email");
             storedPassword = (String) data.get("password");
             String usuario = (String) data.get("usuario");
+            String id = (String) data.get("id");
+
             storedRecordar = Boolean.TRUE.equals(data.get("recordar"));
             if (storedRecordar && storedEmail != null) {
                 usernameField.setText(storedEmail);
@@ -166,7 +172,7 @@ public class LoginController {
                 passwordField.setText(storedPassword);
                 passwordTextField.setText(storedPassword);
             }
-            if (storedRecordar) cargarApp(usuario);
+            if (storedRecordar) cargarApp(usuario, id);
         } catch (Exception e) {
             e.printStackTrace();
         }

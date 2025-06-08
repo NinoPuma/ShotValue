@@ -29,11 +29,14 @@ public class AppController {
     private final String defaultStyle = "-fx-background-color: transparent; -fx-text-fill: white;";
     private final String activeStyle  = "-fx-background-color: #0F7F7F; -fx-text-fill: white; -fx-font-weight: bold;";
 
-    private final Map<String, Parent>        viewCache = new HashMap<>();
-    private final Map<String, ViewLifecycle> ctlCache  = new HashMap<>();
+    private final Map<String, Parent>        viewCache       = new HashMap<>();
+    private final Map<String, ViewLifecycle> ctlCache        = new HashMap<>();
+    private final Map<String, Object>        controllerCache = new HashMap<>();
     private       ViewLifecycle              controladorVisible;
 
     private String userName;
+    private String userId;
+
 
     public void setUserName(String name) {
         this.userName = name;
@@ -42,6 +45,11 @@ public class AppController {
             ini.setNombreUsuario(name);
         }
     }
+
+    public void setUserId(String id) {
+        this.userId = id;
+    }
+    public String getUserId() { return userId; }
 
     public void openCrearEquipo() {
         cargarVista("/tfcc/crear-equipo-view.fxml", null);
@@ -95,11 +103,16 @@ public class AppController {
                     Parent nodo  = fx.load();
                     Object ctl   = fx.getController();
 
+                    controllerCache.put(ruta, ctl);
+
                     if (ctl instanceof ViewLifecycle life) ctlCache.put(ruta, life);
 
                     if (ctl instanceof InicioController ini) {
                         ini.setAppController(this);
                         if (userName != null) ini.setNombreUsuario(userName);
+                    }
+                    if (ctl instanceof PerfilController pc && userId != null) {
+                        pc.setUserId(userId);
                     }
                     return nodo;
 
@@ -108,6 +121,10 @@ public class AppController {
                 }
             });
 
+            Object ctl = controllerCache.get(rutaFXML);
+            if (ctl instanceof PerfilController pc && userId != null) {
+                pc.setUserId(userId);
+            }
             ViewLifecycle nuevo = ctlCache.get(rutaFXML);
             if (controladorVisible != null && controladorVisible != nuevo) controladorVisible.onHide();
             controladorVisible = nuevo;
