@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -80,7 +81,11 @@ public class EquiposController implements ViewLifecycle {
 
     private void poblarComboEquipos(List<Equipo> equipos) {
         Platform.runLater(() -> {
-            equipoSelector.setItems(FXCollections.observableArrayList(equipos));
+            List<Equipo> ordenados = equipos.stream()
+                    .sorted(Comparator.comparing(Equipo::getName, String.CASE_INSENSITIVE_ORDER))
+                    .collect(Collectors.toList());
+            equipoSelector.setItems(FXCollections.observableArrayList(ordenados));
+
 
             // listener sólo se añade una vez
             if (equipoSelector.getOnAction() == null) {
